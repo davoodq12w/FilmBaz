@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "film.apps.FilmConfig",
     "account.apps.AccountConfig",
+    "django_cleanup",
+    "django_resized",
 ]
 
 MIDDLEWARE = [
