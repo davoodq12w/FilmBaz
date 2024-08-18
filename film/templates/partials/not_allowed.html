@@ -1,0 +1,11 @@
+{% extends "parents/base.html" %}
+{% block title %}Page Not Allowed{% endblock %}
+{% load static %}
+{% block body %}
+    <div class="not-allowed">
+        <p class="not-allowed-text">این صفحه در دسترس نمی باشد.</p>
+        <a href="{% url 'film:movies_list' %}" class="not-allowed-home">برگشت به صفحه اصلی</a>
+        <img src="{% static 'image/NotAllowed.png' %}" alt="not allowed">
+    </div>
+{% endblock %}
+

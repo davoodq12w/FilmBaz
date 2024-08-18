@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django_resized import ResizedImageField
 
 
 # Create your models here.
@@ -29,6 +30,7 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=11)
     email = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
+    image = ResizedImageField(upload_to="profile_images/", quality=100, crop=["middle", "center"], size=[500, 500])
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

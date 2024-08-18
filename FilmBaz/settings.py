@@ -151,3 +151,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #                       for personal user
 # ================================================================
 AUTH_USER_MODEL = 'account.FilmBazUser'
+
+# ================================================================
+#                       for authentication
+# ================================================================
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = 'account/login/'

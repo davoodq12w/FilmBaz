@@ -15,13 +15,13 @@ class FilmBazUserAdmin(UserAdmin):
     model = FilmBazUser
     list_display = ['username', 'phone', 'email', 'created', 'is_active']
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {"fields": ("username", "password", "image")}),
         ("Personal Info", {"fields": ("phone", "email")}),
         ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),
         ("Date Datas", {"fields": ("last_login",)}),
     )
     add_fieldsets = (
-        (None, {"fields": ("username", "password1", "password2")}),
+        (None, {"fields": ("username", "password1", "password2", "image")}),
         ("Personal Info", {"fields": ("phone", "email")}),
         ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),
         ("Date Datas", {"fields": ("last_login",)}),

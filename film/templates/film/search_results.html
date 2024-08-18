@@ -1,0 +1,13 @@
+{% extends "parents/base.html" %}
+{% block title %}Search Results{% endblock %}
+{% block body %}
+    <h2 style="color:#F5F7F8;"> نتایج جستجو بر اساس " {{ query }} " : </h2>
+    {% for movie in movie_result %}
+        <div class="search-movie">
+            <img src="{{ movie.thumbnail.url }}" alt="{{ movie.english_title }}">
+        </div>
+    {% empty %}
+        <p style="color: #F5F7F8">نتیجه ای یافت نشد!</p>
+    {% endfor %}
+
+{% endblock %}

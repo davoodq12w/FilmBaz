@@ -1,0 +1,71 @@
+{% extends "parents/base.html" %}
+{% block title %}Movies List{% endblock %}
+{% block body %}
+    <div class="list-titles">
+        <h2 class="list-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="title-svg">
+            <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+            </svg>
+
+            <span>پرطرفدار ترین ها</span>
+        </h2>
+        <div class="list-more">
+            <span>بیشتر</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+            <path fill-rule="evenodd" d="M4.72 9.47a.75.75 0 0 0 0 1.06l4.25 4.25a.75.75 0 1 0 1.06-1.06L6.31 10l3.72-3.72a.75.75 0 1 0-1.06-1.06L4.72 9.47Zm9.25-4.25L9.72 9.47a.75.75 0 0 0 0 1.06l4.25 4.25a.75.75 0 1 0 1.06-1.06L11.31 10l3.72-3.72a.75.75 0 0 0-1.06-1.06Z" clip-rule="evenodd" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="movies">
+        {% for movie in movies %}
+            <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
+                <img src="{{ movie.thumbnail.url }}" alt="{{ movie.title }}" class="movie-thumbnail" data-movie-id="{{ movie.id }}">
+                <p class="movie-title">{{ movie.title }}</p>
+                <div class="movie-detail-hidden" id="detail-{{ movie.id }}">
+                    <div class="movie-director">
+                        <span>کارگردان : </span>
+                        <span>{{ movie.director }}</span>
+                    </div>
+                    <div class="movie-year">
+                        <span>سال ساخت : </span>
+                        <span>{{ movie.year }}</span>
+                    </div>
+                    <div class="movie-rate">
+                        <span>امتیاز در imdb : </span>
+                        <div>
+                            <span>{{ movie.rate }}</span>
+                        </div>
+                    </div>
+                    <div class="movie-genres">
+                        <div class="genres" >
+                            {% for genre in movie.genres.all %}
+                            	<span>{{ genre.name }}{% if not forloop.last %} , {% endif %}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function (){
+
+            let image = $(".movie-thumbnail");
+
+            image.hover(function (){
+                let id = $(this).data("movie-id")
+                let detail = $("#detail-"+id)
+                detail.attr("class", "movie-detail")
+
+                detail.mouseleave(function (){
+                    detail.attr("class", "movie-detail-hidden")
+                });
+            });
+        });
+    </script>
+{% endblock %}
