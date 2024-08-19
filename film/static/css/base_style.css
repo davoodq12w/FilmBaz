@@ -636,8 +636,8 @@ a{
     }
 }
 .login-container{
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    margin: 0 auto;
 }
 .login-cover{
     width: 100%;
@@ -677,7 +677,8 @@ a{
             box-shadow: 0 0 5px #ff9f29;
         }
         color: #F5F7F8;
-        text-align: right;
+        text-align: center;
+        padding: 0 10px;
     }
     & .login-submit{
         background-color: #ff9f29;
@@ -713,10 +714,11 @@ a{
     }
 }
 .create-user-container{
-    position: absolute;
-    right: 580px;
-    top: 70px;
-    z-index: 1000;
+    width: 90%;
+    margin: 0 auto;
+}
+.create-user-form{
+    margin: 0 auto;
     background-color: #000000;
     width: 25%;
     text-align: center;
@@ -740,7 +742,8 @@ a{
             box-shadow: 0 0 5px #ff9f29;
         }
         color: #F5F7F8;
-        text-align: right;
+        text-align: center;
+        padding: 0 10px;
     }
     & .create-user-submit{
         background-color: #ff9f29;
@@ -757,7 +760,7 @@ a{
     margin: 100px auto;
     width: 50%;
     height: 40vh;
-    border: 1px solid #2fa175;
+    border: 1px solid #ff9f29;
     border-radius: 8px;
     display: flex;
     background-color: #111111;
@@ -768,7 +771,7 @@ a{
     border-radius: 7px;
     width: 30%;
     height: 100%;
-    background-image: linear-gradient(#3A6351, #2fa175);
+    background-image: linear-gradient(#f4b514, #ff9f29);
     & .profile-image{
         width: 150px;
         border-radius: 100%;
@@ -780,7 +783,9 @@ a{
         gap: 10px;
         width: 100%;
         align-items: center;
+        margin: 10px auto;
         & svg{
+            color: black;
             margin-top: 5px;
             width: 20px;
             height: 100%;
@@ -790,12 +795,28 @@ a{
             }
         }
     }
+    & .profile-change-password{
+        display: block;
+        color: #ff9f29;
+        background-color:#111111;
+        width: 40%;
+        text-align: center;
+        height: 30px;
+        border-radius: 6px;
+        line-height: 25px;
+        margin: 0 auto;
+        font-size: 14px;
+        transition: all 200ms ease;
+        &:hover{
+            font-size: 15px;
+        }
+    }
 }
 .profile-detail{
     width: 70%;
-    color: #2fa175;
+    color: #f4b514;
     & hr{
-        border: #2fa175 1px solid;
+        border: #f4b514 1px solid;
         width: 90%;
     }
     & .profile-information{
@@ -826,8 +847,101 @@ a{
             display: block;
             transition: all 200ms ease;
             &:hover{
-                color: #3A6351;
+                color: #98620f;
             }
         }
     }
+}
+.edit-user-form{
+    background-color:#000000;
+    position: relative;
+    text-align: center;
+    width: 25%;
+    margin: 0 auto;
+    height: 72vh;
+    border: 1px solid #ff9f29;
+    border-radius: 8px;
+    box-shadow: #ff9f29 0 0 10px;
+    padding: 30px;
+    & label{
+        display: block;
+        text-align: center;
+    }
+    & input{
+        padding: 0 10px;
+        width: 100%;
+        height: 30px;
+        border: 1px solid #ff9f29;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.13);
+        &:focus-visible{
+            outline: none;
+            box-shadow: 0 0 5px #ff9f29;
+        }
+        color: #F5F7F8;
+        text-align: center;
+    }
+    & .edit-user-submit{
+        background-color: #ff9f29;
+        color: black;
+        text-align: center;
+        transition: all 200ms ease;
+        &:hover{
+            box-shadow: 0 0 5px #000000 inset;
+        }
+    }
+    & .edit-user-image{
+        opacity: 0;
+        display: block;
+    }
+    & .edit-user-image-file{
+        width: 100px;
+        height: 100px;
+        border-radius: 100%;
+        object-fit: cover;
+    }
+    & .edit-user-image-upload{
+        position: absolute;
+        width: 82%;
+        height: 30px;
+        top: 153px;
+        right: 30px;
+        border: #ff9f29 1px solid;
+        border-radius: 5px;
+        box-shadow:0 0 30px black inset;
+        background-color: #ff9f29;
+        color: black;
+        text-align: center;
+    }
+    & .edit-user-cancel{
+        margin-top: 10px;
+        display: block;
+        border: #ff9f29 1px solid;
+        border-radius: 5px;
+        box-shadow:0 0 30px black inset;
+        background-color: #ff9f29;
+        color: black;
+        text-align: center;
+    }
+}
+.bg-image{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    z-index: -1000;
+}
+.bg-cover{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    z-index: -900;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    box-shadow:0 0 200px black inset;
 }

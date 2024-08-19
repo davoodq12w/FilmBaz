@@ -1,0 +1,34 @@
+{% extends "parents/base.html"%}
+{% load static %}
+{% block title %}Edit User{% endblock %}
+{% block body %}
+    <h1 style="color:#F5F7F8; text-align: center">Edit Profile</h1>
+    <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
+    <div class="bg-cover"></div>
+	<form method="post" style="color:#F5F7F8;" class="edit-user-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <img src="{{ user.image.url }}" alt="{{ user.username }} image" class="edit-user-image-file">
+        <button class="edit-user-image-upload">انتخاب عکس جدید</button>
+        {{ form.as_p }}
+        <input type="submit" value="ویرایش" class="edit-user-submit">
+        <a href="{% url 'account:profile' user.id user.username %}" class="edit-user-cancel"> انصراف </a>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function(){
+            let imageInput = $('.edit-user-image');
+
+            imageInput.change(function (event) {
+                let files = event.target.files
+                let reader = new FileReader();
+                reader.onload = function(e){
+                   $('.edit-user-image-file').attr("src", e.target.result)
+                }
+                reader.readAsDataURL(files[0]);
+            });
+        });
+    </script>
+{% endblock %}

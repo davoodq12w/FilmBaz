@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import FormView, DetailView
+from django.views.generic import FormView, DetailView, UpdateView
 from .forms import *
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
@@ -40,3 +40,26 @@ class UserProfile(DetailView):
     slug_field = "username"
     model = FilmBazUser
     context_object_name = "user"
+
+
+class EditUser(UpdateView):
+    model = FilmBazUser
+    template_name = "authentication/edit_user.html"
+    form_class = EditUserForm
+    slug_field = "username"
+
+    def get_success_url(self):
+        username = self.request.user.username
+        pk = self.request.user.pk
+        return reverse_lazy("account:profile", kwargs={"pk": pk, "username": username})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            user = FilmBazUser.objects.get(id=self.request.user.id)
+        except Exception as e:
+            raise ValueError(f"error: {e}")
+
+        context["user"] = user
+        return context
+

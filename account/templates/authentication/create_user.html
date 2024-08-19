@@ -1,6 +1,6 @@
 {% load static %}
 <!doctype html>
-<html lang="fa" dir="rtl" style="background-image:url({% static 'image/100-covers.png' %});">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -10,9 +10,11 @@
     <link rel="shortcut icon" href="{% static 'image/icon.png' %}" type="image/x-icon">
     <title>Film Baz | Create User</title>
 </head>
-<body style="width: 100vw; height: 100vh; position: relative; margin: 0">
-
+<body>
     <div class="create-user-container">
+        <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
+        <div class="bg-cover"></div>
+        <h1 style="color: #F5F7F8; text-align: center;">ساخت کاربر</h1>
         <form method="post" class="create-user-form">
             <a href="{% url 'film:movies_list' %}" class="form-logo-FilmBaz"><img src="{% static 'image/FilmBaz.png' %}" alt="FilmBaz"></a>
             {% csrf_token %}
@@ -20,9 +22,6 @@
             <input type="submit" value="ساخت" class="create-user-submit">
             <p class="login-create-account">حساب کاربری داری؟ <a href="{% url 'account:login' %}">ورود به حساب</a></p>
         </form>
-    </div>
-    <div class="login-cover">
-
     </div>
 </body>
 </html>
