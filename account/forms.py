@@ -152,7 +152,7 @@ class EditUserForm(forms.ModelForm):
     def clean_email(self):
 
         email = self.cleaned_data.get("email")
-        is_valid = re.findall(r"^(?:[\w.]+@)(?:\w+)\.(?:[a-zA-z]{2,3})$", email)
+        is_valid = re.findall(r"^(?:[\w.]+@)(?:\w+)\.(?:[a-zA-Z]{2,3})$", email)
 
         if not is_valid:
             raise forms.ValidationError("ایمیل درست نوشته نشده است")

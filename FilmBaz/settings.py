@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "account.apps.AccountConfig",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "film.apps.FilmConfig",
-    "account.apps.AccountConfig",
     "django_cleanup",
     "django_resized",
 ]
@@ -159,3 +159,22 @@ AUTH_USER_MODEL = 'account.FilmBazUser'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = reverse_lazy("account:login")
+
+
+# ================================================================
+#                       for sending email
+# ================================================================
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'davodrashiworking@gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = 'kaemihmvchwijyyx'
+# send for email⬇️
+# ----------------------------------------------------------------
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# ----------------------------------------------------------------
+# show in console⬇️
+# ----------------------------------------------------------------
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# ----------------------------------------------------------------
+

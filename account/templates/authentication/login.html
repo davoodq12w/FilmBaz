@@ -21,6 +21,7 @@
             {{ form.as_p }}
             <input type="submit" value="ورود" class="login-submit">
             <p class="login-create-account">حساب کاربری نداری؟ <a href="{% url 'account:create_user' %}" class="login-create-account">ساخت یوزر</a></p>
+            <p class="login-create-account">رمز خود را فراموش کرده اید؟<a href="{% url 'account:password_reset' %}" class="login-create-account">بازیابی رمز</a></p>
         </form>
     </div>
 </body>

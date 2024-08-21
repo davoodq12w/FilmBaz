@@ -1,13 +1,51 @@
 {% extends "parents/base.html" %}
 {% block title %}Search Results{% endblock %}
 {% block body %}
-    <h2 style="color:#F5F7F8;"> نتایج جستجو بر اساس " {{ query }} " : </h2>
-    {% for movie in movie_result %}
-        <div class="search-movie">
-            <img src="{{ movie.thumbnail.url }}" alt="{{ movie.english_title }}">
-        </div>
-    {% empty %}
-        <p style="color: #F5F7F8">نتیجه ای یافت نشد!</p>
-    {% endfor %}
+    <h2 class="search-result-page-title"> نتایج جستجو بر اساس " {{ query }} " </h2>
+    <div class="search-result-body">
+        {% for movie in movie_result %}
+            <div class="search-movie">
+                <a href="{% url 'film:movies_detail' movie.id movie.slug %}"><img src="{{ movie.thumbnail.url }}" alt="{{ movie.english_title }}" class="search-result-thumbnail"></a>
+                <div class="search-result-movie-detail">
+                    <h3>{{ movie.title }}</h3>
+                    <h4>{{ movie.english_title }}</h4>
+                    <div class="search-result-rate">
+                        <span>10 / </span>
+                        <span class="search-result-rate-number"> {{ movie.rate }} </span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="search-result-star">
+                            <path fill-rule="evenodd"
+                                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <p><span>سال ساخت :  </span><span> {{ movie.year }} </span></p>
+                    <div class="search-result-genres">
+                        <div class="genres">
+                            {% for genre in movie.genres.all %}
+                                <p class="search-result-genre">{{ genre.name }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
 
+                <div class="search-result-description">
+                    {{ movie.description | truncatewords:40}}
+                </div>
+
+                <div class="search-result-casts">
+                    {% for cast in movie.casts.all %}
+                        <div class="search-result-cast">
+                            <img src="{{ cast.image.url }}" alt="{{ cast.slug }}" class="search-result-cast-image">
+                            <p class="search-result-cast-name">{{ cast.name }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% if not forloop.last %}
+                <hr>
+            {% endif %}
+        {% empty %}
+            <p style="color: #F5F7F8">نتیجه ای یافت نشد!</p>
+        {% endfor %}
+    </div>
 {% endblock %}
