@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from .models import FilmBazUser
+from .models import FilmBazUser, Ticket
 import re
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -161,3 +161,9 @@ class EditUserForm(forms.ModelForm):
             raise forms.ValidationError("ایمیل از قبل وجود دارد")
 
         return email
+
+
+class TicketForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = ["subject", "text",]

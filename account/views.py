@@ -5,6 +5,7 @@ from .forms import *
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -63,3 +64,34 @@ class EditUser(UpdateView):
         context["user"] = user
         return context
 
+
+class TicketView(FormView):
+    form_class = TicketForm
+
+    def get_success_url(self):
+        user = self.request.user
+        return reverse_lazy("account:profile", kwargs={"pk": user.id, "username": user.username})
+
+    def _set_args(self, form):
+        ticket = form.save(commit=False)
+        try:
+            ticket.phone = self.request.user.phone
+            ticket.email = self.request.user.email
+        except Exception as e:
+            raise ModuleNotFoundError(f"error: {e}")
+        ticket.save()
+        self._send_confirm_email()
+
+    def _send_confirm_email(self):
+        message = f" عزیز از بازخورد شما ممنونیم{self.request.user.username} \n\n \n با تشکر , فیمباز "
+        send_mail(
+            subject="ارسال تیکت موفقیت آمیز بود",
+            message=message,
+            from_email="davodrashiworking@gmail.com",
+            recipient_list=[self.request.user.email],
+            fail_silently=False,
+        )
+
+    def form_valid(self, form):
+        self._set_args(form)
+        return super().form_valid(form)

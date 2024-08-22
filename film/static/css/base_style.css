@@ -842,6 +842,7 @@ a{
         align-items: center;
         padding: 10px 30px;
         & a{
+            color: #ff9f29;
             text-align: center;
             width: 50%;
             display: block;
@@ -1060,6 +1061,111 @@ a{
         & img{
             width: 35px;
             border-radius: 3px;
+        }
+    }
+}
+.profile-ticket-form-hidden{
+    visibility: hidden;
+    position: absolute;
+    width: 300px;
+    height: 40vh;
+    top: 286px;
+    left: 130px;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 200ms ease;
+}
+.profile-ticket-form{
+    visibility: visible;
+    position: absolute;
+    width: 300px;
+    height: 40vh;
+    background-color: #111111;
+    top: 286px;
+    left: 100px;
+    border:1px solid #ff9f29;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 200ms ease;
+}
+.ticket-form{
+    transition: all 200ms ease;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    & #id_subject{
+        display: block;
+        width: 90%;
+        margin: 10px auto;
+        height: 30px;
+        background-color: rgba(40, 31, 12, 0.32);
+        border: 1px solid #ff9f29;
+        border-radius: 5px;
+        color: #F5F7F8;
+        text-align: center;
+        transition: all 200ms ease;
+        & option{
+            background-color: rgb(63, 63, 63);
+            border-radius: 5px;
+            border: 2px solid #ff9f29;
+        }
+        &:focus-visible{
+            outline: none;
+            box-shadow: 0 0 5px #ff9f29;
+        }
+    }
+    & #id_text{
+        display: block;
+        width: 90%;
+        margin: 10px auto;
+        height: 140px;
+        resize: none;
+        background-color: rgba(40, 31, 12, 0.32);
+        border: 1px solid #ff9f29;
+        border-radius: 5px;
+        color: #F5F7F8;
+        transition: all 200ms ease;
+        font-size: 11px;
+        padding: 10px;
+        &:focus-visible{
+            outline: none;
+            box-shadow: 0 0 5px #ff9f29;
+        }
+    }
+}
+.ticket-form-buttons{
+    display: flex;
+    gap: 5px;
+    width: 90%;
+    margin: 5px auto;
+    align-items: center;
+    height: 30px;
+    & .ticket-form-submit{
+        height: 100%;
+        width: 50%;
+        color: black;
+        background-color: #ff9f29;
+        border-radius: 5px;
+        text-align: center;
+        border: none;
+        transition: all 200ms ease;
+        &:hover{
+            background-color: #915f1d;
+            font-size: 15px;
+        }
+    }
+    & .ticket-form-cancel{
+        width: 50%;
+        height: 100%;
+        color: #ff9f29;
+        background-color: #111111;
+        border-radius: 5px;
+        text-align: center;
+        border: 1px solid #ff9f29;
+        transition: all 200ms ease;
+        &:hover{
+            background-color: #3d2f1b;
+            font-size: 15px;
         }
     }
 }

@@ -49,3 +49,17 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class Ticket(models.Model):
+
+    class Subject(models.TextChoices):
+        CRITICISM = 'Criticism', 'انتقاد'
+        PROPOSAL = 'Proposal', 'پیشنهاد'
+        REPORT = 'Report', ' گزارش'
+
+    subject = models.CharField(choices=Subject.choices)
+    text = models.TextField(max_length=2000)
+    phone = models.CharField(max_length=11)
+    email = models.EmailField(max_length=50)
+

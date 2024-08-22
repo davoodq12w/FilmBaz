@@ -26,3 +26,8 @@ class FilmBazUserAdmin(UserAdmin):
         ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),
         ("Date Datas", {"fields": ("last_login",)}),
     )
+
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ["subject", "text", "phone"]
