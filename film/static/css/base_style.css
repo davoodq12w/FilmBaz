@@ -946,7 +946,7 @@ a{
     backdrop-filter: blur(8px);
     box-shadow:0 0 200px black inset;
 }
-.search-result-page-title{
+.search-result-page-title , .saves-page-title{
     min-width:400px;
     text-align: center;
     color: black;
@@ -1169,3 +1169,94 @@ a{
         }
     }
 }
+.detail-share-box-hidden{
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 80px;
+    width: 180px;
+    border-radius: 8px;
+    transition: all 200ms ease;
+}
+.detail-share-box{
+    transition: all 200ms ease;
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 100px;
+    width: 180px;
+    height: 250px;
+    backdrop-filter: blur(20px);
+    background-color: rgba(0, 0, 0, 0.38);
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #ff9f29;
+    box-shadow: 0 0 5px #ff9f29;
+    & div{
+        height: 40px;
+        justify-content: space-between;
+        display: flex;
+        width: 100%;
+        margin: 5px auto;
+        & a{
+            display: block;
+            width: 100%;
+            text-align: right;
+            color: #ff9f29;
+            &:hover{
+                color: #50320d;
+            }
+        }
+    }
+}
+.saves-body{
+    width: 90%;
+    border: 1px solid #ff9f29;
+    border-radius: 8px;
+    margin: 40px auto;
+    display: flex;
+    box-shadow: 0 0 10px #ff9f29;
+    padding:50px 30px 0;
+    flex-wrap: wrap;
+    gap: 1.2%;
+}
+.saves-movie{
+    color: #F5F7F8;
+    width: 19%;
+    position: relative;
+    margin-bottom: 10px;
+    & .saves-thumbnail{
+        width: 100%;
+        box-shadow: 0 0 5px #ff9f29;
+        border-radius: 5px;
+    }
+}
+.saves-title-remove{
+    height: 50%;
+    position: absolute;
+    display: flex;
+    width: 100%;
+    border-radius: 5px;
+    bottom: 6px;
+    color: #F5F7F8;
+    padding: 40% 20px 0 ;
+    justify-content: space-between;
+    align-items: center;
+    background-image: linear-gradient(#F5F7F800, rgba(0, 0, 0, 0.76), #000000);
+    & .saves-title{
+        transition: all 200ms ease;
+        color: #F5F7F8;
+        font-size: 13px;
+        max-width: 80%;
+        &:hover{
+            color: #918f8f;
+        }
+    }
+    & .saves-remove{
+        padding-top: 5px;
+        & svg{
+            width: 20px;
+        }
+    }
+}
+

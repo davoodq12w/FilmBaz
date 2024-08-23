@@ -37,6 +37,8 @@ class Movie(models.Model):
     year = models.CharField(max_length=4)
     country = models.CharField(max_length=200)
     # ----------------------------------------------------------------
+    users_saved = models.ManyToManyField(FilmBazUser, related_name="saves")
+    # ----------------------------------------------------------------
     is_dubbed = models.BooleanField(default=False)
     # ----------------------------------------------------------------
     genres = models.ManyToManyField(Genre, related_name="movies")

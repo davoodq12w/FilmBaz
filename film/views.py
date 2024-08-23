@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
-from django.urls import reverse_lazy
-
+from django.http import JsonResponse
 from .models import *
 from django.views.generic import ListView, DetailView, View
 from django.contrib.postgres.search import TrigramSimilarity
@@ -97,3 +96,37 @@ class SearchMovie(View):
     def http_method_not_allowed(self, request, *args, **kwargs):
         super().http_method_not_allowed(request, *args, **kwargs)
         return render(request, "partials/not_allowed.html")
+
+
+@method_decorator(login_required(), name="dispatch")
+class SaveMovieView(View):
+    http_method_names = ["post"]
+
+    def post(self, request):
+        slug = request.POST.get('slug')
+        pk = request.POST.get("pk")
+        user = request.user
+        try:
+            movie = Movie.objects.get(pk=pk, slug=slug)
+        except Exception as e:
+            raise ModuleNotFoundError(f"error: {e}")
+
+        try:
+            if movie in user.saves.all():
+                user.saves.remove(movie)
+                is_save = False
+            else:
+                user.saves.add(movie)
+                is_save = True
+        except Exception as e:
+            raise ValueError(f"error {e}")
+
+        return JsonResponse({"is_save": is_save})
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        super().http_method_not_allowed(request, *args, **kwargs)
+        return render(request, "partials/not_allowed.html")
+
+
+def page_not_found(request, exception):
+    return render(request, "partials/not_allowed.html", status=404)

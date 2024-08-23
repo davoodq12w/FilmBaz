@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import FormView, DetailView, UpdateView
+from django.views.generic import FormView, UpdateView, ListView, View
 from .forms import *
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
@@ -36,23 +36,28 @@ class CreateUser(FormView):
 
 
 @method_decorator(login_required(), name="dispatch")
-class UserProfile(DetailView):
-    template_name = "account/profile.html"
-    slug_field = "username"
-    model = FilmBazUser
-    context_object_name = "user"
+class UserProfile(View):
+    http_method_names = ["get"]
+
+    def get(self, request):
+        user = request.user
+        return render(request, "account/profile.html", {'user': user})
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        super().http_method_not_allowed(request, *args, **kwargs)
+        return render(request, "partials/not_allowed.html")
 
 
+@method_decorator(login_required(), name="dispatch")
 class EditUser(UpdateView):
-    model = FilmBazUser
     template_name = "authentication/edit_user.html"
     form_class = EditUserForm
-    slug_field = "username"
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
     def get_success_url(self):
-        username = self.request.user.username
-        pk = self.request.user.pk
-        return reverse_lazy("account:profile", kwargs={"pk": pk, "username": username})
+        return reverse_lazy("account:profile")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -65,12 +70,13 @@ class EditUser(UpdateView):
         return context
 
 
+@method_decorator(login_required(), name="dispatch")
 class TicketView(FormView):
+    # template_name = "account/profile.html"
     form_class = TicketForm
 
     def get_success_url(self):
-        user = self.request.user
-        return reverse_lazy("account:profile", kwargs={"pk": user.id, "username": user.username})
+        return reverse_lazy("account:profile")
 
     def _set_args(self, form):
         ticket = form.save(commit=False)
@@ -95,3 +101,14 @@ class TicketView(FormView):
     def form_valid(self, form):
         self._set_args(form)
         return super().form_valid(form)
+
+
+@method_decorator(login_required(), name="dispatch")
+class UserSavesList(ListView):
+    template_name = "account/saves.html"
+    context_object_name = "movies"
+    allow_empty = True
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.saves.all()

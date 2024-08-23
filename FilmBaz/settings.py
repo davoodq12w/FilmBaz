@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "film.apps.FilmConfig",
     "django_cleanup",
     "django_resized",
+    "django_social_share"
 ]
 
 MIDDLEWARE = [
@@ -177,4 +178,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # ----------------------------------------------------------------
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # ----------------------------------------------------------------
-
