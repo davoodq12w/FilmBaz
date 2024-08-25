@@ -58,7 +58,7 @@ class Ticket(models.Model):
         PROPOSAL = 'Proposal', 'پیشنهاد'
         REPORT = 'Report', ' گزارش'
 
-    subject = models.CharField(choices=Subject.choices)
+    subject = models.CharField(choices=Subject.choices, max_length=9)
     text = models.TextField(max_length=2000)
     phone = models.CharField(max_length=11)
     email = models.EmailField(max_length=50)
