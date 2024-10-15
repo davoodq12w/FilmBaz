@@ -27,8 +27,8 @@ class FilmBazUserManager(BaseUserManager):
 
 class FilmBazUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=200, unique=True)
-    phone = models.CharField(max_length=11)
-    email = models.CharField(max_length=200)
+    phone = models.CharField(max_length=11, unique=True)
+    email = models.CharField(max_length=200, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     image = ResizedImageField(upload_to="profile_images/", quality=100, crop=["middle", "center"], size=[500, 500])
 
