@@ -7,7 +7,11 @@
     <div class="bg-cover"></div>
     <div class="profile-body">
         <div class="profile-image-name">
-            <img src="{{ user.image.url }}" alt="{{ user.username }} image" class="profile-image">
+            {% if user.image %}
+                <img src="{{ user.image.url }}" alt="{{ user.username }} image" class="profile-image">
+            {% else %}
+                <img src="{% static 'image/user-icon.png' %}" alt="default-user-icon" class="profile-image">
+            {% endif %}
             <h3 class="profile-name">
                 <a href="{% url 'account:edit_user' user.id user.username %}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -28,7 +32,11 @@
                 </div>
                 <div>
                     <span>ایمیل: </span>
-                    <p>{{ user.email }}</p>
+                    {% if user.email %}
+                        <p>{{ user.email }}</p>
+                    {% else %}
+                        <p><a href="{% url 'account:edit_user' user.id user.username%}">ایمیل خود را وارد کنید!</a></p>
+                    {% endif %}
                 </div>
             </div>
             <hr>

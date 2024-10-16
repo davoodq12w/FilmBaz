@@ -7,7 +7,11 @@
     <div class="bg-cover"></div>
 	<form method="post" style="color:#F5F7F8;" class="edit-user-form" enctype="multipart/form-data">
         {% csrf_token %}
-        <img src="{{ user.image.url }}" alt="{{ user.username }} image" class="edit-user-image-file">
+        {% if user.image %}
+            <img src="{{ user.image.url }}" alt="{{ user.username }} image" class="edit-user-image-file">
+        {% else %}
+            <img src="{% static 'image/user-icon.png' %}" alt="default-user-icon" class="edit-user-image-file">
+        {% endif %}
         <button class="edit-user-image-upload">انتخاب عکس جدید</button>
         {{ form.as_p }}
         <input type="submit" value="ویرایش" class="edit-user-submit">
