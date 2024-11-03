@@ -70,12 +70,9 @@ class CreateUserForm(forms.ModelForm):
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
 
-        if self.instance.pk:
-            if FilmBazUser.objects.filter(phone=phone).exists():
-                raise forms.ValidationError('شماره تلفن درحال حاضر موجود میباشد')
-        else:
-            if FilmBazUser.objects.filter(phone=phone).exists():
-                raise forms.ValidationError('شماره تلفن درحال حاضر موجود میباشد')
+
+        if FilmBazUser.objects.filter(phone=phone).exists():
+            raise forms.ValidationError('شماره تلفن درحال حاضر موجود میباشد')
 
         if not phone.isdigit():
             raise forms.ValidationError('شماره تلفن باید فقط عدد باشد')
@@ -103,6 +100,11 @@ class CreateUserForm(forms.ModelForm):
 
 
 class EditUserForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["image"].required = False
+
     class Meta:
         model = FilmBazUser
         fields = ["image", "username", "phone", "email"]
@@ -113,7 +115,7 @@ class EditUserForm(forms.ModelForm):
             "image": "",
         }
         widgets = {
-            "image": forms.FileInput(attrs={"class": "edit-user-image"})
+            "image": forms.FileInput(attrs={"class": "edit-user-image"},)
         }
 
     def clean_username(self):

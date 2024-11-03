@@ -23,7 +23,8 @@ from django.conf.urls import handler404
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('film.urls', namespace="film")),
-    path('account/', include('account.urls', namespace="account"))
+    path('account/', include('account.urls', namespace="account")),
+    path("api-auth/", include('rest_framework.urls'))
 ]
 # ================================================================
 #                       for media save

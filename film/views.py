@@ -15,7 +15,6 @@ class MoviesList(ListView):
     context_object_name = "movies"
     allow_empty = True
 
-
 class MovieDetail(DetailView):
     template_name = "film/movie_detail.html"
     context_object_name = "movie"

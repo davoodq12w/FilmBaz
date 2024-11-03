@@ -30,7 +30,7 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=11, unique=True)
     email = models.CharField(max_length=200, unique=True)
     created = models.DateTimeField(auto_now_add=True)
-    image = ResizedImageField(upload_to="profile_images/", quality=100, crop=["middle", "center"], size=[500, 500])
+    image = ResizedImageField(upload_to="profile_images/%Y/%m/%d", quality=100, crop=["middle", "center"], size=[500, 500],null=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
