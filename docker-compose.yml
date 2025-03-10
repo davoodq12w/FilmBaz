@@ -1,0 +1,20 @@
+services:
+  filmbaz:
+    build: .
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn FilmBaz.wsgi:application --bind 0.0.0.0:8000"
+    container_name: FilmBaz
+    volumes:
+      - ./media:/app/media
+      - ./static:/app/static
+    networks:
+      - main
+    ports:
+      - "8000:8000"
+    restart: always
+
+networks:
+  main:
