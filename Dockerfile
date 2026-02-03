@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:alpaine
 
 LABEL authors="davoodq12w"
 LABEL author_email="davod.q12w@gmail.com"
