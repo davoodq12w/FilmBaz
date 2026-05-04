@@ -1,20 +1,45 @@
 services:
   filmbaz:
-    build: .
-    command: >
-      sh -c "python manage.py makemigrations &&
-             python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             gunicorn FilmBaz.wsgi:application --bind 0.0.0.0:8000"
-    container_name: FilmBaz
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: filmbaz
+    entrypoint: /app/entrypoint.sh
+    expose:
+      - "8000"
+    env_file:
+      - .env
     volumes:
-      - ./media:/app/media
-      - ./static:/app/static
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
     networks:
       - main
+
+  filmbaz_ws:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: FilmBazWS
+    command: >
+      daphne -b 0.0.0.0 -p 8001
+      -v 2
+      --access-log -
+      FilmBaz.asgi:application
     expose:
-      - "8080:8080"
-    restart: always
+      - "8001"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+      - filmbaz
+    networks:
+      - main
 
   nginx:
     container_name: nginx
@@ -29,6 +54,84 @@ services:
     restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+
+  db:
+    image: postgres:15
+    container_name: filmbaz_db
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - main
+
+  redis:
+    image: redis:6.2
+    container_name: redis
+    restart: always
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD}
+    env_file:
+      - .env
+    networks:
+      - main
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    expose:
+      - "5672"
+      - "15672"
+    env_file:
+      - .env
+    networks:
+      - main
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  celery_worker:
+    build: .
+    container_name: celery_worker
+    restart: always
+    command: celery -A FilmBaz worker --loglevel=info --events
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
+      - filmbaz
+      - rabbitmq
+    env_file:
+      - .env
+    networks:
+      - main
+
+volumes:
+  postgres_data:
+  media_volume:
+  static_volume:
+  redis_data:
 
 networks:
   main:

@@ -40,6 +40,7 @@ class Movie(models.Model):
     users_saved = models.ManyToManyField(FilmBazUser, related_name="saves", blank=True)
     # ----------------------------------------------------------------
     is_dubbed = models.BooleanField(default=False)
+    is_serie = models.BooleanField(default=False, null=True, blank=True)
     # ----------------------------------------------------------------
     genres = models.ManyToManyField(Genre, related_name="movies")
     # ----------------------------------------------------------------
@@ -67,6 +68,8 @@ def file_sorter(instance, filename):
 class File(models.Model):
     movie = models.ForeignKey(Movie, related_name="files", on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
+    season = models.PositiveSmallIntegerField(default=1)
+    episode_number = models.PositiveSmallIntegerField(null=True, blank=True, default=0)
     description = models.CharField(max_length=500, blank=True, null=True)
     file = models.FileField(upload_to=file_sorter, validators=[
         FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])

@@ -5,27 +5,26 @@ from django.http import JsonResponse
 from .models import *
 from django.views.generic import ListView, DetailView, View
 from django.contrib.postgres.search import TrigramSimilarity
+from BaseTemplateViews import BaseModelView
 
 
-# Create your views here.
-
-class MoviesList(ListView):
-    template_name = "film/movies_list.html"
+class MoviesList(BaseModelView):
     model = Movie
-    context_object_name = "movies"
-    allow_empty = True
 
-class MovieDetail(DetailView):
-    template_name = "film/movie_detail.html"
-    context_object_name = "movie"
+    def get(self, request, *args, **kwargs):
+        movies = self.get_queryset(request)
+        context = {"movies": movies}
+        return render(request, "film/movies_list.html", context)
+
+
+class MovieDetail(BaseModelView):
     model = Movie
-    slug_field = "slug"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        movie = Movie.objects.get(id=self.kwargs["pk"])
-        context["comments"] = Comment.objects.filter(movie=movie)
-        return context
+    def get(self, request, pk=None, slug=None, *args, **kwargs):
+        movie = self.get_object(pk=pk)
+        comments = self.get_queryset(request, custom_model=Comment).filter(movie=movie, movie__slug=slug)
+        context = {"movie": movie, "comments": comments}
+        return render(request, "film/movie_detail.html", context)
 
 
 @method_decorator(login_required(), name="dispatch")

@@ -52,23 +52,31 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function() {
+        let debounceTimer = null;
+
         $("#search-input").keyup(function (){
             let search_value = $(this).val();
-            let search_results = $("#search-results")
-            if (search_value){
-                search_results.css("display","block")
+            let search_results = $("#search-results");
+
+            clearTimeout(debounceTimer);
+
+            if (!search_value){
+                search_results.css("display","none");
+                return;
+            }
+
+            debounceTimer = setTimeout(function (){
+                search_results.css("display","block");
                 $.ajax({
                     url: "{% url 'film:search' %}",
                     type: "POST",
-                    data:{"csrfmiddlewaretoken": "{{ csrf_token }}", query: search_value},
+                    data: {"csrfmiddlewaretoken": "{{ csrf_token }}", query: search_value},
                     success: function (data){
-                        search_results.text("")
+                        search_results.text("");
                         search_results.append(data);
                     }
                 });
-            }else{
-                search_results.css("display","none")
-            }
+            }, 1000);
         });
 
         $("#logout-button").click(function (){
