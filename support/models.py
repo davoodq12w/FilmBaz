@@ -8,7 +8,7 @@ class SupportSession(models.Model):
     user = models.ForeignKey(
         FilmBazUser,
         on_delete=models.SET_NULL,
-        related_name='support_sessions',
+        related_name='user_support_sessions',
         null=True,
         blank=True,
     )
@@ -43,6 +43,7 @@ class SupportSession(models.Model):
                 name='unique_user_session_per_day'
             )
         ]
+        ordering = ['-created_at']
 
 
 class SupportMessage(models.Model):
@@ -57,3 +58,6 @@ class SupportMessage(models.Model):
     text = models.TextField(max_length=1000)
     is_seen = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

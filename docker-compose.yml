@@ -127,6 +127,26 @@ services:
     networks:
       - main
 
+  celery_beat:
+    build: .
+    container_name: celery_beat
+    restart: always
+    command: celery -A FilmBaz beat --loglevel=info
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
+      - filmbaz
+      - rabbitmq
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: FilmBaz.settings
+    networks:
+      - main
+
 volumes:
   postgres_data:
   media_volume:

@@ -1,7 +1,8 @@
 {% load static %}
 <div class="header">
 
-    <a href="{% url 'film:movies_list' %}" class="film-baz"><img src="{% static 'image/FilmBaz.png' %}" alt="FilmBaz" ></a>
+    <a href="{% url 'film:movies_list' %}" class="film-baz"><img src="{% static 'image/FilmBaz.png' %}"
+                                                                 alt="FilmBaz"></a>
 
 
     <div class="header-buttons">
@@ -13,7 +14,8 @@
 
 
     <form class="search" method="get" action="{% url 'film:search' %}">
-        <input type="text" placeholder="جستجو در فیلمباز ..." name="query" autocomplete="one-time-code" id="search-input">
+        <input type="text" placeholder="جستجو در فیلمباز ..." name="query" autocomplete="one-time-code"
+               id="search-input">
         <input type="submit" hidden>
     </form>
     <div class="inline-search-results" id="search-results"></div>
@@ -21,6 +23,7 @@
     <div style="width: 17%">
 
     </div>
+
 
     {% if request.user.is_authenticated %}
         <div class="user-buttons-logout">
@@ -44,34 +47,33 @@
     {% endif %}
 
 
-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         let debounceTimer = null;
 
-        $("#search-input").keyup(function (){
+        $("#search-input").keyup(function () {
             let search_value = $(this).val();
             let search_results = $("#search-results");
 
             clearTimeout(debounceTimer);
 
-            if (!search_value){
-                search_results.css("display","none");
+            if (!search_value) {
+                search_results.css("display", "none");
                 return;
             }
 
-            debounceTimer = setTimeout(function (){
-                search_results.css("display","block");
+            debounceTimer = setTimeout(function () {
+                search_results.css("display", "block");
                 $.ajax({
                     url: "{% url 'film:search' %}",
                     type: "POST",
                     data: {"csrfmiddlewaretoken": "{{ csrf_token }}", query: search_value},
-                    success: function (data){
+                    success: function (data) {
                         search_results.text("");
                         search_results.append(data);
                     }
@@ -79,13 +81,13 @@
             }, 1000);
         });
 
-        $("#logout-button").click(function (){
-            
+        $("#logout-button").click(function () {
+
             let box = $(".logout-confirm")
-            box.css("display","flex");
+            box.css("display", "flex");
 
             box.mouseleave(function () {
-                $(this).css("display","none");
+                $(this).css("display", "none");
             });
         });
     });

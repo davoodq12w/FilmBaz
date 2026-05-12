@@ -136,26 +136,25 @@ a {
 
         }
 
-        & .movie-detail-hidden {
-            visibility: hidden;
-            font-size: 10px;
-            position: absolute;
-            width: 176px;
-            height: 235px;
-            top: 0;
+        &:hover .movie-detail-hidden {
+            visibility: visible;
+            opacity: 1;
         }
 
-        & .movie-detail {
+        & .movie-detail-hidden {
             font-size: 10px;
-            transition: all 200ms ease;
-            visibility: visible;
             position: absolute;
             width: 176px;
             height: 235px;
+            top: 0;
+            right: 0;
             background-color: rgba(0, 0, 0, 0.78);
             margin: 0;
-            top: 0;
             padding: 20px 10px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 200ms ease;
+
 
             & .movie-rate {
                 margin: 20px 0;
@@ -1434,5 +1433,52 @@ a {
             width: 20px;
         }
     }
+}
+
+.support-button {
+    background-color: #ff9f29;
+    width: 60px;
+    height: 60px;
+    align-items: center;
+    border-radius: 100%;
+    color: #000000;
+    transition: all 200ms ease;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    border: #2a4f3d solid 4px;
+    display: flex;
+    justify-content: space-around;
+
+    & svg {
+        height: 40px;
+        width: 40px;
+    }
+
+    &:hover {
+        background-color: #98620f;
+    }
+}
+
+.support-button.active {
+    background-color: #2a4f3d;
+    border: 2px solid black;
+}
+
+.support-chat-box {
+    width: 400px;
+    height: 550px;
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    border: 2px solid #2a4f3d;
+    position: fixed;
+    top: 100px;
+    left: 30px;
+    z-index: 1;
+    transition: all 200ms ease;
+}
+
+.support-chat-box-hidden {
+    left: -410px;
 }
 

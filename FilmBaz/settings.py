@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+
+from celery.schedules import crontab
 from django.urls import reverse_lazy
 from decouple import config
 
@@ -45,9 +47,11 @@ INSTALLED_APPS = [
     "django_cleanup",
     "django_resized",
     "django_social_share",
+    "django_celery_beat",
     "storages",
     "rest_framework",
     "channels",
+
 ]
 
 MIDDLEWARE = [
@@ -110,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Tehran"
 
 USE_I18N = True
 
@@ -191,3 +195,12 @@ CELERY_ACCEPT_CONTENT = config(
 CELERY_TASK_SERIALIZER = config("CELERY_TASK_SERIALIZER", default="json")
 
 CELERY_TASK_EVENTS = config("CELERY_TASK_EVENTS", cast=bool, default=True)
+
+CELERY_BEAT_SCHEDULE = {
+    "close_support_session_daily": {
+        "task": "support.tasks.close_support_session_daily",
+        "schedule": crontab(hour=0, minute=0),
+    }
+}
+CELERY_TIMEZONE = config("CELERY_TIMEZONE", default="UTC")
+CELERY_ENABLE_UTC = config("CELERY_ENABLE_UTC", cast=bool, default=True)
