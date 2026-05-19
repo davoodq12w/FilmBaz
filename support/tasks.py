@@ -22,6 +22,7 @@ def send_message_to_chat(message_id):
         "message_text": message.text,
         "message_timestamp": message.created_at,
         "message_is_seen": message.is_seen,
+        "is_admin" : message.sender.is_superuser,
     }
 
     data = json.loads(json.dumps(message_data, default=str))

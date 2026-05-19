@@ -58,3 +58,25 @@ class SupportMessageCreateSerializer(serializers.ModelSerializer):
             sender=user,
             **validated_data
         )
+
+
+class SupportSessionSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SupportSession
+        fields = ["username", "id", "status"]
+
+    def get_username(self, obj):
+        return obj.user.username if obj.user else None
+
+
+class SupportMessageSerializer(serializers.ModelSerializer):
+    is_admin = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SupportMessage
+        fields = ["session_id", "sender_id", "id", "text", "created_at", "is_seen", "is_admin"]
+
+    def get_is_admin(self, obj):
+        return obj.sender.is_superuser if obj.sender else None

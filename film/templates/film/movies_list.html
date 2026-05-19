@@ -66,11 +66,7 @@
             </svg>
         </div>
         <div id="support-chat-box" class="support-chat-box support-chat-box-hidden">
-            <div class="support-chat-form">
-                <div class="support-masseges" id="support-messages"></div>
-                <input type="text" id="support-message-input" placeholder="پیام خود را بنویسید...">
-                <button type="button" id="support-send-message">ارسال</button>
-            </div>
+            <div class="support-chats-list" id="support-chats-list"></div>
         </div>
     {% endif %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
@@ -78,21 +74,18 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function () {
+
             let supportSocket = null;
             let supportSessionId = null;
             let isConnecting = false;
+            let userType = null;
 
             $("#support-button").click(function () {
+
                 $("#support-chat-box").toggleClass("support-chat-box-hidden");
                 $(this).toggleClass("active");
 
-                if (supportSocket !== null && supportSocket.readyState === WebSocket.OPEN) {
-                    return;
-                }
-
-                if (isConnecting) {
-                    return;
-                }
+                if (isConnecting) return;
 
                 isConnecting = true;
 
@@ -102,28 +95,117 @@
                     dataType: "json",
 
                     success: function (response) {
+
+                        isConnecting = false;
+
                         if (!response.ok) {
-                            $("#support-messages").append(
-                                `<div class="support-error">خطا در دریافت سشن پشتیبانی.</div>`
-                            );
-                            isConnecting = false;
+                            console.log("error in ajax connection...");
                             return;
                         }
 
-                        supportSessionId = response.support_session_id;
-                        connectSupportWebSocket(supportSessionId);
+                        userType = response.user_type;
+
+                        if (response.user_type === "admin") {
+                            getListOfSupportSessions(response);
+                        } else {
+                            setSupportChatwindow(response);
+                        }
                     },
 
                     error: function () {
-                        $("#support-messages").append(
-                            `<div class="support-error">ارتباط با سرور برقرار نشد.</div>`
-                        );
+                        console.log("error in ajax connection...");
                         isConnecting = false;
                     }
                 });
+
             });
 
+
+            function getListOfSupportSessions(response) {
+
+                if (supportSocket) {
+                    supportSocket.close();
+                    supportSocket = null;
+                }
+
+                $("#support-chat-box").html(
+                    `<div class="support-chats-list" id="support-chats-list"></div>`
+                );
+
+                response.sessions.forEach(function (session) {
+
+                    let item = `
+                <div class="support-session-item" data-id="${session.id}">
+                    <div class="support-username">${escapeHtml(session.username)}</div>
+                    <div class="support-status">${escapeHtml(session.status)}</div>
+                </div>
+            `;
+
+                    $("#support-chats-list").append(item);
+                });
+            }
+
+
+            function setSupportChatwindow(response) {
+
+                if (supportSocket) {
+                    supportSocket.close();
+                    supportSocket = null;
+                }
+
+                let backButton = "";
+
+                if (userType === "admin") {
+                    backButton = `<button id="support-back-button">←</button>`;
+                }
+
+                $("#support-chat-box").html(
+                    `<div class="support-chat-form">
+
+                <div class="support-chat-header">
+                    <span>پشتیبانی آنلاین</span>
+                    ${backButton}
+                </div>
+
+                <div class="support-messages" id="support-messages"></div>
+
+                <div class="support-input-box">
+                    <button type="button" id="support-send-message" class="support-send-message">ارسال</button>
+                    <input type="text" id="support-message-input" class="support-message-input" placeholder="پیام خود را بنویسید...">
+                </div>
+
+            </div>`
+                );
+
+                supportSessionId = response.support_session_id;
+
+                if (response.messages && response.messages.length > 0) {
+
+                    response.messages.forEach(function (message) {
+
+                        const messageType = message.is_admin ? "incoming" : "outgoing";
+
+                        appendMessage(
+                            message.text,
+                            messageType,
+                            message.created_at,
+                            message.is_seen,
+                        );
+                    });
+                }
+
+                scrollMessagesToBottom();
+
+                connectSupportWebSocket(supportSessionId);
+            }
+
+
             function connectSupportWebSocket(sessionId) {
+
+                if (supportSocket && supportSocket.readyState === WebSocket.OPEN) {
+                    supportSocket.close();
+                }
+
                 const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
                 const socketUrl = wsProtocol + "://" + window.location.host + "/ws/support_chat/" + sessionId + "/";
 
@@ -131,58 +213,100 @@
 
                 supportSocket.onopen = function () {
                     console.log("Support WebSocket connected.");
-                    isConnecting = false;
                 };
 
                 supportSocket.onmessage = function (event) {
+
                     const data = JSON.parse(event.data);
 
-                    if (data.type === "connection_established") {
-                        $("#support-messages").append(
-                            `<div class="support-system-message">${data.message}</div>`
-                        );
-                    }
-
                     if (data.type === "support_chat_message") {
-                        console.log(data.message_text)
-                        $("#support-messages").append(
-                            `<div class="support-message">${data.message_text}</div>`
+
+                        const isAdmin = data.is_admin === true || data.is_admin === "true";
+
+                        const messageType = isAdmin ? "incoming" : "outgoing";
+
+                        appendMessage(
+                            data.message_text,
+                            messageType,
+                            data.message_timestamp,
+                            data.message_is_seen
                         );
+
+                        return;
                     }
 
                     if (data.type === "error") {
-                        console.log(data.message)
+                        appendSystemMessage(data.message || "خطایی رخ داده است.");
+                        return;
                     }
 
-                    if (data.type === "validation_error") {
-                        console.log(data.errors);
-                    }
                 };
 
                 supportSocket.onerror = function () {
-                    $("#support-messages").append(
-                        `<div class="support-error">خطا در اتصال WebSocket.</div>`
-                    );
-                    isConnecting = false;
+                    appendSystemMessage("خطا در اتصال WebSocket.");
                 };
 
                 supportSocket.onclose = function () {
                     console.log("Support WebSocket closed.");
-                    isConnecting = false;
                 };
             }
 
-            $("#support-send-message").click(function () {
-                const text = $("#support-message-input").val();
 
-                if (!text.trim()) {
-                    return;
+            $(document).on("click", ".support-session-item", function () {
+
+                let sessionId = $(this).data("id");
+
+                $.ajax({
+                    url: "/support/support_session_4_admin/" + sessionId + "/",
+                    method: "GET",
+                    dataType: "json",
+
+                    success: function (response) {
+
+                        if (!response.ok) {
+                            console.log("error in ajax connection...");
+                            return;
+                        }
+
+                        setSupportChatwindow(response);
+                    }
+                });
+
+            });
+
+
+            $(document).on("click", "#support-back-button", function () {
+
+                if (supportSocket) {
+                    supportSocket.close();
+                    supportSocket = null;
                 }
 
-                if (supportSocket === null || supportSocket.readyState !== WebSocket.OPEN) {
-                    $("#support-messages").append(
-                        `<div class="support-error">اتصال چت هنوز برقرار نشده است.</div>`
-                    );
+                $.ajax({
+                    url: "{% url 'support:get_support_session' %}",
+                    method: "GET",
+                    dataType: "json",
+
+                    success: function (response) {
+
+                        if (response.user_type === "admin") {
+                            getListOfSupportSessions(response);
+                        }
+
+                    }
+                });
+
+            });
+
+
+            $(document).on("click", "#support-send-message", function () {
+
+                const text = $("#support-message-input").val().trim();
+
+                if (!text) return;
+
+                if (!supportSocket || supportSocket.readyState !== WebSocket.OPEN) {
+                    appendSystemMessage("اتصال چت هنوز برقرار نشده است.");
                     return;
                 }
 
@@ -194,6 +318,119 @@
 
                 $("#support-message-input").val("");
             });
+
+
+            function formatMessageTime(timestamp) {
+
+                if (!timestamp) {
+
+                    const now = new Date();
+
+                    return now.getHours().toString().padStart(2, "0") + ":" +
+                        now.getMinutes().toString().padStart(2, "0");
+                }
+
+                const date = new Date(timestamp.replace(" ", "T"));
+
+                if (isNaN(date.getTime())) return timestamp;
+
+                return date.getHours().toString().padStart(2, "0") + ":" +
+                    date.getMinutes().toString().padStart(2, "0");
+            }
+
+
+            function appendMessage(text, type = "incoming", timestamp = null, isSeen = false) {
+
+                const time = formatMessageTime(timestamp);
+                let seenSVG = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M3.5 9.5L6.8 12.5L13.8 5.5" stroke="#000000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `
+
+                if (isSeen) {
+                    seenSVG = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M2.8 9.4L5.6 12.2L11.3 6.2" stroke="#000000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6.8 9.4L9.6 12.2L15.3 6.2" stroke="#000000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+
+                    `
+                }
+
+                if (type === "incoming") {
+                    seenSVG = ``
+                }
+
+                const messageHtml = `
+            <div class="message-row ${type}">
+                <div class="message-bubble">
+                    <div class="message-text">${escapeHtml(text)}</div>
+                    <div class="message-footer-bubble">
+                        <div class="seen-status">${seenSVG}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+
+                </div>
+            </div>
+        `;
+
+                $("#support-messages").append(messageHtml);
+
+                scrollMessagesToBottom();
+            }
+
+
+            function appendSystemMessage(text) {
+
+                const container = $("#support-messages");
+
+                if (!container.length) return;
+
+                const messageHtml = `
+            <div class="message-row system">
+                <div class="message-bubble">
+                    ${escapeHtml(text)}
+                </div>
+            </div>
+        `;
+
+                container.append(messageHtml);
+
+                scrollMessagesToBottom();
+            }
+
+
+            function scrollMessagesToBottom() {
+
+                const messagesBox = document.getElementById("support-messages");
+
+                if (messagesBox) {
+
+                    messagesBox.scrollTo({
+                        top: messagesBox.scrollHeight,
+                        behavior: "smooth"
+                    });
+                }
+            }
+
+
+            function escapeHtml(text) {
+                return $("<div>").text(text).html();
+            }
+
+
+            $(document).on("keydown", "#support-message-input", function (event) {
+
+                if (event.key === "Enter") {
+
+                    event.preventDefault();
+
+                    $("#support-send-message").click();
+                }
+            });
+
         });
+
     </script>
 {% endblock %}

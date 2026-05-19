@@ -22,15 +22,6 @@ class SupportChatConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
-        await self.send(text_data=json.dumps({
-            "type": "connection_established",
-            "message": """
-            به سایت فیلم باز خوش امدید.
-            هر سوالی دارید بفرمایید پشتیبان های ما در اسرع وقت جوابگو خواهند بود.
-            باتشکر
-            """,
-        }))
-
     async def disconnect(self, close_code):
         if hasattr(self, "group_name"):
             await self.channel_layer.group_discard(
@@ -108,4 +99,5 @@ class SupportChatConsumer(AsyncWebsocketConsumer):
             "message_text": event.get("message_text"),
             "message_timestamp": event.get("message_timestamp"),
             "message_is_seen": event.get("message_is_seen"),
+            "is_admin": event.get("is_admin"),
         }))
