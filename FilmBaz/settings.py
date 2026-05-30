@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "account.apps.AccountConfig",
     "film.apps.FilmConfig",
     "support.apps.SupportConfig",
+    "people.apps.PeopleConfig",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

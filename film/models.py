@@ -4,19 +4,34 @@ from django_resized import ResizedImageField
 from account.models import FilmBazUser
 
 
-# Create your models here.
-class Genre(models.Model):
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True)
+class Category(models.Model):
+    fa_name = models.CharField(max_length=200)
+    en_name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=100, unique=True)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['en_name']
         indexes = [
-            models.Index(fields=['name']),
+            models.Index(fields=['en_name']),
         ]
 
     def __str__(self):
-        return self.name
+        return f"{self.en_name}/{self.fa_name}"
+
+
+class Genre(models.Model):
+    fa_name = models.CharField(max_length=200)
+    en_name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
+
+    class Meta:
+        ordering = ['en_name']
+        indexes = [
+            models.Index(fields=['en_name']),
+        ]
+
+    def __str__(self):
+        return f"{self.en_name}/{self.fa_name}"
 
 
 def image_sorter(instance, filename):
@@ -44,10 +59,7 @@ class Movie(models.Model):
     # ----------------------------------------------------------------
     genres = models.ManyToManyField(Genre, related_name="movies")
     # ----------------------------------------------------------------
-    director = models.CharField(max_length=200)
-    producer = models.CharField(max_length=200, blank=True, null=True)
-    composer = models.CharField(max_length=200, blank=True, null=True)
-    editor = models.CharField(max_length=200, blank=True, null=True)
+    category = models.ManyToManyField(Category, related_name="movies")
     # ----------------------------------------------------------------
     created = models.DateField(auto_now_add=True)
 
@@ -59,36 +71,6 @@ class Movie(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.year}"
-
-
-def file_sorter(instance, filename):
-    return f"movies/{instance.movie.year}/{instance.movie.title}/{instance.title}/{filename}"
-
-
-class File(models.Model):
-    movie = models.ForeignKey(Movie, related_name="files", on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    season = models.PositiveSmallIntegerField(default=1)
-    episode_number = models.PositiveSmallIntegerField(null=True, blank=True, default=0)
-    description = models.CharField(max_length=500, blank=True, null=True)
-    file = models.FileField(upload_to=file_sorter, validators=[
-        FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
-
-
-class Cast(models.Model):
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200)
-    movies = models.ManyToManyField(Movie, related_name="casts")
-    image = ResizedImageField(upload_to="casts/", quality=50, crop=["middle", "center"], size=[200, 200])
-
-    class Meta:
-        ordering = ['name']
-        indexes = [
-            models.Index(fields=['name']),
-        ]
-
-    def __str__(self):
-        return self.name
 
 
 class Comment(models.Model):

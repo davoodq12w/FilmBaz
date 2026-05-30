@@ -25,7 +25,9 @@ urlpatterns = [
     path('', include('film.urls', namespace="film")),
     path('account/', include('account.urls', namespace="account")),
     path('support/', include('support.urls', namespace="support")),
-    path("api-auth/", include('rest_framework.urls'))
+    path('people/', include('people.urls', namespace="people")),
+    path("api-auth/", include('rest_framework.urls')),
+
 ]
 # ================================================================
 #                       media and static
