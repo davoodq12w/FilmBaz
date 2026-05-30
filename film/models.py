@@ -1,7 +1,7 @@
-from django.core.validators import FileExtensionValidator
 from django.db import models
 from django_resized import ResizedImageField
 from account.models import FilmBazUser
+from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -35,33 +35,45 @@ class Genre(models.Model):
 
 
 def image_sorter(instance, filename):
-    return f"movies/{instance.year}/{instance.title}/{filename}"
+    year = instance.year or "unknown"
+    title = slugify(instance.title) or "unknown"
+
+    return f"movies/{year}/{title}/{filename}"
 
 
 class Movie(models.Model):
     # ----------------------------------------------------------------
-    thumbnail = ResizedImageField(upload_to=image_sorter, size=[300, 400], crop=["middle", "center"], quality=100)
-    trailer = models.FileField(upload_to=image_sorter, validators=[
-        FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
+    thumbnail = ResizedImageField(upload_to=image_sorter, size=[300, 400], crop=["middle", "center"], quality=100,
+                                  null=True, blank=True)
+    backdrop = ResizedImageField(upload_to=image_sorter, size=[1600, 900], crop=["middle", "center"], quality=100,
+                                 null=True, blank=True)
+    poster_path = models.CharField(max_length=255, null=True, blank=True)
+    backdrop_path = models.CharField(max_length=255, null=True, blank=True)
+    images_downloaded = models.BooleanField(default=False)
     # ----------------------------------------------------------------
     title = models.CharField(max_length=200)
     english_title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
-    description = models.TextField(max_length=2000)
-    rate = models.FloatField(default=5)
-    year = models.CharField(max_length=4)
-    country = models.CharField(max_length=200)
+    description = models.TextField(max_length=2000, null=True, blank=True)
+    tmdb_rate = models.FloatField(default=0)
+    year = models.CharField(max_length=4, null=True, blank=True)
+    country = models.CharField(max_length=200, null=True, blank=True)
+    runtime = models.PositiveSmallIntegerField(null=True, blank=True)
+    tmdb_id = models.PositiveIntegerField(unique=True)
     # ----------------------------------------------------------------
     users_saved = models.ManyToManyField(FilmBazUser, related_name="saves", blank=True)
     # ----------------------------------------------------------------
     is_dubbed = models.BooleanField(default=False)
-    is_serie = models.BooleanField(default=False, null=True, blank=True)
+    is_serie = models.BooleanField(default=False)
+    adults = models.BooleanField(default=False)
+    details_fetched = models.BooleanField(default=False)
     # ----------------------------------------------------------------
     genres = models.ManyToManyField(Genre, related_name="movies")
     # ----------------------------------------------------------------
     category = models.ManyToManyField(Category, related_name="movies")
     # ----------------------------------------------------------------
     created = models.DateField(auto_now_add=True)
+    last_tmdb_sync = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created']
@@ -71,6 +83,32 @@ class Movie(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.year}"
+
+    @property
+    def poster_url(self):
+        if self.thumbnail:
+            return self.thumbnail.url
+
+        if self.poster_path:
+            return (
+                f"https://image.tmdb.org/t/p/w500"
+                f"{self.poster_path}"
+            )
+
+        return None
+
+    @property
+    def backdrop_url(self):
+        if self.backdrop:
+            return self.backdrop.url
+
+        if self.backdrop_path:
+            return (
+                f"https://image.tmdb.org/t/p/original"
+                f"{self.backdrop_path}"
+            )
+
+        return None
 
 
 class Comment(models.Model):
