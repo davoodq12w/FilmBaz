@@ -9,12 +9,12 @@ class CommentInline(admin.TabularInline):
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ['title', 'rate', 'year', ]
+    list_display = ['title', 'tmdb_rate', 'year', ]
     ordering = ['-year', 'title']
-    list_filter = ['year', 'country', 'rate']
+    list_filter = ['year', 'country', 'tmdb_rate']
     search_fields = ['year', 'description', 'title', 'country']
     raw_id_fields = ['genres']
-    date_hierarchy = 'created'
+    date_hierarchy = 'year'
     inlines = [CommentInline]
 
 

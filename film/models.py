@@ -56,7 +56,7 @@ class Movie(models.Model):
     slug = models.SlugField(max_length=200)
     description = models.TextField(max_length=2000, null=True, blank=True)
     tmdb_rate = models.FloatField(default=0)
-    year = models.CharField(max_length=4, null=True, blank=True)
+    year = models.DateField(max_length=4, null=True, blank=True)
     country = models.CharField(max_length=200, null=True, blank=True)
     runtime = models.PositiveSmallIntegerField(null=True, blank=True)
     tmdb_id = models.PositiveIntegerField(unique=True)
