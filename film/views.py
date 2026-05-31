@@ -10,6 +10,8 @@ from BaseTemplateViews import BaseModelView
 
 class MoviesList(BaseModelView):
     model = Movie
+    filter_fields = ['genres', 'category', 'adults', 'is_serie', 'is_dubbed', 'country', 'year']
+    ordering_fields = ['tmdb_rate', 'year']
 
     def get(self, request, *args, **kwargs):
         movies = self.get_queryset(request)
