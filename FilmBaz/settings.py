@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-
+from kombu import Queue
 from celery.schedules import crontab
 from django.urls import reverse_lazy
 from decouple import config
@@ -201,7 +201,15 @@ CELERY_BEAT_SCHEDULE = {
     "close_support_session_daily": {
         "task": "support.tasks.close_support_session_daily",
         "schedule": crontab(hour=0, minute=0),
+        "options": {"queue": "default"},
     }
 }
 CELERY_TIMEZONE = config("CELERY_TIMEZONE", default="UTC")
 CELERY_ENABLE_UTC = config("CELERY_ENABLE_UTC", cast=bool, default=True)
+
+CELERY_TASK_QUEUES = (
+    Queue("support"),
+    Queue("api"),
+    Queue("download"),
+    Queue("default"),
+)

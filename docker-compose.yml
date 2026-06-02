@@ -109,11 +109,48 @@ services:
       timeout: 5s
       retries: 5
 
-  celery_worker:
+  celery_support_worker:
     build: .
-    container_name: celery_worker
+    container_name: celery_support_worker
     restart: always
-    command: celery -A FilmBaz worker --loglevel=info --events
+    command: celery -A FilmBaz worker --loglevel=info --events -Q default,support -n support_worker
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
+      - filmbaz
+      - rabbitmq
+    env_file:
+      - .env
+    networks:
+      - main
+
+  celery_api_worker:
+    build: .
+    container_name: celery_api_worker
+    restart: always
+    command: celery -A FilmBaz worker --loglevel=info --events -Q api -n api_worker
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
+      - filmbaz
+      - rabbitmq
+    env_file:
+      - .env
+    networks:
+      - main
+
+
+  celery_download_worker:
+    build: .
+    container_name: celery_download_worker
+    restart: always
+    command: celery -A FilmBaz worker --loglevel=info --events -Q download -n download_worker
     volumes:
       - .:/app
       - media_volume:/app/media

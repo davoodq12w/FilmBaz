@@ -5,7 +5,7 @@ import json
 from asgiref.sync import async_to_sync
 
 
-@shared_task()
+@shared_task(queue="support")
 def send_message_to_chat(message_id):
     message = SupportMessage.objects.filter(id=message_id).first()
     if not message:
