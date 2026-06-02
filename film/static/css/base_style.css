@@ -126,7 +126,7 @@ a {
         color: #F5F7F8;
         width: 176px;
 
-        & .movie-thumbnail {
+        & .movie-poster {
             width: 176px;
             border-radius: 5px;
         }
@@ -197,6 +197,11 @@ a {
     z-index: -1000;
 }
 
+.detrail-backdrop {
+    width: 100%;
+    height: fit-content;
+}
+
 .detail-trailer-cover {
     width: 100%;
     height: 500px;
@@ -224,7 +229,7 @@ a {
     display: flex;
     align-items: center;
 
-    & .detail-thumbnail {
+    & .detail-poster {
         border-radius: 3px;
     }
 
@@ -1126,7 +1131,7 @@ a {
     margin: 20px auto;
     width: 100%;
 
-    & .search-result-thumbnail {
+    & .search-result-poster {
         width: 200px;
         border-radius: 8px;
         box-shadow: 0 0 10px #ff9f29;

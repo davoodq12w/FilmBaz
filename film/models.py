@@ -35,7 +35,7 @@ class Genre(models.Model):
 
 
 def image_sorter(instance, filename):
-    year = instance.year or "unknown"
+    year = instance.release_date or "unknown"
     title = slugify(instance.title) or "unknown"
 
     return f"movies/{year}/{title}/{filename}"
@@ -43,8 +43,8 @@ def image_sorter(instance, filename):
 
 class Movie(models.Model):
     # ----------------------------------------------------------------
-    thumbnail = ResizedImageField(upload_to=image_sorter, size=[300, 400], crop=["middle", "center"], quality=100,
-                                  null=True, blank=True)
+    poster = ResizedImageField(upload_to=image_sorter, size=[300, 400], crop=["middle", "center"], quality=100,
+                               null=True, blank=True)
     backdrop = ResizedImageField(upload_to=image_sorter, size=[1600, 900], crop=["middle", "center"], quality=100,
                                  null=True, blank=True)
     poster_path = models.CharField(max_length=255, null=True, blank=True)
@@ -52,18 +52,17 @@ class Movie(models.Model):
     images_downloaded = models.BooleanField(default=False)
     # ----------------------------------------------------------------
     title = models.CharField(max_length=200)
-    english_title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
     description = models.TextField(max_length=2000, null=True, blank=True)
+    popularity = models.FloatField(default=0)
     tmdb_rate = models.FloatField(default=0)
-    year = models.DateField(max_length=4, null=True, blank=True)
+    release_date = models.DateField(null=True, blank=True)
     country = models.CharField(max_length=200, null=True, blank=True)
     runtime = models.PositiveSmallIntegerField(null=True, blank=True)
-    tmdb_id = models.PositiveIntegerField(unique=True)
+    tmdb_id = models.PositiveIntegerField(unique=True, db_index=True)
     # ----------------------------------------------------------------
     users_saved = models.ManyToManyField(FilmBazUser, related_name="saves", blank=True)
     # ----------------------------------------------------------------
-    is_dubbed = models.BooleanField(default=False)
     is_serie = models.BooleanField(default=False)
     adults = models.BooleanField(default=False)
     details_fetched = models.BooleanField(default=False)
@@ -91,7 +90,7 @@ class Movie(models.Model):
 
         if self.poster_path:
             return (
-                f"https://image.tmdb.org/t/p/w500"
+                f"https://image.tmdb.org/t/p/original"
                 f"{self.poster_path}"
             )
 
