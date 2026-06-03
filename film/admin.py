@@ -25,14 +25,6 @@ class GenreAdmin(admin.ModelAdmin):
     search_fields = ['fa_name', 'en_name', 'slug']
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['fa_name', 'slug']
-    ordering = ['en_name']
-    search_fields = ['fa_name', 'en_name', 'slug']
-
-
-
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['user', 'movie', 'created', 'text']

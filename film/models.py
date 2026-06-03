@@ -4,21 +4,6 @@ from account.models import FilmBazUser
 from django.utils.text import slugify
 
 
-class Category(models.Model):
-    fa_name = models.CharField(max_length=200)
-    en_name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=100, unique=True)
-
-    class Meta:
-        ordering = ['en_name']
-        indexes = [
-            models.Index(fields=['en_name']),
-        ]
-
-    def __str__(self):
-        return f"{self.en_name}/{self.fa_name}"
-
-
 class Genre(models.Model):
     fa_name = models.CharField(max_length=200)
     en_name = models.CharField(max_length=200)
@@ -64,12 +49,10 @@ class Movie(models.Model):
     users_saved = models.ManyToManyField(FilmBazUser, related_name="saves", blank=True)
     # ----------------------------------------------------------------
     is_serie = models.BooleanField(default=False)
-    adults = models.BooleanField(default=False)
+    adult = models.BooleanField(default=False)
     details_fetched = models.BooleanField(default=False)
     # ----------------------------------------------------------------
     genres = models.ManyToManyField(Genre, related_name="movies")
-    # ----------------------------------------------------------------
-    category = models.ManyToManyField(Category, related_name="movies")
     # ----------------------------------------------------------------
     created = models.DateField(auto_now_add=True)
     last_tmdb_sync = models.DateTimeField(auto_now=True)

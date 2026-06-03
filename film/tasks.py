@@ -10,13 +10,14 @@ tmdb_token = config("TMDB_TOKEN")
 
 @shared_task(queue="api")
 def tmdb_movie_list(
-        genres=None,
+        genre=None,
         cast=None,
         crew=None,
         vote_average_gte=None,
         page=1,
         language="en-US",
         adult=False,
+        country=None,
 ):
     url = "https://api.themoviedb.org/3/discover/movie"
 
@@ -26,13 +27,15 @@ def tmdb_movie_list(
     }
 
     params = {
-        "with_genres": genres,
+        "with_genres": genre,
         "with_cast": cast,
         "with_crew": crew,
         "vote_average.gte": vote_average_gte,
         "language": language,
         "page": page,
         "include_adult": adult,
+        "with_origin_country": country,
+
     }
 
     params = {k: v for k, v in params.items() if v is not None}
