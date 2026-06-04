@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
@@ -11,61 +12,86 @@ from urllib.parse import urlencode
 from django.core.cache import cache
 
 
-class MoviesList(BaseModelView):
-    model = Movie
-    filter_fields = ['genre_id', 'adult', 'is_serie', 'country', 'year']
-    ordering_fields = ['tmdb_rate', 'year']
-    paginate_by = 20
-
-    # /?page=1&genre_id=3&adult=True&year=1999-0-0&country=ES
-
+class HomePageView(BaseModelView):
     def get(self, request, *args, **kwargs):
+        new_movies = Movie.objects.order_by('-release_date')[:10]
+        popular_movies = Movie.objects.order_by('-popularity')[:10]
+        top_movies = Movie.objects.order_by('-tmdb_rate')[:10]
 
-        sorted_params = sorted(request.GET.items())
-        extra = urlencode(sorted_params)
-        cache_key = self.build_cache_key(request, kind="qs", model=Movie, extra=extra)
+        if len(new_movies) < 10:
+            tmdb_movie_list.delay(
+                release_date_gte=datetime.date.today() - datetime.timedelta(days=30 * 6),
+            )
+        if len(popular_movies) < 10:
+            tmdb_movie_list.delay(
+                sorted_by="popularity.asc",
+            )
+        if len(top_movies) < 10:
+            tmdb_movie_list.delay(
+                sorted_by="vote_average.asc",
+            )
 
-        movies = cache.get(cache_key)
-        if movies is not None:
-            if not movies:
-                context = {
-                    "movies": Movie.objects.none(),
-                }
-            else:
-                context = {
-                    "movies": movies
-                }
-            return render(request, "film/movies_list.html", context)
+        context = {
+            "new_movies": new_movies,
+            "popular_movies": popular_movies,
+            "top_movies": top_movies,
+        }
+        return render(request, "film/home_page.html", context)
 
-        else:
-            try:
-                try:
-                    genre_name = Genre.objects.get(id=request.GET.get("genre_id")).en_name
-                except Genre.DoesNotExist:
-                    genre_name = None
-
-                movies = tmdb_movie_list.delay(
-                    page=request.GET.get("page", 1),
-                    genre=genre_name,
-                    adult=request.GET.get("adult", None),
-                    country=request.GET.get("country", None),
-                )
-
-                ids = [movie["id"] for movie in movies]
-                movies = Movie.objects.filter(tmdb_id__in=ids)
-
-                cache.set(cache_key, movies)
-
-                context = {"movies": movies}
-                return render(request, "film/movies_list.html", context)
-
-
-            except:
-                movies = Movie.objects.all()
-                page_obj, pagination = self.paginate_queryset(request, movies)
-                ...
-
-
+#
+# class MoviesList(BaseModelView):
+#     filter_fields = ['genre_id', 'adult', 'is_serie', 'country', 'year']
+#     ordering_fields = ['tmdb_rate', 'year']
+#     paginate_by = 20
+#
+#     # /?page=1&genre_id=3&adult=True&year=1999-0-0&country=ES
+#
+#     def get(self, request, *args, **kwargs):
+#
+#         sorted_params = sorted(request.GET.items())
+#         extra = urlencode(sorted_params)
+#         cache_key = self.build_cache_key(request, kind="qs", model=Movie, extra=extra)
+#
+#         movies = cache.get(cache_key)
+#         if movies is not None:
+#             if not movies:
+#                 context = {
+#                     "movies": Movie.objects.none(),
+#                 }
+#             else:
+#                 context = {
+#                     "movies": movies
+#                 }
+#             return render(request, "film/movies_list.html", context)
+#
+#         else:
+#             try:
+#                 try:
+#                     genre_name = Genre.objects.get(id=request.GET.get("genre_id")).en_name
+#                 except Genre.DoesNotExist:
+#                     genre_name = None
+#
+#                 movies = tmdb_movie_list.delay(
+#                     page=request.GET.get("page", 1),
+#                     genre=genre_name,
+#                     adult=request.GET.get("adult", None),
+#                     country=request.GET.get("country", None),
+#                 )
+#
+#                 ids = [movie["id"] for movie in movies]
+#                 movies = Movie.objects.filter(tmdb_id__in=ids)
+#
+#                 cache.set(cache_key, movies)
+#
+#                 context = {"movies": movies}
+#                 return render(request, "film/movies_list.html", context)
+#
+#
+#             except:
+#                 movies = Movie.objects.all()
+#                 page_obj, pagination = self.paginate_queryset(request, movies)
+#                 ...
+#
 
 class MovieDetail(BaseModelView):
     model = Movie

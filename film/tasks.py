@@ -14,10 +14,12 @@ def tmdb_movie_list(
         cast=None,
         crew=None,
         vote_average_gte=None,
+        release_date_gte=None,
         page=1,
         language="en-US",
         adult=False,
         country=None,
+        sorted_by=None,
 ):
     url = "https://api.themoviedb.org/3/discover/movie"
 
@@ -31,10 +33,12 @@ def tmdb_movie_list(
         "with_cast": cast,
         "with_crew": crew,
         "vote_average.gte": vote_average_gte,
+        "release_date.gte": release_date_gte,
         "language": language,
         "page": page,
         "include_adult": adult,
         "with_origin_country": country,
+        "sort_by": sorted_by,
 
     }
 
