@@ -18,10 +18,14 @@ class HomePageView(BaseModelView):
         popular_movies = Movie.objects.order_by('-popularity')[:10]
         top_movies = Movie.objects.order_by('-tmdb_rate')[:10]
 
+        print("view:1")
+
         if len(new_movies) < 10:
+            print("view:2")
             tmdb_movie_list.delay(
                 release_date_gte=datetime.date.today() - datetime.timedelta(days=30 * 6),
             )
+            print("view:3")
         if len(popular_movies) < 10:
             tmdb_movie_list.delay(
                 sorted_by="popularity.asc",

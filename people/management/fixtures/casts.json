@@ -1,0 +1,662 @@
+[
+  {
+    "fa_name": "تیم رابینز",
+    "en_name": "Tim Robbins",
+    "slug": "tim-robbins"
+  },
+  {
+    "fa_name": "مورگان فریمن",
+    "en_name": "Morgan Freeman",
+    "slug": "morgan-freeman"
+  },
+  {
+    "fa_name": "باب گانتون",
+    "en_name": "Bob Gunton",
+    "slug": "bob-gunton"
+  },
+  {
+    "fa_name": "مارلون براندو",
+    "en_name": "Marlon Brando",
+    "slug": "marlon-brando"
+  },
+  {
+    "fa_name": "آل پاچینو",
+    "en_name": "Al Pacino",
+    "slug": "al-pacino"
+  },
+  {
+    "fa_name": "جیمز کان",
+    "en_name": "James Caan",
+    "slug": "james-caan"
+  },
+  {
+    "fa_name": "هیث لجر",
+    "en_name": "Heath Ledger",
+    "slug": "heath-ledger"
+  },
+  {
+    "fa_name": "آرون اکهارت",
+    "en_name": "Aaron Eckhart",
+    "slug": "aaron-eckhart"
+  },
+  {
+    "fa_name": "رابرت دنیرو",
+    "en_name": "Robert De Niro",
+    "slug": "robert-de-niro"
+  },
+  {
+    "fa_name": "رابرت دووال",
+    "en_name": "Robert Duvall",
+    "slug": "robert-duvall"
+  },
+  {
+    "fa_name": "جان کازال",
+    "en_name": "John Cazale",
+    "slug": "john-cazale"
+  },
+  {
+    "fa_name": "هنری فوندا",
+    "en_name": "Henry Fonda",
+    "slug": "henry-fonda"
+  },
+  {
+    "fa_name": "لی جی کاب",
+    "en_name": "Lee J. Cobb",
+    "slug": "lee-j-cobb"
+  },
+  {
+    "fa_name": "مارتین بالسام",
+    "en_name": "Martin Balsam",
+    "slug": "martin-balsam"
+  },
+  {
+    "fa_name": "الیجا وود",
+    "en_name": "Elijah Wood",
+    "slug": "elijah-wood"
+  },
+  {
+    "fa_name": "ویگو مورتنسن",
+    "en_name": "Viggo Mortensen",
+    "slug": "viggo-mortensen"
+  },
+  {
+    "fa_name": "ایان مک‌کلن",
+    "en_name": "Ian McKellen",
+    "slug": "ian-mckellen"
+  },
+  {
+    "fa_name": "لیام نیسون",
+    "en_name": "Liam Neeson",
+    "slug": "liam-neeson"
+  },
+  {
+    "fa_name": "بن کینگزلی",
+    "en_name": "Ben Kingsley",
+    "slug": "ben-kingsley"
+  },
+  {
+    "fa_name": "رالف فاینس",
+    "en_name": "Ralph Fiennes",
+    "slug": "ralph-fiennes"
+  },
+  {
+    "fa_name": "جان تراولتا",
+    "en_name": "John Travolta",
+    "slug": "john-travolta"
+  },
+  {
+    "fa_name": "ساموئل ال جکسون",
+    "en_name": "Samuel L. Jackson",
+    "slug": "samuel-l-jackson"
+  },
+  {
+    "fa_name": "اوما تورمن",
+    "en_name": "Uma Thurman",
+    "slug": "uma-thurman"
+  },
+  {
+    "fa_name": "کلینت ایستوود",
+    "en_name": "Clint Eastwood",
+    "slug": "clint-eastwood"
+  },
+  {
+    "fa_name": "الی والاک",
+    "en_name": "Eli Wallach",
+    "slug": "eli-wallach"
+  },
+  {
+    "fa_name": "لی ون کلیف",
+    "en_name": "Lee Van Cleef",
+    "slug": "lee-van-cleef"
+  },
+  {
+    "fa_name": "تام هنکس",
+    "en_name": "Tom Hanks",
+    "slug": "tom-hanks"
+  },
+  {
+    "fa_name": "رابین رایت",
+    "en_name": "Robin Wright",
+    "slug": "robin-wright"
+  },
+  {
+    "fa_name": "گری سینایس",
+    "en_name": "Gary Sinise",
+    "slug": "gary-sinise"
+  },
+  {
+    "fa_name": "برد پیت",
+    "en_name": "Brad Pitt",
+    "slug": "brad-pitt"
+  },
+  {
+    "fa_name": "ادوارد نورتون",
+    "en_name": "Edward Norton",
+    "slug": "edward-norton"
+  },
+  {
+    "fa_name": "هلنا بونهام کارتر",
+    "en_name": "Helena Bonham Carter",
+    "slug": "helena-bonham-carter"
+  },
+  {
+    "fa_name": "لئوناردو دی‌کاپریو",
+    "en_name": "Leonardo DiCaprio",
+    "slug": "leonardo-dicaprio"
+  },
+  {
+    "fa_name": "جوزف گوردون لویت",
+    "en_name": "Joseph Gordon-Levitt",
+    "slug": "joseph-gordon-levitt"
+  },
+  {
+    "fa_name": "الیوت پیج",
+    "en_name": "Elliot Page",
+    "slug": "elliot-page"
+  },
+  {
+    "fa_name": "مارک همیل",
+    "en_name": "Mark Hamill",
+    "slug": "mark-hamill"
+  },
+  {
+    "fa_name": "هریسون فورد",
+    "en_name": "Harrison Ford",
+    "slug": "harrison-ford"
+  },
+  {
+    "fa_name": "کری فیشر",
+    "en_name": "Carrie Fisher",
+    "slug": "carrie-fisher"
+  },
+  {
+    "fa_name": "کیانو ریوز",
+    "en_name": "Keanu Reeves",
+    "slug": "keanu-reeves"
+  },
+  {
+    "fa_name": "لارنس فیشبرن",
+    "en_name": "Laurence Fishburne",
+    "slug": "laurence-fishburne"
+  },
+  {
+    "fa_name": "کری-آن ماس",
+    "en_name": "Carrie-Anne Moss",
+    "slug": "carrie-anne-moss"
+  },
+  {
+    "fa_name": "ری لیوتا",
+    "en_name": "Ray Liotta",
+    "slug": "ray-liotta"
+  },
+  {
+    "fa_name": "جو پشی",
+    "en_name": "Joe Pesci",
+    "slug": "joe-pesci"
+  },
+  {
+    "fa_name": "جک نیکلسون",
+    "en_name": "Jack Nicholson",
+    "slug": "jack-nicholson"
+  },
+  {
+    "fa_name": "لوئیز فلچر",
+    "en_name": "Louise Fletcher",
+    "slug": "louise-fletcher"
+  },
+  {
+    "fa_name": "ویل سمپسون",
+    "en_name": "Will Sampson",
+    "slug": "will-sampson"
+  },
+  {
+    "fa_name": "کوین اسپیسی",
+    "en_name": "Kevin Spacey",
+    "slug": "kevin-spacey"
+  },
+  {
+    "fa_name": "توشیرو میفونه",
+    "en_name": "Toshiro Mifune",
+    "slug": "toshiro-mifune"
+  },
+  {
+    "fa_name": "تاکاشی شیمورا",
+    "en_name": "Takashi Shimura",
+    "slug": "takashi-shimura"
+  },
+  {
+    "fa_name": "یوشیو اینابا",
+    "en_name": "Yoshio Inaba",
+    "slug": "yoshio-inaba"
+  },
+  {
+    "fa_name": "متیو مک‌کانهی",
+    "en_name": "Matthew McConaughey",
+    "slug": "matthew-mcconaughey"
+  },
+  {
+    "fa_name": "آن هاتاوی",
+    "en_name": "Anne Hathaway",
+    "slug": "anne-hathaway"
+  },
+  {
+    "fa_name": "جسیکا چستین",
+    "en_name": "Jessica Chastain",
+    "slug": "jessica-chastain"
+  },
+  {
+    "fa_name": "راسل کرو",
+    "en_name": "Russell Crowe",
+    "slug": "russell-crowe"
+  },
+  {
+    "fa_name": "واکین فینیکس",
+    "en_name": "Joaquin Phoenix",
+    "slug": "joaquin-phoenix"
+  },
+  {
+    "fa_name": "کانی نیلسن",
+    "en_name": "Connie Nielsen",
+    "slug": "connie-nielsen"
+  },
+  {
+    "fa_name": "هیو جکمن",
+    "en_name": "Hugh Jackman",
+    "slug": "hugh-jackman"
+  },
+  {
+    "fa_name": "اسکارلت جوهانسون",
+    "en_name": "Scarlett Johansson",
+    "slug": "scarlett-johansson"
+  },
+  {
+    "fa_name": "کریستین بیل",
+    "en_name": "Christian Bale",
+    "slug": "christian-bale"
+  },
+  {
+    "fa_name": "جیم کری",
+    "en_name": "Jim Carrey",
+    "slug": "jim-carrey"
+  },
+  {
+    "fa_name": "کیت وینسلت",
+    "en_name": "Kate Winslet",
+    "slug": "kate-winslet"
+  },
+  {
+    "fa_name": "کرستن دانست",
+    "en_name": "Kirsten Dunst",
+    "slug": "kirsten-dunst"
+  },
+  {
+    "fa_name": "تومو کروز",
+    "en_name": "Tom Cruise",
+    "slug": "tom-cruise"
+  },
+  {
+    "fa_name": "ول کیلمر",
+    "en_name": "Val Kilmer",
+    "slug": "val-kilmer"
+  },
+  {
+    "fa_name": "تام سایزمور",
+    "en_name": "Tom Sizemore",
+    "slug": "tom-sizemore"
+  },
+  {
+    "fa_name": "آدرین برودی",
+    "en_name": "Adrien Brody",
+    "slug": "adrien-brody"
+  },
+  {
+    "fa_name": "توماس کرتشمن",
+    "en_name": "Thomas Kretschmann",
+    "slug": "thomas-kretschmann"
+  },
+  {
+  "fa_name": "فرانک فینلی",
+  "en_name": "Frank Finlay",
+  "slug": "frank-finlay"
+  },
+  {
+  "fa_name": "کلی مک‌گیلیس",
+  "en_name": "Kelly McGillis",
+  "slug": "kelly-mcgillis"
+  },
+  {
+    "fa_name": "مت دیمون",
+    "en_name": "Matt Damon",
+    "slug": "matt-damon"
+  },
+  {
+    "fa_name": "بن افلک",
+    "en_name": "Ben Affleck",
+    "slug": "ben-affleck"
+  },
+  {
+    "fa_name": "رابین ویلیامز",
+    "en_name": "Robin Williams",
+    "slug": "robin-williams"
+  },
+  {
+    "fa_name": "جودی فاستر",
+    "en_name": "Jodie Foster",
+    "slug": "jodie-foster"
+  },
+  {
+    "fa_name": "آنتونی هاپکینز",
+    "en_name": "Anthony Hopkins",
+    "slug": "anthony-hopkins"
+  },
+  {
+    "fa_name": "تد لوین",
+    "en_name": "Ted Levine",
+    "slug": "ted-levine"
+  },
+  {
+    "fa_name": "رایان گاسلینگ",
+    "en_name": "Ryan Gosling",
+    "slug": "ryan-gosling"
+  },
+  {
+    "fa_name": "اما استون",
+    "en_name": "Emma Stone",
+    "slug": "emma-stone"
+  },
+  {
+    "fa_name": "جان لجند",
+    "en_name": "John Legend",
+    "slug": "john-legend"
+  },
+  {
+    "fa_name": "آمیتاب باچان",
+    "en_name": "Amitabh Bachchan",
+    "slug": "amitabh-bachchan"
+  },
+  {
+    "fa_name": "دارمندرا",
+    "en_name": "Dharmendra",
+    "slug": "dharmendra"
+  },
+  {
+    "fa_name": "سانجیو کومار",
+    "en_name": "Sanjeev Kumar",
+    "slug": "sanjeev-kumar"
+  },
+  {
+    "fa_name": "چوی مین سیک",
+    "en_name": "Choi Min-sik",
+    "slug": "choi-min-sik"
+  },
+  {
+    "fa_name": "یو جی ته",
+    "en_name": "Yoo Ji-tae",
+    "slug": "yoo-ji-tae"
+  },
+  {
+    "fa_name": "کانگ هه جونگ",
+    "en_name": "Kang Hye-jung",
+    "slug": "kang-hye-jung"
+  },
+  {
+    "fa_name": "جونا هیل",
+    "en_name": "Jonah Hill",
+    "slug": "jonah-hill"
+  },
+  {
+    "fa_name": "مارگو رابی",
+    "en_name": "Margot Robbie",
+    "slug": "margot-robbie"
+  },
+  {
+    "fa_name": "کیم مین هی",
+    "en_name": "Kim Min-hee",
+    "slug": "kim-min-hee"
+  },
+  {
+    "fa_name": "ها جونگ وو",
+    "en_name": "Ha Jung-woo",
+    "slug": "ha-jung-woo"
+  },
+  {
+    "fa_name": "جو جین وونگ",
+    "en_name": "Jo Jin-woong",
+    "slug": "jo-jin-woong"
+  },
+  {
+    "fa_name": "مایکل کلارک دانکن",
+    "en_name": "Michael Clarke Duncan",
+    "slug": "michael-clarke-duncan"
+  },
+  {
+    "fa_name": "دیوید مورس",
+    "en_name": "David Morse",
+    "slug": "david-morse"
+  },
+  {
+    "fa_name": "رالف ماکیو",
+    "en_name": "Ralph Macchio",
+    "slug": "ralph-macchio"
+  },
+  {
+    "fa_name": "پت موریتا",
+    "en_name": "Pat Morita",
+    "slug": "pat-morita"
+  },
+  {
+    "fa_name": "آرنولد شوارتزنگر",
+    "en_name": "Arnold Schwarzenegger",
+    "slug": "arnold-schwarzenegger"
+  },
+  {
+    "fa_name": "لیندا همیلتون",
+    "en_name": "Linda Hamilton",
+    "slug": "linda-hamilton"
+  },
+  {
+    "fa_name": "ادوارد فرلانگ",
+    "en_name": "Edward Furlong",
+    "slug": "edward-furlong"
+  },
+  {
+    "fa_name": "رومی هیرایگی",
+    "en_name": "Rumi Hiiragi",
+    "slug": "rumi-hiiragi"
+  },
+  {
+    "fa_name": "میو ایرینو",
+    "en_name": "Miyu Irino",
+    "slug": "miyu-irino"
+  },
+  {
+    "fa_name": "ماری ناتسوکی",
+    "en_name": "Mari Natsuki",
+    "slug": "mari-natsuki"
+  },
+  {
+    "fa_name": "ژان رنو",
+    "en_name": "Jean Reno",
+    "slug": "jean-reno"
+  },
+  {
+    "fa_name": "ناتالی پورتمن",
+    "en_name": "Natalie Portman",
+    "slug": "natalie-portman"
+  },
+  {
+    "fa_name": "گری اولدمن",
+    "en_name": "Gary Oldman",
+    "slug": "gary-oldman"
+  },
+  {
+    "fa_name": "گابریل بیرن",
+    "en_name": "Gabriel Byrne",
+    "slug": "gabriel-byrne"
+  },
+  {
+    "fa_name": "بنیسیو دل تورو",
+    "en_name": "Benicio Del Toro",
+    "slug": "benicio-del-toro"
+  },
+  {
+    "fa_name": "تاتسویا ناکادای",
+    "en_name": "Tatsuya Nakadai",
+    "slug": "tatsuya-nakadai"
+  },
+  {
+    "fa_name": "آکیرا ایشیهاما",
+    "en_name": "Akira Ishihama",
+    "slug": "akira-ishihama"
+  },
+  {
+    "fa_name": "شیما ایواشیتا",
+    "en_name": "Shima Iwashita",
+    "slug": "shima-iwashita"
+  },
+  {
+    "fa_name": "مایلز تلر",
+    "en_name": "Miles Teller",
+    "slug": "miles-teller"
+  },
+  {
+    "fa_name": "جی کی سیمونز",
+    "en_name": "J. K. Simmons",
+    "slug": "j-k-simmons"
+  },
+  {
+    "fa_name": "ملیسا بنویست",
+    "en_name": "Melissa Benoist",
+    "slug": "melissa-benoist"
+  },
+  {
+    "fa_name": "الکساندر رودریگز",
+    "en_name": "Alexandre Rodrigues",
+    "slug": "alexandre-rodrigues"
+  },
+  {
+    "fa_name": "لیاندرو فیرمینو",
+    "en_name": "Leandro Firmino",
+    "slug": "leandro-firmino"
+  },
+  {
+    "fa_name": "فلیپه هاگنسن",
+    "en_name": "Phellype Haagensen",
+    "slug": "phellype-haagensen"
+  },
+  {
+    "fa_name": "همفری بوگارت",
+    "en_name": "Humphrey Bogart",
+    "slug": "humphrey-bogart"
+  },
+  {
+    "fa_name": "اینگرید برگمن",
+    "en_name": "Ingrid Bergman",
+    "slug": "ingrid-bergman"
+  },
+  {
+    "fa_name": "پل هنرید",
+    "en_name": "Paul Henreid",
+    "slug": "paul-henreid"
+  },
+  {
+    "fa_name": "آنتونی پرکینز",
+    "en_name": "Anthony Perkins",
+    "slug": "anthony-perkins"
+  },
+  {
+    "fa_name": "جنت لی",
+    "en_name": "Janet Leigh",
+    "slug": "janet-leigh"
+  },
+  {
+    "fa_name": "ورا مایلز",
+    "en_name": "Vera Miles",
+    "slug": "vera-miles"
+  },
+  {
+    "fa_name": "متیو برودریک",
+    "en_name": "Matthew Broderick",
+    "slug": "matthew-broderick"
+  },
+  {
+    "fa_name": "جرمی آیرونز",
+    "en_name": "Jeremy Irons",
+    "slug": "jeremy-irons"
+  },
+  {
+    "fa_name": "جیمز ارل جونز",
+    "en_name": "James Earl Jones",
+    "slug": "james-earl-jones"
+  },
+  {
+    "fa_name": "مایکل جی فاکس",
+    "en_name": "Michael J. Fox",
+    "slug": "michael-j-fox"
+  },
+  {
+    "fa_name": "کریستوفر لوید",
+    "en_name": "Christopher Lloyd",
+    "slug": "christopher-lloyd"
+  },
+  {
+    "fa_name": "لیا تامپسون",
+    "en_name": "Lea Thompson",
+    "slug": "lea-thompson"
+  },
+  {
+    "fa_name": "چارلی چاپلین",
+    "en_name": "Charlie Chaplin",
+    "slug": "charlie-chaplin"
+  },
+  {
+    "fa_name": "پولت گادرد",
+    "en_name": "Paulette Goddard",
+    "slug": "paulette-goddard"
+  },
+  {
+    "fa_name": "هنری برگمن",
+    "en_name": "Henry Bergman",
+    "slug": "henry-bergman"
+  },
+  {
+    "fa_name": "سیگورنی ویور",
+    "en_name": "Sigourney Weaver",
+    "slug": "sigourney-weaver"
+  },
+  {
+    "fa_name": "تام اسکریت",
+    "en_name": "Tom Skerritt",
+    "slug": "tom-skerritt"
+  },
+  {
+    "fa_name": "جان هرت",
+    "en_name": "John Hurt",
+    "slug": "john-hurt"
+  },
+  {
+    "fa_name": "مارتین شین",
+    "en_name": "Martin Sheen",
+    "slug": "martin-sheen"
+  }
+]

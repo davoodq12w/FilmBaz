@@ -24,7 +24,7 @@
     <div class="movies">
         {% for movie in popular_movies %}
             <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
-                <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="movie-poster"
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster"
                      data-movie-id="{{ movie.id }}">
                 <p class="movie-title">{{ movie.title }}</p>
                 <div class="movie-detail-hidden" id="detail-{{ movie.id }}">
@@ -77,7 +77,7 @@
     <div class="movies">
         {% for movie in new_movies %}
             <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
-                <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="movie-poster"
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster"
                      data-movie-id="{{ movie.id }}">
                 <p class="movie-title">{{ movie.title }}</p>
                 <div class="movie-detail-hidden" id="detail-{{ movie.id }}">
@@ -130,7 +130,7 @@
     <div class="movies">
         {% for movie in top_movies %}
             <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
-                <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="movie-poster"
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster"
                      data-movie-id="{{ movie.id }}">
                 <p class="movie-title">{{ movie.title }}</p>
                 <div class="movie-detail-hidden" id="detail-{{ movie.id }}">

@@ -1,0 +1,800 @@
+[
+  {
+    "movie_slug": "the-shawshank-redemption",
+    "casts": [
+      "tim-robbins",
+      "morgan-freeman",
+      "bob-gunton"
+    ],
+    "crew": [
+      {
+        "slug": "frank-darabont",
+        "role": "director"
+      },
+      {
+        "slug": "frank-darabont",
+        "role": "writer"
+      },
+      {
+        "slug": "stephen-king",
+        "role": "writer"
+      },
+      {
+        "slug": "niki-marvin",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-godfather",
+    "casts": [
+      "marlon-brando",
+      "al-pacino",
+      "james-caan"
+    ],
+    "crew": [
+      {
+        "slug": "francis-ford-coppola",
+        "role": "director"
+      },
+      {
+        "slug": "francis-ford-coppola",
+        "role": "writer"
+      },
+      {
+        "slug": "mario-puzo",
+        "role": "writer"
+      },
+      {
+        "slug": "albert-s-ruddy",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-dark-knight",
+    "casts": [
+      "christian-bale",
+      "heath-ledger",
+      "aaron-eckhart"
+    ],
+    "crew": [
+      {
+        "slug": "christopher-nolan",
+        "role": "director"
+      },
+      {
+        "slug": "christopher-nolan",
+        "role": "writer"
+      },
+      {
+        "slug": "emma-thomas",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-godfather-part-ii",
+    "casts": [
+      "al-pacino",
+      "robert-de-niro",
+      "robert-duvall"
+    ],
+    "crew": [
+      {
+        "slug": "francis-ford-coppola",
+        "role": "director"
+      },
+      {
+        "slug": "francis-ford-coppola",
+        "role": "writer"
+      },
+      {
+        "slug": "mario-puzo",
+        "role": "writer"
+      },
+      {
+        "slug": "albert-s-ruddy",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "12-angry-men",
+    "casts": [
+      "henry-fonda",
+      "lee-j-cobb",
+      "martin-balsam"
+    ],
+    "crew": [
+      {
+        "slug": "sidney-lumet",
+        "role": "director"
+      },
+      {
+        "slug": "reginald-rose",
+        "role": "writer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-lord-of-the-rings-the-return-of-the-king",
+    "casts": [
+      "elijah-wood",
+      "viggo-mortensen",
+      "ian-mckellen"
+    ],
+    "crew": [
+      {
+        "slug": "peter-jackson",
+        "role": "director"
+      },
+      {
+        "slug": "fran-walsh",
+        "role": "writer"
+      },
+      {
+        "slug": "barrie-m-osborne",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "schindlers-list",
+    "casts": [
+      "liam-neeson",
+      "ben-kingsley",
+      "ralph-fiennes"
+    ],
+    "crew": [
+      {
+        "slug": "steven-spielberg",
+        "role": "director"
+      },
+      {
+        "slug": "steven-spielberg",
+        "role": "producer"
+      },
+      {
+        "slug": "branko-lustig",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "pulp-fiction",
+    "casts": [
+      "john-travolta",
+      "samuel-l-jackson",
+      "uma-thurman"
+    ],
+    "crew": [
+      {
+        "slug": "quentin-tarantino",
+        "role": "director"
+      },
+      {
+        "slug": "quentin-tarantino",
+        "role": "writer"
+      },
+      {
+        "slug": "lawrence-bender",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-lord-of-the-rings-the-fellowship-of-the-ring",
+    "casts": [
+      "elijah-wood",
+      "viggo-mortensen",
+      "ian-mckellen"
+    ],
+    "crew": [
+      {
+        "slug": "peter-jackson",
+        "role": "director"
+      },
+      {
+        "slug": "fran-walsh",
+        "role": "writer"
+      },
+      {
+        "slug": "barrie-m-osborne",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-good-the-bad-and-the-ugly",
+    "casts": [
+      "clint-eastwood",
+      "eli-wallach",
+      "lee-van-cleef"
+    ],
+    "crew": [
+      {
+        "slug": "sergio-leone",
+        "role": "director"
+      },
+      {
+        "slug": "agenore-incrocci",
+        "role": "writer"
+      },
+      {
+        "slug": "furio-scarpelli",
+        "role": "writer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "forrest-gump",
+    "casts": [
+      "tom-hanks",
+      "robin-wright",
+      "gary-sinise"
+    ],
+    "crew": [
+      {
+        "slug": "robert-zemeckis",
+        "role": "director"
+      },
+      {
+        "slug": "eric-roth",
+        "role": "writer"
+      },
+      {
+        "slug": "steve-starkey",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-lord-of-the-rings-the-two-towers",
+    "casts": [
+      "elijah-wood",
+      "viggo-mortensen",
+      "ian-mckellen"
+    ],
+    "crew": [
+      {
+        "slug": "peter-jackson",
+        "role": "director"
+      },
+      {
+        "slug": "fran-walsh",
+        "role": "writer"
+      },
+      {
+        "slug": "barrie-m-osborne",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "fight-club",
+    "casts": [
+      "brad-pitt",
+      "edward-norton",
+      "helena-bonham-carter"
+    ],
+    "crew": [
+      {
+        "slug": "david-fincher",
+        "role": "director"
+      },
+      {
+        "slug": "jim-uhls",
+        "role": "writer"
+      },
+      {
+        "slug": "art-linson",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "inception",
+    "casts": [
+      "leonardo-dicaprio",
+      "joseph-gordon-levitt",
+      "elliot-page"
+    ],
+    "crew": [
+      {
+        "slug": "christopher-nolan",
+        "role": "director"
+      },
+      {
+        "slug": "christopher-nolan",
+        "role": "writer"
+      },
+      {
+        "slug": "emma-thomas",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "star-wars-episode-v-the-empire-strikes-back",
+    "casts": [
+      "mark-hamill",
+      "harrison-ford",
+      "carrie-fisher"
+    ],
+    "crew": [
+      {
+        "slug": "irvin-kershner",
+        "role": "director"
+      },
+      {
+        "slug": "lawrence-kasdan",
+        "role": "writer"
+      },
+      {
+        "slug": "george-lucas",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-matrix",
+    "casts": [
+      "keanu-reeves",
+      "laurence-fishburne",
+      "carrie-anne-moss"
+    ],
+    "crew": [
+      {
+        "slug": "lana-wachowski",
+        "role": "director"
+      },
+      {
+        "slug": "lilly-wachowski",
+        "role": "director"
+      },
+      {
+        "slug": "lana-wachowski",
+        "role": "writer"
+      },
+      {
+        "slug": "lilly-wachowski",
+        "role": "writer"
+      },
+      {
+        "slug": "joel-silver",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "goodfellas",
+    "casts": [
+      "robert-de-niro",
+      "ray-liotta",
+      "joe-pesci"
+    ],
+    "crew": [
+      {
+        "slug": "martin-scorsese",
+        "role": "director"
+      },
+      {
+        "slug": "nicholas-pileggi",
+        "role": "writer"
+      },
+      {
+        "slug": "irwin-winkler",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "one-flew-over-the-cuckoos-nest",
+    "casts": [
+      "jack-nicholson",
+      "louise-fletcher",
+      "will-sampson"
+    ],
+    "crew": [
+      {
+        "slug": "milos-forman",
+        "role": "director"
+      },
+      {
+        "slug": "lawrence-hauben",
+        "role": "writer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "se7en",
+    "casts": [
+      "brad-pitt",
+      "morgan-freeman",
+      "kevin-spacey"
+    ],
+    "crew": [
+      {
+        "slug": "david-fincher",
+        "role": "director"
+      },
+      {
+        "slug": "andrew-kevin-walker",
+        "role": "writer"
+      },
+      {
+        "slug": "arnold-kopelson",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "seven-samurai",
+    "casts": [
+      "toshiro-mifune",
+      "takashi-shimura",
+      "yoshio-inaba"
+    ],
+    "crew": [
+      {
+        "slug": "akira-kurosawa",
+        "role": "director"
+      },
+      {
+        "slug": "akira-kurosawa",
+        "role": "writer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "interstellar",
+    "casts": [
+      "matthew-mcconaughey",
+      "anne-hathaway",
+      "jessica-chastain"
+    ],
+    "crew": [
+      {
+        "slug": "christopher-nolan",
+        "role": "director"
+      },
+      {
+        "slug": "christopher-nolan",
+        "role": "writer"
+      },
+      {
+        "slug": "jonathan-nolan",
+        "role": "writer"
+      },
+      {
+        "slug": "emma-thomas",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "gladiator",
+    "casts": [
+      "russell-crowe",
+      "joaquin-phoenix",
+      "connie-nielsen"
+    ],
+    "crew": [
+      {
+        "slug": "ridley-scott",
+        "role": "director"
+      },
+      {
+        "slug": "david-franzoni",
+        "role": "writer"
+      },
+      {
+        "slug": "douglas-wick",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-prestige",
+    "casts": [
+      "hugh-jackman",
+      "christian-bale",
+      "scarlett-johansson"
+    ],
+    "crew": [
+      {
+        "slug": "christopher-nolan",
+        "role": "director"
+      },
+      {
+        "slug": "christopher-nolan",
+        "role": "writer"
+      },
+      {
+        "slug": "jonathan-nolan",
+        "role": "writer"
+      },
+      {
+        "slug": "charles-roven",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-pianist",
+    "casts": [
+      "adrien-brody",
+      "thomas-kretschmann",
+      "frank-finlay"
+    ],
+    "crew": [
+      {
+        "slug": "roman-polanski",
+        "role": "director"
+      },
+      {
+        "slug": "ronald-harwood",
+        "role": "writer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "saving-private-ryan",
+    "casts": [
+      "tom-hanks",
+      "matt-damon",
+      "tom-sizemore"
+    ],
+    "crew": [
+      {
+        "slug": "steven-spielberg",
+        "role": "director"
+      },
+      {
+        "slug": "steven-spielberg",
+        "role": "producer"
+      },
+      {
+        "slug": "robert-rodat",
+        "role": "writer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-silence-of-the-lambs",
+    "casts": [
+      "jodie-foster",
+      "anthony-hopkins",
+      "ted-levine"
+    ],
+    "crew": [
+      {
+        "slug": "jonathan-demme",
+        "role": "director"
+      },
+      {
+        "slug": "ted-tally",
+        "role": "writer"
+      },
+      {
+        "slug": "edward-saxon",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "parasite",
+    "casts": [
+      "song-kang-ho",
+      "choi-woo-shik",
+      "park-so-dam"
+    ],
+    "crew": [
+      {
+        "slug": "bong-joon-ho",
+        "role": "director"
+      },
+      {
+        "slug": "bong-joon-ho",
+        "role": "writer"
+      },
+      {
+        "slug": "han-jin-won",
+        "role": "writer"
+      },
+      {
+        "slug": "kwak-sin-ae",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-green-mile",
+    "casts": [
+      "tom-hanks",
+      "michael-clarke-duncan",
+      "david-morse"
+    ],
+    "crew": [
+      {
+        "slug": "frank-darabont",
+        "role": "director"
+      },
+      {
+        "slug": "frank-darabont",
+        "role": "writer"
+      },
+      {
+        "slug": "david-valdes",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "terminator-2-judgment-day",
+    "casts": [
+      "arnold-schwarzenegger",
+      "linda-hamilton",
+      "edward-furlong"
+    ],
+    "crew": [
+      {"slug": "james-cameron", "role": "director"},
+      {"slug": "james-cameron", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "spirited-away",
+    "casts": [
+      "rumi-hiiragi",
+      "miyu-irino",
+      "mari-natsuki"
+    ],
+    "crew": [
+      {"slug": "hayao-miyazaki", "role": "director"},
+      {"slug": "hayao-miyazaki", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "leon-the-professional",
+    "casts": [
+      "jean-reno",
+      "natalie-portman",
+      "gary-oldman"
+    ],
+    "crew": [
+      {"slug": "luc-besson", "role": "director"},
+      {"slug": "luc-besson", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "the-usual-suspects",
+    "casts": [
+      "kevin-spacey",
+      "gabriel-byrne",
+      "benicio-del-toro"
+    ],
+    "crew": [
+      {"slug": "bryan-singer", "role": "director"},
+      {"slug": "christopher-mcquarrie", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "harakiri",
+    "casts": [
+      "tatsuya-nakadai",
+      "akira-ishihama",
+      "shima-iwashita"
+    ],
+    "crew": [
+      {"slug": "masaki-kobayashi", "role": "director"},
+      {"slug": "shinobu-hashimoto", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "the-departed",
+    "casts": [
+      "leonardo-dicaprio",
+      "matt-damon",
+      "jack-nicholson"
+    ],
+    "crew": [
+      {"slug": "martin-scorsese", "role": "director"},
+      {"slug": "william-monahan", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "whiplash",
+    "casts": [
+      "miles-teller",
+      "j-k-simmons",
+      "melissa-benoist"
+    ],
+    "crew": [
+      {"slug": "damien-chazelle", "role": "director"},
+      {"slug": "damien-chazelle", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "city-of-god",
+    "casts": [
+      "alexandre-rodrigues",
+      "leandro-firmino",
+      "phellype-haagensen"
+    ],
+    "crew": [
+      {"slug": "fernando-meirelles", "role": "director"},
+      {"slug": "katia-lund", "role": "director"}
+    ]
+  },
+  {
+    "movie_slug": "casablanca",
+    "casts": [
+      "humphrey-bogart",
+      "ingrid-bergman",
+      "paul-henreid"
+    ],
+    "crew": [
+      {"slug": "michael-curtiz", "role": "director"}
+    ]
+  },
+  {
+    "movie_slug": "psycho",
+    "casts": [
+      "anthony-perkins",
+      "janet-leigh",
+      "vera-miles"
+    ],
+    "crew": [
+      {"slug": "alfred-hitchcock", "role": "director"}
+    ]
+  },
+  {
+    "movie_slug": "back-to-the-future",
+    "casts": [
+      "michael-j-fox",
+      "christopher-lloyd",
+      "lea-thompson"
+    ],
+    "crew": [
+      {"slug": "robert-zemeckis", "role": "director"},
+      {"slug": "bob-gale", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "modern-times",
+    "casts": [
+      "charlie-chaplin",
+      "paulette-goddard",
+      "henry-bergman"
+    ],
+    "crew": [
+      {"slug": "charlie-chaplin", "role": "director"},
+      {"slug": "charlie-chaplin", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "alien",
+    "casts": [
+      "sigourney-weaver",
+      "tom-skerritt",
+      "john-hurt"
+    ],
+    "crew": [
+      {"slug": "ridley-scott", "role": "director"},
+      {"slug": "dan-obannon", "role": "writer"}
+    ]
+  },
+  {
+    "movie_slug": "apocalypse-now",
+    "casts": [
+      "marlon-brando",
+      "martin-sheen",
+      "robert-duvall"
+    ],
+    "crew": [
+      {"slug": "francis-ford-coppola", "role": "director"},
+      {"slug": "john-milius", "role": "writer"}
+    ]
+  }
+]

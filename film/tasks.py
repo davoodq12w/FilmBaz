@@ -22,7 +22,7 @@ def tmdb_movie_list(
         sorted_by=None,
 ):
     url = "https://api.themoviedb.org/3/discover/movie"
-
+    print("task:1")
     headers = {
         "accept": "application/json",
         "Authorization": f"Bearer {tmdb_token}",
@@ -41,7 +41,7 @@ def tmdb_movie_list(
         "sort_by": sorted_by,
 
     }
-
+    print("task:2")
     params = {k: v for k, v in params.items() if v is not None}
 
     response = requests.get(
@@ -50,16 +50,18 @@ def tmdb_movie_list(
         params=params,
         timeout=30,
     )
-
+    print("task:3")
     response.raise_for_status()
     data = response.json()
     save_new_movies.delay(data)
-
+    print("task:4")
     return data
 
 
 @shared_task(queue="default")
 def save_new_movies(response: dict):
+    print("save:1")
+
     movies = response["results"]
     for movie in movies:
         data = {
@@ -72,7 +74,10 @@ def save_new_movies(response: dict):
             "release_date": movie.get("release_date") or None,
             "adult": movie["adult"],
         }
+        print("save:2")
+
         movie_obj, created = Movie.objects.update_or_create(tmdb_id=movie["id"], defaults=data)
+        print("save:3")
 
         if not movie_obj.images_downloaded:
             download_movie_images.delay(movie_obj.id)
@@ -83,6 +88,7 @@ def save_new_movies(response: dict):
              retry_backoff=True,
              max_retries=5)
 def download_movie_images(movie_obj_id: int):
+    print("image:1")
     movie = Movie.objects.get(id=movie_obj_id)
 
     if movie.images_downloaded:
@@ -106,6 +112,7 @@ def download_movie_images(movie_obj_id: int):
             save=False,
         )
         poster_downloaded = True
+    print("image:2")
 
     if movie.backdrop_path:
         backdrop_url = (
@@ -122,11 +129,16 @@ def download_movie_images(movie_obj_id: int):
             save=False,
         )
         backdrop_downloaded = True
+    print("image:3")
 
     movie.images_downloaded = (
             (not movie.poster_path or poster_downloaded)
             and
             (not movie.backdrop_path or backdrop_downloaded)
     )
+    print("image:4")
 
     movie.save()
+
+    print("image:5")
+

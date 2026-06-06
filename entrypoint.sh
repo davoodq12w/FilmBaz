@@ -29,6 +29,21 @@ PY
 echo "Applying migrations..."
 python manage.py migrate
 
+echo "Creating genres..."
+python manage.py load_genres
+
+echo "Creating casts..."
+python manage.py load_casts
+
+echo "Creating crews..."
+python manage.py load_crews
+
+echo "Creating movies..."
+python manage.py load_movies
+
+echo "Creating relations..."
+python manage.py load_relations
+
 echo "Enabling pg_trgm extension..."
 python manage.py shell -c "from django.db import connection; connection.cursor().execute('CREATE EXTENSION IF NOT EXISTS pg_trgm;')"
 

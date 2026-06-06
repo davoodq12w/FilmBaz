@@ -1,0 +1,97 @@
+[
+  {
+    "fa_name": "اکشن",
+    "en_name": "Action",
+    "slug": "action"
+  },
+  {
+    "fa_name": "ماجراجویی",
+    "en_name": "Adventure",
+    "slug": "adventure"
+  },
+  {
+    "fa_name": "انیمیشن",
+    "en_name": "Animation",
+    "slug": "animation"
+  },
+  {
+    "fa_name": "کمدی",
+    "en_name": "Comedy",
+    "slug": "comedy"
+  },
+  {
+    "fa_name": "جنایی",
+    "en_name": "Crime",
+    "slug": "crime"
+  },
+  {
+    "fa_name": "مستند",
+    "en_name": "Documentary",
+    "slug": "documentary"
+  },
+  {
+    "fa_name": "درام",
+    "en_name": "Drama",
+    "slug": "drama"
+  },
+  {
+    "fa_name": "خانوادگی",
+    "en_name": "Family",
+    "slug": "family"
+  },
+  {
+    "fa_name": "فانتزی",
+    "en_name": "Fantasy",
+    "slug": "fantasy"
+  },
+  {
+    "fa_name": "تاریخی",
+    "en_name": "History",
+    "slug": "history"
+  },
+  {
+    "fa_name": "ترسناک",
+    "en_name": "Horror",
+    "slug": "horror"
+  },
+  {
+    "fa_name": "موسیقی",
+    "en_name": "Music",
+    "slug": "music"
+  },
+  {
+    "fa_name": "معمایی",
+    "en_name": "Mystery",
+    "slug": "mystery"
+  },
+  {
+    "fa_name": "عاشقانه",
+    "en_name": "Romance",
+    "slug": "romance"
+  },
+  {
+    "fa_name": "علمی تخیلی",
+    "en_name": "Science Fiction",
+    "slug": "science-fiction"
+  },
+  {
+    "fa_name": "فیلم تلویزیونی",
+    "en_name": "TV Movie",
+    "slug": "tv-movie"
+  },
+  {
+    "fa_name": "هیجان انگیز",
+    "en_name": "Thriller",
+    "slug": "thriller"
+  },
+  {
+    "fa_name": "جنگی",
+    "en_name": "War",
+    "slug": "war"
+  },
+  {
+    "fa_name": "وسترن",
+    "en_name": "Western",
+    "slug": "western"
+  }
+]
