@@ -12,41 +12,52 @@ class Command(BaseCommand):
 
         file_path = "film/management/fixtures/movies.json"
 
-        with open(file_path, "r", encoding="utf-8") as file:
-            movies = json.load(file)
+        try:
 
-        created_count = 0
-        updated_count = 0
+            with open(file_path, "r", encoding="utf-8") as file:
+                movies = json.load(file)
 
-        for data in movies:
+            created_count = 0
+            updated_count = 0
 
-            movie, created = Movie.objects.update_or_create(
-                slug=data["slug"],
-                defaults={
-                    "fa_title": data["fa_title"],
-                    "orj_title": data["orj_title"],
-                    "rate": data["rate"],
-                    "release_date": data["release_date"],
-                    "country": data["country"],
-                    "runtime": data["runtime"],
-                    "is_serie": data["is_serie"],
-                    "adult": data["adult"],
-                }
+            for data in movies:
+
+                movie, created = Movie.objects.update_or_create(
+                    slug=data["slug"],
+                    defaults={
+                        "fa_title": data["fa_title"],
+                        "orj_title": data["orj_title"],
+                        "rate": data["rate"],
+                        "release_date": data["release_date"],
+                        "country": data["country"],
+                        "runtime": data["runtime"],
+                        "is_serie": data["is_serie"],
+                        "adult": data["adult"],
+                    }
+                )
+
+                genres = Genre.objects.filter(
+                    slug__in=data["genres"]
+                )
+
+                movie.genres.set(genres)
+
+                if created:
+                    created_count += 1
+                else:
+                    updated_count += 1
+
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"فیلم ها || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
+                )
+            )
+        except FileNotFoundError:
+            self.stdout.write(
+                self.style.ERROR(f"File not found: {file_path}")
             )
 
-            genres = Genre.objects.filter(
-                slug__in=data["genres"]
+        except Exception as e:
+            self.stdout.write(
+                self.style.ERROR(str(e))
             )
-
-            movie.genres.set(genres)
-
-            if created:
-                created_count += 1
-            else:
-                updated_count += 1
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Created: {created_count} | Updated: {updated_count}"
-            )
-        )

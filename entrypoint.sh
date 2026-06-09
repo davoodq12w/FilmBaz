@@ -27,6 +27,7 @@ while True:
 PY
 
 echo "Applying migrations..."
+python manage.py makemigrations
 python manage.py migrate
 
 echo "Creating genres..."
@@ -43,6 +44,22 @@ python manage.py load_movies
 
 echo "Creating relations..."
 python manage.py load_relations
+
+echo "Setting pictures..."
+python manage.py load_pictures
+
+python manage.py shell -c "
+from django.contrib.auth import get_user_model;
+User = get_user_model();
+
+if not User.objects.filter(username='root').exists():
+    user = User.objects.create_superuser(username='root', phone='09001112233')
+    user.set_password('root')
+    user.save()
+    print('✅ Superuser created successfully.')
+else:
+    print('ℹ️ Superuser already exists.')
+"
 
 echo "Enabling pg_trgm extension..."
 python manage.py shell -c "from django.db import connection; connection.cursor().execute('CREATE EXTENSION IF NOT EXISTS pg_trgm;')"

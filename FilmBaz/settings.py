@@ -209,7 +209,5 @@ CELERY_ENABLE_UTC = config("CELERY_ENABLE_UTC", cast=bool, default=True)
 
 CELERY_TASK_QUEUES = (
     Queue("support"),
-    Queue("api"),
-    Queue("download"),
     Queue("default"),
 )

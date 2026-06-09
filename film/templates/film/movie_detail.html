@@ -6,7 +6,7 @@
     <div class="detail-body">
 
         <div class="detail-trailer" style="margin: 1px;">
-            <img src="{{ movie.backdrop.url }}" alt="{{ movie.title }} backdrop" class="detail-backdrop">
+            <img src="{{ movie.backdrop_url }}" alt="{{ movie.orj_title }} backdrop" class="detail-backdrop">
         </div>
 
         <div class="detail-trailer-cover"></div>
@@ -14,15 +14,15 @@
         <div class="detail-text-cover"></div>
 
         <div class="detail-detail">
-            <img src="{{ movie.poster.url }}" alt="{{ movie.title }} poster" class="detail-poster">
+            <img src="{{ movie.poster_url }}" alt="{{ movie.orj_title }} poster" class="detail-poster">
 
             <div class="detail-texts">
                 <div class="detail-titles">
-                    <h3>{{ movie.title }}</h3>
+                    <h3>{{ movie.fa_title }}</h3>
                 </div>
                 <div class="detail-rate">
                     <span>10 / </span>
-                    <span class="detail-rate-number"> {{ movie.tmdb_rate }} </span>
+                    <span class="detail-rate-number"> {{ movie.rate }} </span>
 
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="detail-star">
                         <path fill-rule="evenodd"
@@ -99,25 +99,21 @@
             <div class="detail-description">
                 <p>{{ movie.description }}</p>
 
-{#                <ul class="detail-staff">#}
-{#                    <li><span>کارگردان :  </span><span> {{ movie.director }} </span></li>#}
-{#                    {% if movie.producer %}#}
-{#                        <li><span>تهیه کننده :  </span><span> {{ movie.producer }} </span></li>{% endif %}#}
-{#                    {% if movie.composer %}#}
-{#                        <li><span>آهنگساز :  </span><span> {{ movie.composer }} </span></li>{% endif %}#}
-{#                    {% if movie.editor %}#}
-{#                        <li><span>ویرایش گر :  </span><span> {{ movie.editor }} </span></li>{% endif %}#}
-{#                </ul>#}
+                <ul class="detail-staff">
+                    <li><span>کارگردان :  </span><span> {{ movie.get_director }} </span></li>
+                    <li><span>تهیه کننده :  </span><span> {{ movie.get_producer }} </span></li>
+                    <li><span>نویسنده :  </span><span> {{ movie.get_writer }} </span></li>
+                </ul>
             </div>
 
-{#            <a href="{{ movie.trailer.url }}" class="detail-play-trailer">#}
-{#                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">#}
-{#                    <path fill-rule="evenodd"#}
-{#                          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm14.024-.983a1.125 1.125 0 0 1 0 1.966l-5.603 3.113A1.125 1.125 0 0 1 9 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113Z"#}
-{#                          clip-rule="evenodd"/>#}
-{#                </svg>#}
-{#                <span>پخش تریلر</span>#}
-{#            </a>#}
+            {#            <a href="{{ movie.trailer.url }}" class="detail-play-trailer">#}
+            {#                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">#}
+            {#                    <path fill-rule="evenodd"#}
+            {#                          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm14.024-.983a1.125 1.125 0 0 1 0 1.966l-5.603 3.113A1.125 1.125 0 0 1 9 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113Z"#}
+            {#                          clip-rule="evenodd"/>#}
+            {#                </svg>#}
+            {#                <span>پخش تریلر</span>#}
+            {#            </a>#}
 
             <div class="detail-casts">
                 <span>بازیگران برجسته: </span>
@@ -131,35 +127,35 @@
 
         </div>
 
-{#        <div class="detail-download">#}
-{#            {% for file in movie.files.all %}#}
-{#                <div class="detail-movie-file">#}
-{#                    <a href="{{ movie.files.first.file.url }}" class="detail-movie-link">#}
-{#                        <video width="300px" height="auto">#}
-{#                            <source src="{{ file.file.url }}">#}
-{#                        </video>#}
-{##}
-{#                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"#}
-{#                             class="play-icon">#}
-{#                            <path fill-rule="evenodd"#}
-{#                                  d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"#}
-{#                                  clip-rule="evenodd"/>#}
-{#                        </svg>#}
-{##}
-{#                    </a>#}
-{##}
-{#                    <div class="detail-movie-texts">#}
-{#                        <p>{{ file.title }}</p>#}
-{#                        {% if file.description %}#}
-{#                            <p>{{ file.description }}</p>#}
-{#                        {% endif %}#}
-{#                    </div>#}
-{#                </div>#}
-{#                {% if not forloop.last %}#}
-{#                    <hr>#}
-{#                {% endif %}#}
-{#            {% endfor %}#}
-{#        </div>#}
+        {#        <div class="detail-download">#}
+        {#            {% for file in movie.files.all %}#}
+        {#                <div class="detail-movie-file">#}
+        {#                    <a href="{{ movie.files.first.file.url }}" class="detail-movie-link">#}
+        {#                        <video width="300px" height="auto">#}
+        {#                            <source src="{{ file.file.url }}">#}
+        {#                        </video>#}
+        {##}
+        {#                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"#}
+        {#                             class="play-icon">#}
+        {#                            <path fill-rule="evenodd"#}
+        {#                                  d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"#}
+        {#                                  clip-rule="evenodd"/>#}
+        {#                        </svg>#}
+        {##}
+        {#                    </a>#}
+        {##}
+        {#                    <div class="detail-movie-texts">#}
+        {#                        <p>{{ file.title }}</p>#}
+        {#                        {% if file.description %}#}
+        {#                            <p>{{ file.description }}</p>#}
+        {#                        {% endif %}#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#                {% if not forloop.last %}#}
+        {#                    <hr>#}
+        {#                {% endif %}#}
+        {#            {% endfor %}#}
+        {#        </div>#}
 
         <div class="detail-comments">
             <div class="detail-comments-header">

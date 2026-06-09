@@ -2,7 +2,6 @@ from django.db import models
 from django_resized import ResizedImageField
 from account.models import FilmBazUser
 from django.utils.text import slugify
-from people.models import CrewMember
 
 
 class Genre(models.Model):
@@ -24,18 +23,11 @@ class Genre(models.Model):
         return f"{self.en_name}/{self.fa_name}"
 
 
-def image_sorter(instance, filename):
-    year = instance.release_date or "unknown"
-    title = slugify(instance.fa_title) or "unknown"
-
-    return f"movies/{year}/{title}/{filename}"
-
-
 class Movie(models.Model):
     # ----------------------------------------------------------------
-    poster = ResizedImageField(upload_to=image_sorter, size=[300, 400], crop=["middle", "center"], quality=100,
+    poster = ResizedImageField(upload_to="movies/posters/", size=[300, 400], crop=["middle", "center"], quality=100,
                                null=True, blank=True)
-    backdrop = ResizedImageField(upload_to=image_sorter, size=[1600, 900], crop=["middle", "center"], quality=100,
+    backdrop = ResizedImageField(upload_to="movies/backdrop/", size=[1600, 900], crop=["middle", "center"], quality=100,
                                  null=True, blank=True)
     # ----------------------------------------------------------------
     fa_title = models.CharField(max_length=200)
@@ -60,8 +52,8 @@ class Movie(models.Model):
     # ----------------------------------------------------------------
     created = models.DateField(auto_now_add=True)
     crew_members = models.ManyToManyField(
-        CrewMember,
-        through="MovieCrew",
+        'people.CrewMember',
+        through="people.MovieCrew",
         related_name="movies",
         blank=True
     )
@@ -88,6 +80,27 @@ class Movie(models.Model):
             return self.backdrop.url
 
         return None
+
+    @property
+    def get_director(self):
+        try:
+            return self.crew_members.filter(role="Director").first().fa_name
+        except:
+            return "Unknown"
+
+    @property
+    def get_producer(self):
+        try:
+            return self.crew_members.filter(role="Producer").first().fa_name
+        except:
+            return "Unknown"
+
+    @property
+    def get_writer(self):
+        try:
+            return self.crew_members.filter(role="Writer").first().fa_name
+        except:
+            return "Unknown"
 
 
 class Comment(models.Model):

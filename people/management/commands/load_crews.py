@@ -9,16 +9,38 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         file_path = "people/management/fixtures/crew_members.json"
 
-        with open(file_path, 'r', encoding='utf-8') as file:
-            crew_data = json.load(file)
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                crew_data = json.load(file)
 
-        for item in crew_data:
-            CrewMember.objects.update_or_create(
-                slug=item['slug'],
-                defaults={
-                    'fa_name': item['fa_name'],
-                    'en_name': item['en_name']
-                }
+            created_count = 0
+            updated_count = 0
+
+            for item in crew_data:
+                crew, created = CrewMember.objects.update_or_create(
+                    slug=item['slug'],
+                    defaults={
+                        'fa_name': item['fa_name'],
+                        'en_name': item['en_name']
+                    }
+                )
+                if created:
+                    created_count += 1
+                else:
+                    updated_count += 1
+
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"عوامل || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
+                )
             )
 
-        self.stdout.write(self.style.SUCCESS('✅ عوامل تولید با موفقیت وارد دیتابیس شدند!'))
+        except FileNotFoundError:
+            self.stdout.write(
+                self.style.ERROR(f"File not found: {file_path}")
+            )
+
+        except Exception as e:
+            self.stdout.write(
+                self.style.ERROR(str(e))
+            )

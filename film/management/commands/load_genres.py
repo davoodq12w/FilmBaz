@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Done! Created: {created_count}, Updated: {updated_count}"
+                    f"ژانر ها || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
                 )
             )
 

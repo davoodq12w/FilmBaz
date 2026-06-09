@@ -7,40 +7,21 @@ from .models import *
 from django.views.generic import View
 from django.contrib.postgres.search import TrigramSimilarity
 from BaseTemplateViews import BaseModelView
-from .tasks import tmdb_movie_list
 from urllib.parse import urlencode
 from django.core.cache import cache
 
 
 class HomePageView(BaseModelView):
     def get(self, request, *args, **kwargs):
-        new_movies = Movie.objects.order_by('-release_date')[:10]
-        popular_movies = Movie.objects.order_by('-popularity')[:10]
-        top_movies = Movie.objects.order_by('-tmdb_rate')[:10]
-
-        print("view:1")
-
-        if len(new_movies) < 10:
-            print("view:2")
-            tmdb_movie_list.delay(
-                release_date_gte=datetime.date.today() - datetime.timedelta(days=30 * 6),
-            )
-            print("view:3")
-        if len(popular_movies) < 10:
-            tmdb_movie_list.delay(
-                sorted_by="popularity.asc",
-            )
-        if len(top_movies) < 10:
-            tmdb_movie_list.delay(
-                sorted_by="vote_average.asc",
-            )
+        new_movies = Movie.objects.order_by('-release_date')[:7]
+        top_movies = Movie.objects.order_by('-rate')[:7]
 
         context = {
             "new_movies": new_movies,
-            "popular_movies": popular_movies,
             "top_movies": top_movies,
         }
         return render(request, "film/home_page.html", context)
+
 
 #
 # class MoviesList(BaseModelView):
@@ -97,12 +78,11 @@ class HomePageView(BaseModelView):
 #                 ...
 #
 
-class MovieDetail(BaseModelView):
-    model = Movie
+class MovieDetail(View):
 
     def get(self, request, pk=None, slug=None, *args, **kwargs):
-        movie = self.get_object(pk=pk)
-        comments = self.get_queryset(request, custom_model=Comment).filter(movie=movie, movie__slug=slug)
+        movie = Movie.objects.get(pk=pk, slug=slug)
+        comments = Comment.objects.filter(movie=movie, movie__slug=slug, movie__id=pk)
         context = {"movie": movie, "comments": comments}
         return render(request, "film/movie_detail.html", context)
 

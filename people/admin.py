@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cast, CrewMember
+from .models import Cast, CrewMember, MovieCrew
 
 
 @admin.register(Cast)
@@ -11,27 +11,10 @@ class CastAdmin(admin.ModelAdmin):
 
 @admin.register(CrewMember)
 class CrewMemberAdmin(admin.ModelAdmin):
-    list_display = (
-        "en_name",
-        "fa_name",
-        "role",
-        "movies_count",
-    )
+    list_display = ["fa_name", "slug"]
+    search_fields = ["fa_name", "en_name", "slug"]
 
-    list_filter = ("role",)
 
-    search_fields = (
-        "en_name",
-        "fa_name",
-    )
-
-    prepopulated_fields = {
-        "slug": ("en_name",)
-    }
-
-    filter_horizontal = ("movies",)
-
-    def movies_count(self, obj):
-        return obj.movies.count()
-
-    movies_count.short_description = "Movies"
+@admin.register(MovieCrew)
+class MovieCrewAdmin(admin.ModelAdmin):
+    list_display = ["crew__fa_name", "movie__fa_title", "role"]

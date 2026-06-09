@@ -1,6 +1,6 @@
 from django.db import models
-from film.models import Movie
 from django_resized import ResizedImageField
+
 
 class Cast(models.Model):
     fa_name = models.CharField(max_length=200)
@@ -21,7 +21,7 @@ class Cast(models.Model):
     )
 
     movies = models.ManyToManyField(
-        Movie,
+        "film.Movie",
         related_name="casts",
         blank=True
     )
@@ -31,6 +31,8 @@ class Cast(models.Model):
 
     def __str__(self):
         return self.en_name
+
+
 class CrewMember(models.Model):
     fa_name = models.CharField(max_length=200)
     en_name = models.CharField(max_length=200)
@@ -55,15 +57,15 @@ class CrewMember(models.Model):
     def __str__(self):
         return self.en_name
 
-class MovieCrew(models.Model):
 
+class MovieCrew(models.Model):
     class CrewRole(models.TextChoices):
         DIRECTOR = "director", "Director"
         PRODUCER = "producer", "Producer"
         WRITER = "writer", "Writer"
 
     movie = models.ForeignKey(
-        Movie,
+        "film.Movie",
         on_delete=models.CASCADE,
         related_name="movie_crews"
     )
