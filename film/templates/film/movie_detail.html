@@ -5,11 +5,11 @@
 {% block body %}
     <div class="detail-body">
 
-        <div class="detail-trailer" style="margin: 1px;">
+        <div class="detail-backdrop" style="margin: 1px;">
             <img src="{{ movie.backdrop_url }}" alt="{{ movie.orj_title }} backdrop" class="detail-backdrop">
         </div>
 
-        <div class="detail-trailer-cover"></div>
+        <div class="detail-backdrop-cover"></div>
 
         <div class="detail-text-cover"></div>
 
@@ -19,6 +19,7 @@
             <div class="detail-texts">
                 <div class="detail-titles">
                     <h3>{{ movie.fa_title }}</h3>
+                    <h3>{{ movie.orj_title }}</h3>
                 </div>
                 <div class="detail-rate">
                     <span>10 / </span>
@@ -101,8 +102,12 @@
 
                 <ul class="detail-staff">
                     <li><span>کارگردان :  </span><span> {{ movie.get_director }} </span></li>
-                    <li><span>تهیه کننده :  </span><span> {{ movie.get_producer }} </span></li>
-                    <li><span>نویسنده :  </span><span> {{ movie.get_writer }} </span></li>
+                    {% if movie.get_producer is not "Unknown" %}
+                        <li><span>تهیه کننده :  </span><span> {{ movie.get_producer }} </span></li>
+                    {% endif %}
+                    {% if movie.get_writer is not "Unknown" %}
+                        <li><span>نویسنده :  </span><span> {{ movie.get_writer }} </span></li>
+                    {% endif %}
                 </ul>
             </div>
 

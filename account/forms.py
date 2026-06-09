@@ -25,7 +25,7 @@ class LoginForm(AuthenticationForm):
 
     def clean_username(self):
         username = self.cleaned_data.get("username")
-        is_valid = re.findall(r"^\w+$", username)
+        is_valid = re.findall(r"^[a-zA-Z0-9_]+$", username)
 
         if not is_valid:
             raise forms.ValidationError("نام کاربری باید از اعداد و حروف و _ تشکیل شده باشد!")
@@ -50,10 +50,10 @@ class CreateUserForm(forms.ModelForm):
 
     def clean_username(self):
         username = self.cleaned_data.get("username")
-        is_valid = re.findall(r"^\w+$", username)
+        is_valid = re.findall(r"^[a-zA-Z0-9_]+$", username)
 
         if not is_valid:
-            raise forms.ValidationError("نام کاربری باید از اعداد و حروف و _ تشکیل شده باشد")
+            raise forms.ValidationError("نام کاربری باید از اعداد و حروف انگلیسی و _ تشکیل شده باشد")
 
         if FilmBazUser.objects.filter(username=username).exists():
             raise forms.ValidationError("نام کاربری از قبل وجود دارد")
@@ -69,7 +69,6 @@ class CreateUserForm(forms.ModelForm):
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
-
 
         if FilmBazUser.objects.filter(phone=phone).exists():
             raise forms.ValidationError('شماره تلفن درحال حاضر موجود میباشد')
@@ -88,7 +87,7 @@ class CreateUserForm(forms.ModelForm):
     def clean_email(self):
 
         email = self.cleaned_data.get("email")
-        is_valid = re.findall(r"^(?:[\w.]+@)(?:\w+)\.(?:[a-zA-z]{2,3})$", email)
+        is_valid = re.findall(r'^(?:[a-zA-Z0-9_.]+@)(?:[a-zA-Z0-9_]+)\.(?:[a-zA-Z]{2,3})$', email)
 
         if not is_valid:
             raise forms.ValidationError("ایمیل درست نوشته نشده است")
@@ -115,12 +114,12 @@ class EditUserForm(forms.ModelForm):
             "image": "",
         }
         widgets = {
-            "image": forms.FileInput(attrs={"class": "edit-user-image"},)
+            "image": forms.FileInput(attrs={"class": "edit-user-image"}, )
         }
 
     def clean_username(self):
         username = self.cleaned_data.get("username")
-        is_valid = re.findall(r"^\w+$", username)
+        is_valid = re.findall(r"^[a-zA-Z0-9_]+$", username)
 
         if not is_valid:
             raise forms.ValidationError("نام کاربری باید از اعداد و حروف و _ تشکیل شده باشد")
@@ -154,7 +153,7 @@ class EditUserForm(forms.ModelForm):
     def clean_email(self):
 
         email = self.cleaned_data.get("email")
-        is_valid = re.findall(r"^(?:[\w.]+@)(?:\w+)\.(?:[a-zA-Z]{2,3})$", email)
+        is_valid = re.findall(r'^(?:[a-zA-Z0-9_.]+@)(?:[a-zA-Z0-9_]+)\.(?:[a-zA-Z]{2,3})$', email)
 
         if not is_valid:
             raise forms.ValidationError("ایمیل درست نوشته نشده است")
@@ -168,4 +167,4 @@ class EditUserForm(forms.ModelForm):
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        fields = ["subject", "text",]
+        fields = ["subject", "text", ]
