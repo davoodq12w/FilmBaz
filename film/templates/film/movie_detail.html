@@ -101,12 +101,33 @@
                 <p>{{ movie.description }}</p>
 
                 <ul class="detail-staff">
-                    <li><span>کارگردان :  </span><span> {{ movie.get_director }} </span></li>
+                    <li>
+                        <p style="color: white">کارگردان</p>
+                        <div class="detail-cast">
+                            <img src="{{ movie.get_director.image.url }}" alt="{{ movie.get_director.slug }}"
+                                 class="detail-cast-image">
+                            <p class="detail-cast-name">{{ movie.get_director.fa_name }}</p>
+                        </div>
+                    </li>
                     {% if movie.get_producer is not "Unknown" %}
-                        <li><span>تهیه کننده :  </span><span> {{ movie.get_producer }} </span></li>
+                        <li>
+                            <p style="color: white">تهیه کننده</p>
+                            <div class="detail-cast">
+                                <img src="{{ movie.get_producer.image.url }}" alt="{{ movie.get_producer.slug }}"
+                                     class="detail-cast-image">
+                                <p class="detail-cast-name">{{ movie.get_producer.fa_name }}</p>
+                            </div>
+                        </li>
                     {% endif %}
                     {% if movie.get_writer is not "Unknown" %}
-                        <li><span>نویسنده :  </span><span> {{ movie.get_writer }} </span></li>
+                        <li>
+                            <p style="color: white">نویسنده</p>
+                            <div class="detail-cast">
+                                <img src="{{ movie.get_writer.image.url }}" alt="{{ movie.get_writer.slug }}"
+                                     class="detail-cast-image">
+                                <p class="detail-cast-name">{{ movie.get_writer.fa_name }}</p>
+                            </div>
+                        </li>
                     {% endif %}
                 </ul>
             </div>

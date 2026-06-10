@@ -335,14 +335,14 @@
     "slug": "thomas-kretschmann"
   },
   {
-  "fa_name": "فرانک فینلی",
-  "en_name": "Frank Finlay",
-  "slug": "frank-finlay"
+    "fa_name": "فرانک فینلی",
+    "en_name": "Frank Finlay",
+    "slug": "frank-finlay"
   },
   {
-  "fa_name": "کلی مک‌گیلیس",
-  "en_name": "Kelly McGillis",
-  "slug": "kelly-mcgillis"
+    "fa_name": "کلی مک‌گیلیس",
+    "en_name": "Kelly McGillis",
+    "slug": "kelly-mcgillis"
   },
   {
     "fa_name": "مت دیمون",
@@ -658,5 +658,135 @@
     "fa_name": "مارتین شین",
     "en_name": "Martin Sheen",
     "slug": "martin-sheen"
+  },
+  {
+    "fa_name": "سانگ کانگ هو",
+    "en_name": "Song Kang-ho",
+    "slug": "song-kang-ho"
+  },
+  {
+    "fa_name": "چوی وو شیک",
+    "en_name": "Choi Woo-shik",
+    "slug": "choi-woo-shik"
+  },
+  {
+    "fa_name": "پارک سو دام",
+    "en_name": "Park So-dam",
+    "slug": "park-so-dam"
+  },
+  {
+    "fa_name": "جیمی فاکس",
+    "en_name": "Jamie Foxx",
+    "slug": "jamie-foxx"
+  },
+  {
+    "fa_name": "کریستف والتس",
+    "en_name": "Christoph Waltz",
+    "slug": "christoph-waltz"
+  },
+  {
+    "fa_name": "فرانسوا کلوزه",
+    "en_name": "François Cluzet",
+    "slug": "francois-cluzet"
+  },
+  {
+    "fa_name": "عمر سی",
+    "en_name": "Omar Sy",
+    "slug": "omar-sy"
+  },
+  {
+    "fa_name": "آن لو نی",
+    "en_name": "Anne Le Ny",
+    "slug": "anne-le-ny"
+  },
+  {
+    "fa_name": "گای پیرس",
+    "en_name": "Guy Pearce",
+    "slug": "guy-pearce"
+  },
+  {
+    "fa_name": "کری-آن ماس",
+    "en_name": "Carrie-Anne Moss",
+    "slug": "carrie-anne-moss"
+  },
+  {
+    "fa_name": "جو پانتولیانو",
+    "en_name": "Joe Pantoliano",
+    "slug": "joe-pantoliano"
+  },
+  {
+    "fa_name": "ادوارد نورتون",
+    "en_name": "Edward Norton",
+    "slug": "edward-norton"
+  },
+  {
+    "fa_name": "ادوارد فرلانگ",
+    "en_name": "Edward Furlong",
+    "slug": "edward-furlong"
+  },
+  {
+    "fa_name": "بورلی دی آنجلو",
+    "en_name": "Beverly D'Angelo",
+    "slug": "beverly-dangelo"
+  },
+  {
+    "fa_name": "روبرتو بنینی",
+    "en_name": "Roberto Benigni",
+    "slug": "roberto-benigni"
+  },
+  {
+    "fa_name": "نیکولتا براسکی",
+    "en_name": "Nicoletta Braschi",
+    "slug": "nicoletta-braschi"
+  },
+  {
+    "fa_name": "جورجو کانتارینی",
+    "en_name": "Giorgio Cantarini",
+    "slug": "giorgio-cantarini"
+  },
+  {
+    "fa_name": "فیلیپ نوآره",
+    "en_name": "Philippe Noiret",
+    "slug": "philippe-noiret"
+  },
+  {
+    "fa_name": "ژاک پرن",
+    "en_name": "Jacques Perrin",
+    "slug": "jacques-perrin"
+  },
+  {
+    "fa_name": "سالواتوره کاشیو",
+    "en_name": "Salvatore Cascio",
+    "slug": "salvatore-cascio"
+  },
+    {
+    "fa_name": "هنری فوندا",
+    "en_name": "Henry Fonda",
+    "slug": "henry-fonda"
+  },
+  {
+    "fa_name": "چارلز برانسون",
+    "en_name": "Charles Bronson",
+    "slug": "charles-bronson"
+  },
+  {
+    "fa_name": "کلودیا کاردیناله",
+    "en_name": "Claudia Cardinale",
+    "slug": "claudia-cardinale"
+  },
+    {
+    "fa_name": "جیمز استوارت",
+    "en_name": "James Stewart",
+    "slug": "james-stewart"
+  },
+  {
+    "fa_name": "گریس کلی",
+    "en_name": "Grace Kelly",
+    "slug": "grace-kelly"
+  },
+  {
+    "fa_name": "تلما ریتر",
+    "en_name": "Thelma Ritter",
+    "slug": "thelma-ritter"
   }
 ]

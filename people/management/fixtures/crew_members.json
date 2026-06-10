@@ -235,9 +235,9 @@
     "slug": "don-simpson"
   },
   {
-  "fa_name": "رومن پولانسکی",
-  "en_name": "Roman Polanski",
-  "slug": "roman-polanski"
+    "fa_name": "رومن پولانسکی",
+    "en_name": "Roman Polanski",
+    "slug": "roman-polanski"
   },
   {
     "fa_name": "گاس ون سنت",
@@ -305,9 +305,9 @@
     "slug": "lim-jun-hyeong"
   },
   {
-  "fa_name": "مت دیمون",
-  "en_name": "Matt Damon",
-  "slug": "matt-damon"
+    "fa_name": "مت دیمون",
+    "en_name": "Matt Damon",
+    "slug": "matt-damon"
   },
   {
     "fa_name": "ترنس وینتر",
@@ -350,9 +350,9 @@
     "slug": "robert-mark-kamen"
   },
   {
-  "fa_name": "جری وینتراوب",
-  "en_name": "Jerry Weintraub",
-  "slug": "jerry-weintraub"
+    "fa_name": "جری وینتراوب",
+    "en_name": "Jerry Weintraub",
+    "slug": "jerry-weintraub"
   },
   {
     "fa_name": "جیمز کامرون",
@@ -473,5 +473,110 @@
     "fa_name": "فوریو اسکارپلی",
     "en_name": "Furio Scarpelli",
     "slug": "furio-scarpelli"
+  },
+  {
+    "fa_name": "کوئنتین تارانتینو",
+    "en_name": "Quentin Tarantino",
+    "slug": "quentin-tarantino"
+  },
+  {
+    "fa_name": "رجینالد هادلین",
+    "en_name": "Reginald Hudlin",
+    "slug": "reginald-hudlin"
+  },
+  {
+    "fa_name": "اولیویه ناکاش",
+    "en_name": "Olivier Nakache",
+    "slug": "olivier-nakache"
+  },
+  {
+    "fa_name": "اریک تولدانو",
+    "en_name": "Éric Toledano",
+    "slug": "eric-toledano"
+  },
+  {
+    "fa_name": "نیکولا دووال آداسوفسکی",
+    "en_name": "Nicolas Duval Adassovsky",
+    "slug": "nicolas-duval-adassovsky"
+  },
+  {
+    "fa_name": "کریستوفر نولان",
+    "en_name": "Christopher Nolan",
+    "slug": "christopher-nolan"
+  },
+  {
+    "fa_name": "جنیفر تاد",
+    "en_name": "Jennifer Todd",
+    "slug": "jennifer-todd"
+  },
+  {
+    "fa_name": "تونی کی",
+    "en_name": "Tony Kaye",
+    "slug": "tony-kaye"
+  },
+  {
+    "fa_name": "دیوید مک‌کنا",
+    "en_name": "David McKenna",
+    "slug": "david-mckenna"
+  },
+  {
+    "fa_name": "جان موریسی",
+    "en_name": "John Morrissey",
+    "slug": "john-morrissey"
+  },
+  {
+    "fa_name": "روبرتو بنینی",
+    "en_name": "Roberto Benigni",
+    "slug": "roberto-benigni"
+  },
+  {
+    "fa_name": "وینچنتزو چرامی",
+    "en_name": "Vincenzo Cerami",
+    "slug": "vincenzo-cerami"
+  },
+  {
+    "fa_name": "امانوئلا کریالزه",
+    "en_name": "Emanuela Crialese",
+    "slug": "emanuela-crialese"
+  },
+  {
+    "fa_name": "جوزپه تورناتوره",
+    "en_name": "Giuseppe Tornatore",
+    "slug": "giuseppe-tornatore"
+  },
+  {
+    "fa_name": "فرانکو کریستالدی",
+    "en_name": "Franco Cristaldi",
+    "slug": "franco-cristaldi"
+  },
+  {
+    "fa_name": "جووانا روماگنولی",
+    "en_name": "Giovanna Romagnoli",
+    "slug": "giovanna-romagnoli"
+  },
+  {
+    "fa_name": "سرجو لئونه",
+    "en_name": "Sergio Leone",
+    "slug": "sergio-leone"
+  },
+  {
+    "fa_name": "سرجو دوناتی",
+    "en_name": "Sergio Donati",
+    "slug": "sergio-donati"
+  },
+  {
+    "fa_name": "فولویا مورسلا",
+    "en_name": "Fulvio Morsella",
+    "slug": "fulvio-morsella"
+  },
+  {
+    "fa_name": "آلفرد هیچکاک",
+    "en_name": "Alfred Hitchcock",
+    "slug": "alfred-hitchcock"
+  },
+  {
+    "fa_name": "جان مایکل هیز",
+    "en_name": "John Michael Hayes",
+    "slug": "john-michael-hayes"
   }
 ]

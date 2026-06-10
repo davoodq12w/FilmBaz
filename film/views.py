@@ -11,7 +11,7 @@ from urllib.parse import urlencode
 from django.core.cache import cache
 
 
-class HomePageView(BaseModelView):
+class HomePageView(View):
     def get(self, request, *args, **kwargs):
         new_movies = Movie.objects.order_by('-release_date')[:7]
         top_movies = Movie.objects.order_by('-rate')[:7]
@@ -23,60 +23,26 @@ class HomePageView(BaseModelView):
         return render(request, "film/home_page.html", context)
 
 
-#
-# class MoviesList(BaseModelView):
-#     filter_fields = ['genre_id', 'adult', 'is_serie', 'country', 'year']
-#     ordering_fields = ['tmdb_rate', 'year']
-#     paginate_by = 20
-#
-#     # /?page=1&genre_id=3&adult=True&year=1999-0-0&country=ES
-#
-#     def get(self, request, *args, **kwargs):
-#
-#         sorted_params = sorted(request.GET.items())
-#         extra = urlencode(sorted_params)
-#         cache_key = self.build_cache_key(request, kind="qs", model=Movie, extra=extra)
-#
-#         movies = cache.get(cache_key)
-#         if movies is not None:
-#             if not movies:
-#                 context = {
-#                     "movies": Movie.objects.none(),
-#                 }
-#             else:
-#                 context = {
-#                     "movies": movies
-#                 }
-#             return render(request, "film/movies_list.html", context)
-#
-#         else:
-#             try:
-#                 try:
-#                     genre_name = Genre.objects.get(id=request.GET.get("genre_id")).en_name
-#                 except Genre.DoesNotExist:
-#                     genre_name = None
-#
-#                 movies = tmdb_movie_list.delay(
-#                     page=request.GET.get("page", 1),
-#                     genre=genre_name,
-#                     adult=request.GET.get("adult", None),
-#                     country=request.GET.get("country", None),
-#                 )
-#
-#                 ids = [movie["id"] for movie in movies]
-#                 movies = Movie.objects.filter(tmdb_id__in=ids)
-#
-#                 cache.set(cache_key, movies)
-#
-#                 context = {"movies": movies}
-#                 return render(request, "film/movies_list.html", context)
-#
-#
-#             except:
-#                 movies = Movie.objects.all()
-#                 page_obj, pagination = self.paginate_queryset(request, movies)
-#                 ...
-#
+class MoviesList(View):
+    filter_fields = ['genre_id', 'adult', 'is_serie', 'country', 'year']
+    ordering_fields = ['release_date', 'rate']
+    paginate_by = 20
+
+    def get(self, request, *args, **kwargs):
+        ordering = request.GET.get("ordering")
+
+        if ordering.lstrip("-") in self.ordering_fields:
+            try:
+                movies = Movie.objects.all().order_by(ordering)
+            except Exception as e:
+                print(f"error in MoviesListView : {e}")
+                movies = Movie.objects.all()
+        else:
+            movies = Movie.objects.all()
+
+        context = {"movies": movies}
+        return render(request, "film/movies_list.html", context)
+
 
 class MovieDetail(View):
 

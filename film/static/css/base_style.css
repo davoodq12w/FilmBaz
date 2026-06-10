@@ -103,6 +103,10 @@ a {
 
         & .title-svg {
             width: 30px;
+
+            & path {
+                color: #ff9f29;
+            }
         }
     }
 
@@ -110,6 +114,10 @@ a {
         display: flex;
         justify-content: space-around;
         align-items: center;
+
+        & span {
+            color: #ff9f29;
+        }
     }
 }
 
@@ -343,10 +351,27 @@ a {
 
     & li {
         width: 100%;
-        height: 20px;
-        display: flex;
+        height: 40px;
         justify-content: space-between;
         align-items: center;
+        margin: 10px 0;
+
+        & .detail-cast {
+            border: 1px solid #3A6351;
+            padding: 5px 2px 5px 5px;
+            border-radius: 5px;
+            background-color: #1c1c1c;
+            display: flex;
+            width: 100%;
+            height: 40px;
+            align-items: center;
+            gap: 10px;
+
+            & img {
+                width: 35px;
+                border-radius: 3px;
+            }
+        }
     }
 }
 
@@ -397,6 +422,7 @@ a {
         }
     }
 }
+
 
 .detail-comments {
     background-color: #000000;

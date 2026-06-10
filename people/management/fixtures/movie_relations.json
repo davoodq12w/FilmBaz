@@ -596,10 +596,6 @@
         "role": "director"
       },
       {
-        "slug": "bong-joon-ho",
-        "role": "writer"
-      },
-      {
         "slug": "han-jin-won",
         "role": "writer"
       },
@@ -639,8 +635,14 @@
       "edward-furlong"
     ],
     "crew": [
-      {"slug": "james-cameron", "role": "director"},
-      {"slug": "james-cameron", "role": "writer"}
+      {
+        "slug": "james-cameron",
+        "role": "director"
+      },
+      {
+        "slug": "james-cameron",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -651,8 +653,14 @@
       "mari-natsuki"
     ],
     "crew": [
-      {"slug": "hayao-miyazaki", "role": "director"},
-      {"slug": "hayao-miyazaki", "role": "writer"}
+      {
+        "slug": "hayao-miyazaki",
+        "role": "director"
+      },
+      {
+        "slug": "hayao-miyazaki",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -663,8 +671,14 @@
       "gary-oldman"
     ],
     "crew": [
-      {"slug": "luc-besson", "role": "director"},
-      {"slug": "luc-besson", "role": "writer"}
+      {
+        "slug": "luc-besson",
+        "role": "director"
+      },
+      {
+        "slug": "luc-besson",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -675,8 +689,14 @@
       "benicio-del-toro"
     ],
     "crew": [
-      {"slug": "bryan-singer", "role": "director"},
-      {"slug": "christopher-mcquarrie", "role": "writer"}
+      {
+        "slug": "bryan-singer",
+        "role": "director"
+      },
+      {
+        "slug": "christopher-mcquarrie",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -687,8 +707,14 @@
       "shima-iwashita"
     ],
     "crew": [
-      {"slug": "masaki-kobayashi", "role": "director"},
-      {"slug": "shinobu-hashimoto", "role": "writer"}
+      {
+        "slug": "masaki-kobayashi",
+        "role": "director"
+      },
+      {
+        "slug": "shinobu-hashimoto",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -699,8 +725,14 @@
       "jack-nicholson"
     ],
     "crew": [
-      {"slug": "martin-scorsese", "role": "director"},
-      {"slug": "william-monahan", "role": "writer"}
+      {
+        "slug": "martin-scorsese",
+        "role": "director"
+      },
+      {
+        "slug": "william-monahan",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -711,8 +743,14 @@
       "melissa-benoist"
     ],
     "crew": [
-      {"slug": "damien-chazelle", "role": "director"},
-      {"slug": "damien-chazelle", "role": "writer"}
+      {
+        "slug": "damien-chazelle",
+        "role": "director"
+      },
+      {
+        "slug": "damien-chazelle",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -723,8 +761,14 @@
       "phellype-haagensen"
     ],
     "crew": [
-      {"slug": "fernando-meirelles", "role": "director"},
-      {"slug": "katia-lund", "role": "director"}
+      {
+        "slug": "fernando-meirelles",
+        "role": "director"
+      },
+      {
+        "slug": "katia-lund",
+        "role": "director"
+      }
     ]
   },
   {
@@ -735,7 +779,10 @@
       "paul-henreid"
     ],
     "crew": [
-      {"slug": "michael-curtiz", "role": "director"}
+      {
+        "slug": "michael-curtiz",
+        "role": "director"
+      }
     ]
   },
   {
@@ -746,7 +793,10 @@
       "vera-miles"
     ],
     "crew": [
-      {"slug": "alfred-hitchcock", "role": "director"}
+      {
+        "slug": "alfred-hitchcock",
+        "role": "director"
+      }
     ]
   },
   {
@@ -757,8 +807,14 @@
       "lea-thompson"
     ],
     "crew": [
-      {"slug": "robert-zemeckis", "role": "director"},
-      {"slug": "bob-gale", "role": "writer"}
+      {
+        "slug": "robert-zemeckis",
+        "role": "director"
+      },
+      {
+        "slug": "bob-gale",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -769,8 +825,14 @@
       "henry-bergman"
     ],
     "crew": [
-      {"slug": "charlie-chaplin", "role": "director"},
-      {"slug": "charlie-chaplin", "role": "writer"}
+      {
+        "slug": "charlie-chaplin",
+        "role": "director"
+      },
+      {
+        "slug": "charlie-chaplin",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -781,8 +843,14 @@
       "john-hurt"
     ],
     "crew": [
-      {"slug": "ridley-scott", "role": "director"},
-      {"slug": "dan-obannon", "role": "writer"}
+      {
+        "slug": "ridley-scott",
+        "role": "director"
+      },
+      {
+        "slug": "dan-obannon",
+        "role": "writer"
+      }
     ]
   },
   {
@@ -793,8 +861,191 @@
       "robert-duvall"
     ],
     "crew": [
-      {"slug": "francis-ford-coppola", "role": "director"},
-      {"slug": "john-milius", "role": "writer"}
+      {
+        "slug": "francis-ford-coppola",
+        "role": "director"
+      },
+      {
+        "slug": "john-milius",
+        "role": "writer"
+      }
     ]
-  }
+  },
+  {
+    "movie_slug": "django-unchained",
+    "casts": [
+      "jamie-foxx",
+      "christoph-waltz",
+      "leonardo-dicaprio"
+    ],
+    "crew": [
+      {
+        "slug": "quentin-tarantino",
+        "role": "director"
+      },
+      {
+        "slug": "quentin-tarantino",
+        "role": "writer"
+      },
+      {
+        "slug": "reginald-hudlin",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "the-intouchables",
+    "casts": [
+      "francois-cluzet",
+      "omar-sy",
+      "anne-le-ny"
+    ],
+    "crew": [
+      {
+        "slug": "eric-toledano",
+        "role": "director"
+      },
+      {
+        "slug": "olivier-nakache",
+        "role": "writer"
+      },
+      {
+        "slug": "nicolas-duval-adassovsky",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "memento",
+    "casts": [
+      "guy-pearce",
+      "carrie-anne-moss",
+      "joe-pantoliano"
+    ],
+    "crew": [
+      {
+        "slug": "christopher-nolan",
+        "role": "director"
+      },
+      {
+        "slug": "christopher-nolan",
+        "role": "writer"
+      },
+      {
+        "slug": "jennifer-todd",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "american-history-x",
+    "casts": [
+      "edward-norton",
+      "edward-furlong",
+      "beverly-dangelo"
+    ],
+    "crew": [
+      {
+        "slug": "tony-kaye",
+        "role": "director"
+      },
+      {
+        "slug": "david-mckenna",
+        "role": "writer"
+      },
+      {
+        "slug": "john-morrissey",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "life-is-beautiful",
+    "casts": [
+      "roberto-benigni",
+      "nicoletta-braschi",
+      "giorgio-cantarini"
+    ],
+    "crew": [
+      {
+        "slug": "roberto-benigni",
+        "role": "director"
+      },
+      {
+        "slug": "vincenzo-cerami",
+        "role": "writer"
+      },
+      {
+        "slug": "emanuela-crialese",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "cinema-paradiso",
+    "casts": [
+      "philippe-noiret",
+      "jacques-perrin",
+      "salvatore-cascio"
+    ],
+    "crew": [
+      {
+        "slug": "giuseppe-tornatore",
+        "role": "director"
+      },
+      {
+        "slug": "giuseppe-tornatore",
+        "role": "writer"
+      },
+      {
+        "slug": "franco-cristaldi",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+    "movie_slug": "once-upon-a-time-in-the-west",
+    "casts": [
+      "henry-fonda",
+      "charles-bronson",
+      "claudia-cardinale"
+    ],
+    "crew": [
+      {
+        "slug": "sergio-leone",
+        "role": "director"
+      },
+      {
+        "slug": "sergio-donati",
+        "role": "writer"
+      },
+      {
+        "slug": "fulvio-morsella",
+        "role": "producer"
+      }
+    ]
+  },
+  {
+  "movie_slug": "rear-window",
+  "casts": [
+    "james-stewart",
+    "grace-kelly",
+    "thelma-ritter"
+  ],
+  "crew": [
+    {
+      "slug": "alfred-hitchcock",
+      "role": "director"
+    },
+    {
+      "slug": "john-michael-hayes",
+      "role": "writer"
+    },
+    {
+      "slug": "alfred-hitchcock",
+      "role": "producer"
+    }
+  ]
+}
 ]
+
