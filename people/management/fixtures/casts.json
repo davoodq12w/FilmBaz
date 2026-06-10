@@ -705,24 +705,9 @@
     "slug": "guy-pearce"
   },
   {
-    "fa_name": "کری-آن ماس",
-    "en_name": "Carrie-Anne Moss",
-    "slug": "carrie-anne-moss"
-  },
-  {
     "fa_name": "جو پانتولیانو",
     "en_name": "Joe Pantoliano",
     "slug": "joe-pantoliano"
-  },
-  {
-    "fa_name": "ادوارد نورتون",
-    "en_name": "Edward Norton",
-    "slug": "edward-norton"
-  },
-  {
-    "fa_name": "ادوارد فرلانگ",
-    "en_name": "Edward Furlong",
-    "slug": "edward-furlong"
   },
   {
     "fa_name": "بورلی دی آنجلو",
@@ -759,11 +744,6 @@
     "en_name": "Salvatore Cascio",
     "slug": "salvatore-cascio"
   },
-    {
-    "fa_name": "هنری فوندا",
-    "en_name": "Henry Fonda",
-    "slug": "henry-fonda"
-  },
   {
     "fa_name": "چارلز برانسون",
     "en_name": "Charles Bronson",
@@ -774,7 +754,7 @@
     "en_name": "Claudia Cardinale",
     "slug": "claudia-cardinale"
   },
-    {
+  {
     "fa_name": "جیمز استوارت",
     "en_name": "James Stewart",
     "slug": "james-stewart"
