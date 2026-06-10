@@ -30,12 +30,14 @@ class MoviesList(View):
 
     def get(self, request, *args, **kwargs):
         ordering = request.GET.get("ordering")
-
-        if ordering.lstrip("-") in self.ordering_fields:
-            try:
-                movies = Movie.objects.all().order_by(ordering)
-            except Exception as e:
-                print(f"error in MoviesListView : {e}")
+        if ordering:
+            if ordering.lstrip("-") in self.ordering_fields:
+                try:
+                    movies = Movie.objects.all().order_by(ordering)
+                except Exception as e:
+                    print(f"error in MoviesListView : {e}")
+                    movies = Movie.objects.all()
+            else:
                 movies = Movie.objects.all()
         else:
             movies = Movie.objects.all()

@@ -109,7 +109,7 @@
                             <p class="detail-cast-name">{{ movie.get_director.fa_name }}</p>
                         </div>
                     </li>
-                    {% if movie.get_producer is not "Unknown" %}
+                    {% if movie.get_producer %}
                         <li>
                             <p>تهیه کننده</p>
                             <div class="detail-cast">
@@ -119,7 +119,7 @@
                             </div>
                         </li>
                     {% endif %}
-                    {% if movie.get_writer is not "Unknown" %}
+                    {% if movie.get_writer %}
                         <li>
                             <p>نویسنده</p>
                             <div class="detail-cast">

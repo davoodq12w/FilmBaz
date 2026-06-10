@@ -103,10 +103,6 @@ a {
 
         & .title-svg {
             width: 30px;
-
-            & path {
-                color: #ff9f29;
-            }
         }
     }
 
@@ -116,6 +112,10 @@ a {
         align-items: center;
 
         & span {
+            color: #ff9f29;
+        }
+
+        & path {
             color: #ff9f29;
         }
     }
@@ -244,7 +244,7 @@ a {
     & .detail-texts {
         padding: 0 20px;
         color: #F5F7F8;
-        width: 20%;
+        width: 30%;
         height: 100%;
 
         & .detail-rate {
@@ -353,10 +353,12 @@ a {
         width: 100%;
         height: fit-content;
         margin: 10px 0;
-        & p{
+
+        & p {
             color: #F5F7F8;
             display: inline;
         }
+
         & .detail-cast {
             border: 1px solid #3A6351;
             padding: 5px 2px 5px 5px;
@@ -367,7 +369,7 @@ a {
             height: 40px;
             align-items: center;
             gap: 10px;
-            margin:5px 0;
+            margin: 5px 0;
 
             & img {
                 width: 35px;
@@ -1700,3 +1702,6 @@ a {
 }
 
 
+.errorlist {
+    color: #F5F7F8;
+}

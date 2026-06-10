@@ -86,21 +86,21 @@ class Movie(models.Model):
         try:
             return self.movie_crews.filter(role="director").first().crew
         except:
-            return "Unknown"
+            return None
 
     @property
     def get_producer(self):
         try:
             return self.movie_crews.filter(role="producer").first().crew
         except:
-            return "Unknown"
+            return None
 
     @property
     def get_writer(self):
         try:
             return self.movie_crews.filter(role="writer").first().crew
         except:
-            return "Unknown"
+            return None
 
 
 class Comment(models.Model):
