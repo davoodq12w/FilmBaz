@@ -8,12 +8,13 @@ from .models import Movie, Comment
 @receiver(post_delete, sender=Movie)
 def clear_movie_cache_after_change(sender, instance, **kwargs):
     conn = get_redis_connection("default")
-    conn.delete_pattern("bmv:qs:*:Movie:*")
-    conn.delete_pattern(f"bmv:obj:*:Movie:{instance.pk}")
+    conn.delete_pattern("movies_list_*")
+    conn.delete_pattern(f"movie_detail_*")
 
 
 @receiver(post_save, sender=Comment)
 @receiver(post_delete, sender=Comment)
 def clear_movie_cache_after_change(sender, instance, **kwargs):
     conn = get_redis_connection("default")
-    conn.delete_pattern("bmv:qs:*:Comment:*")
+    movie = instance.movie
+    conn.delete_pattern(f"movie_comments_{movie.id}_{movie.slug}")

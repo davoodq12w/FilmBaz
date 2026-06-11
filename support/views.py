@@ -2,15 +2,14 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from .models import SupportSession, SupportMessage
-from BaseTemplateViews import BaseModelView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .serializers import SupportSessionSerializer, SupportMessageSerializer
 from django.db.models import Q
+from django.views.generic import View
 
 
-class SupportSessionView(BaseModelView, LoginRequiredMixin):
+class SupportSessionView(View, LoginRequiredMixin):
     model = SupportSession
-    cache_enabled = False
 
     def get(self, request, *args, **kwargs):
         if request.user.is_staff and request.user.is_superuser:

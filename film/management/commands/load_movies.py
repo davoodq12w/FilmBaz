@@ -33,6 +33,7 @@ class Command(BaseCommand):
                         "runtime": data["runtime"],
                         "is_serie": data["is_serie"],
                         "adult": data["adult"],
+                        "description": data["description"],
                     }
                 )
 

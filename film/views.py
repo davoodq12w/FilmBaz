@@ -1,4 +1,3 @@
-import datetime
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
@@ -6,8 +5,6 @@ from django.http import JsonResponse
 from .models import *
 from django.views.generic import View
 from django.contrib.postgres.search import TrigramSimilarity
-from BaseTemplateViews import BaseModelView
-from urllib.parse import urlencode
 from django.core.cache import cache
 
 
@@ -29,18 +26,32 @@ class MoviesList(View):
     paginate_by = 20
 
     def get(self, request, *args, **kwargs):
-        ordering = request.GET.get("ordering")
-        if ordering:
-            if ordering.lstrip("-") in self.ordering_fields:
-                try:
-                    movies = Movie.objects.all().order_by(ordering)
-                except Exception as e:
-                    print(f"error in MoviesListView : {e}")
-                    movies = Movie.objects.all()
-            else:
-                movies = Movie.objects.all()
-        else:
+
+        query_string = request.META.get("QUERY_STRING", "")
+        cache_key = f"movies_list_{query_string}"  # create cache key
+
+        # try to get cached data
+        try:
+            cache_movies = cache.get(cache_key)
+            if cache_movies:
+                context = {"movies": cache_movies}
+                return render(request, "film/movies_list.html", context)
+
+            # if cached data is not avalable
+            # get query set of movies
             movies = Movie.objects.all()
+
+            # aplly ordering
+            ordering = request.GET.get("ordering", None)
+
+            if ordering:
+                if ordering.lstrip("-") in self.ordering_fields:
+                    movies = movies.order_by(ordering)
+
+            # set cache
+            cache.set(cache_key, movies)
+        except Exception as e:
+            print(f"error in MoviesListView : {e}")
 
         context = {"movies": movies}
         return render(request, "film/movies_list.html", context)
@@ -49,9 +60,33 @@ class MoviesList(View):
 class MovieDetail(View):
 
     def get(self, request, pk=None, slug=None, *args, **kwargs):
-        movie = Movie.objects.get(pk=pk, slug=slug)
-        comments = Comment.objects.filter(movie=movie, movie__slug=slug, movie__id=pk)
-        context = {"movie": movie, "comments": comments}
+
+        # create cache key
+        movie_cache_key = f"movie_detail_{pk}_{slug}"
+        comments_cache_key = f"movie_comments_{pk}_{slug}"
+        context = {}
+        # try to get cached data
+        try:
+            cached_movie = cache.get(movie_cache_key)
+            cached_comments = cache.get(comments_cache_key)
+
+            if cached_movie:
+                context["movie"] = cached_movie
+            else:
+                movie = Movie.objects.get(pk=pk, slug=slug)
+                context["movie"] = movie
+                cache.set(movie_cache_key, movie)
+
+            if cached_comments:
+                context["comments"] = cached_comments
+            else:
+                comments = Comment.objects.filter(movie__slug=slug, movie__id=pk)
+                context["comments"] = comments
+                cache.set(comments_cache_key, comments)
+
+        except Exception as e:
+            print(f"error in MovieDetail : {e}")
+
         return render(request, "film/movie_detail.html", context)
 
 

@@ -3,600 +3,819 @@
     "fa_title": "رستگاری در شاوشنک",
     "orj_title": "The Shawshank Redemption",
     "slug": "the-shawshank-redemption",
+    "description": "بانکداری محکوم به حبس ابد در زندان شاشنک، با امید، دوستی و پشتکار تلاش می‌کند در برابر سختی‌های زندان دوام بیاورد.",
     "rate": 9.3,
     "release_date": "1994-09-23",
     "country": "USA",
     "runtime": 142,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama"]
+    "genres": [
+      "drama"
+    ]
   },
   {
     "fa_title": "پدرخوانده",
     "orj_title": "The Godfather",
     "slug": "the-godfather",
+    "description": "پسر جوان خانواده‌ای قدرتمند در مافیای ایتالیا-آمریکایی، به تدریج وارد دنیای جنایت و قدرت می‌شود.",
     "rate": 9.2,
     "release_date": "1972-03-24",
     "country": "USA",
     "runtime": 175,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama"]
+    "genres": [
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "شوالیه تاریکی",
     "orj_title": "The Dark Knight",
     "slug": "the-dark-knight",
+    "description": "بتمن برای متوقف کردن جنایتکاری آشوب‌طلب به نام جوکر، با دشوارترین چالش زندگی خود روبه‌رو می‌شود.",
     "rate": 9.0,
     "release_date": "2008-07-18",
     "country": "USA",
     "runtime": 152,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "crime", "drama"]
+    "genres": [
+      "action",
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "پدرخوانده ۲",
     "orj_title": "The Godfather Part II",
     "slug": "the-godfather-part-ii",
+    "description": "داستان همزمان ظهور ویتو کورلئونه در گذشته و تلاش مایکل برای حفظ امپراتوری خانوادگی در زمان حال را روایت می‌کند.",
     "rate": 9.0,
     "release_date": "1974-12-20",
     "country": "USA",
     "runtime": 202,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama"]
+    "genres": [
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "۱۲ مرد خشمگین",
     "orj_title": "12 Angry Men",
     "slug": "12-angry-men",
+    "description": "دوازده عضو هیئت منصفه درباره سرنوشت یک متهم جوان بحث می‌کنند و یکی از آن‌ها در صحت شواهد تردید دارد.",
     "rate": 9.0,
     "release_date": "1957-04-10",
     "country": "USA",
     "runtime": 96,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama"]
+    "genres": [
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "ارباب حلقه‌ها: بازگشت پادشاه",
     "orj_title": "The Lord of the Rings: The Return of the King",
     "slug": "the-lord-of-the-rings-the-return-of-the-king",
+    "description": "فرودو و سم به مقصد نهایی خود نزدیک می‌شوند، در حالی که سرنوشت سرزمین میانه در نبردی بزرگ تعیین می‌شود.",
     "rate": 9.0,
     "release_date": "2003-12-17",
     "country": "New Zealand",
     "runtime": 201,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "adventure", "fantasy"]
+    "genres": [
+      "action",
+      "adventure",
+      "fantasy"
+    ]
   },
   {
     "fa_title": "فهرست شیندلر",
     "orj_title": "Schindler's List",
     "slug": "schindlers-list",
+    "description": "تاجری آلمانی در دوران جنگ جهانی دوم جان صدها یهودی را از هولوکاست نجات می‌دهد.",
     "rate": 9.0,
     "release_date": "1993-12-15",
     "country": "USA",
     "runtime": 195,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "history"]
+    "genres": [
+      "drama",
+      "history"
+    ]
   },
   {
     "fa_title": "داستان عامه‌پسند",
     "orj_title": "Pulp Fiction",
     "slug": "pulp-fiction",
+    "description": "چند داستان جنایی به ظاهر جداگانه در لس‌آنجلس به شکلی غیرمنتظره به یکدیگر گره می‌خورند.",
     "rate": 8.9,
     "release_date": "1994-10-14",
     "country": "USA",
     "runtime": 154,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama"]
+    "genres": [
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "ارباب حلقه‌ها: یاران حلقه",
     "orj_title": "The Lord of the Rings: The Fellowship of the Ring",
     "slug": "the-lord-of-the-rings-the-fellowship-of-the-ring",
+    "description": "گروهی از قهرمانان برای نابود کردن حلقه‌ای قدرتمند سفری خطرناک را آغاز می‌کنند.",
     "rate": 8.9,
     "release_date": "2001-12-19",
     "country": "New Zealand",
     "runtime": 178,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "adventure", "fantasy"]
+    "genres": [
+      "action",
+      "adventure",
+      "fantasy"
+    ]
   },
   {
     "fa_title": "خوب، بد، زشت",
     "orj_title": "The Good, the Bad and the Ugly",
     "slug": "the-good-the-bad-and-the-ugly",
+    "description": "سه مرد با اهداف متفاوت در جستجوی گنجی پنهان در دوران جنگ داخلی آمریکا هستند.",
     "rate": 8.8,
     "release_date": "1966-12-29",
     "country": "Italy",
     "runtime": 178,
     "is_serie": false,
     "adult": false,
-    "genres": ["western", "adventure"]
+    "genres": [
+      "western",
+      "adventure"
+    ]
   },
   {
     "fa_title": "فارست گامپ",
     "orj_title": "Forrest Gump",
     "slug": "forrest-gump",
+    "description": "مردی ساده‌دل اما مهربان، ناخواسته در بسیاری از رویدادهای مهم تاریخ آمریکا حضور پیدا می‌کند.",
     "rate": 8.8,
     "release_date": "1994-07-06",
     "country": "USA",
     "runtime": 142,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "romance"]
+    "genres": [
+      "drama",
+      "romance"
+    ]
   },
   {
     "fa_title": "ارباب حلقه‌ها: دو برج",
     "orj_title": "The Lord of the Rings: The Two Towers",
     "slug": "the-lord-of-the-rings-the-two-towers",
+    "description": "یاران حلقه از هم جدا می‌شوند و هرکدام برای مقابله با نیروهای تاریکی راه خود را ادامه می‌دهند.",
     "rate": 8.8,
     "release_date": "2002-12-18",
     "country": "New Zealand",
     "runtime": 179,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "adventure", "fantasy"]
+    "genres": [
+      "action",
+      "adventure",
+      "fantasy"
+    ]
   },
   {
     "fa_title": "باشگاه مشت‌زنی",
     "orj_title": "Fight Club",
     "slug": "fight-club",
+    "description": "کارمندی ناراضی با مردی مرموز آشنا می‌شود و باشگاهی زیرزمینی با پیامدهای غیرمنتظره شکل می‌گیرد.",
     "rate": 8.8,
     "release_date": "1999-10-15",
     "country": "USA",
     "runtime": 139,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama"]
+    "genres": [
+      "drama"
+    ]
   },
   {
     "fa_title": "تلقین",
     "orj_title": "Inception",
     "slug": "inception",
+    "description": "گروهی از متخصصان با نفوذ به رویاهای دیگران تلاش می‌کنند ایده‌ای را در ذهن یک هدف بکارند.",
     "rate": 8.8,
     "release_date": "2010-07-16",
     "country": "USA",
     "runtime": 148,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "adventure", "science-fiction"]
+    "genres": [
+      "action",
+      "adventure",
+      "science-fiction"
+    ]
   },
   {
     "fa_title": "امپراتوری ضربه می‌زند",
     "orj_title": "Star Wars: Episode V The Empire Strikes Back",
     "slug": "star-wars-episode-v-the-empire-strikes-back",
+    "description": "نیروهای امپراتوری کهکشانی قهرمانان شورشی را تعقیب می‌کنند و رازهای مهمی فاش می‌شود.",
     "rate": 8.7,
     "release_date": "1980-05-21",
     "country": "USA",
     "runtime": 124,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "adventure", "fantasy"]
+    "genres": [
+      "action",
+      "adventure",
+      "fantasy"
+    ]
   },
   {
     "fa_title": "ماتریکس",
     "orj_title": "The Matrix",
     "slug": "the-matrix",
+    "description": "برنامه‌نویسی جوان متوجه می‌شود واقعیتی که در آن زندگی می‌کند ممکن است چیزی جز یک شبیه‌سازی نباشد.",
     "rate": 8.7,
     "release_date": "1999-03-31",
     "country": "USA",
     "runtime": 136,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "science-fiction"]
+    "genres": [
+      "action",
+      "science-fiction"
+    ]
   },
   {
     "fa_title": "رفقای خوب",
     "orj_title": "Goodfellas",
     "slug": "goodfellas",
+    "description": "جوانی جاه‌طلب از کودکی جذب دنیای مافیا می‌شود و در مسیر رسیدن به قدرت، ثروت و احترام، با پیامدهای خطرناک این زندگی روبه‌رو می‌گردد.",
     "rate": 8.7,
     "release_date": "1990-09-19",
     "country": "USA",
     "runtime": 145,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama"]
+    "genres": [
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "دیوانه از قفس پرید",
     "orj_title": "One Flew Over the Cuckoo's Nest",
     "slug": "one-flew-over-the-cuckoos-nest",
+    "description": "مردی سرکش برای فرار از زندان خود را به بیماری روانی می‌زند، اما در آسایشگاهی روانی با نظامی سختگیرانه و سرکوبگر روبه‌رو می‌شود.",
     "rate": 8.7,
     "release_date": "1975-11-19",
     "country": "USA",
     "runtime": 133,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama"]
+    "genres": [
+      "drama"
+    ]
   },
   {
     "fa_title": "هفت",
     "orj_title": "Se7en",
     "slug": "se7en",
+    "description": "دو کارآگاه در تعقیب قاتلی زنجیره‌ای هستند که جنایت‌هایش را بر اساس هفت گناه کبیره طراحی می‌کند.",
     "rate": 8.6,
     "release_date": "1995-09-22",
     "country": "USA",
     "runtime": 127,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama", "mystery"]
+    "genres": [
+      "crime",
+      "drama",
+      "mystery"
+    ]
   },
   {
     "fa_title": "هفت سامورایی",
     "orj_title": "Seven Samurai",
     "slug": "seven-samurai",
+    "description": "وقتی روستاییان فقیر با تهدید راهزنان روبه‌رو می‌شوند، هفت سامورایی را استخدام می‌کنند تا از روستا دفاع کنند و برای نبردی سرنوشت‌ساز آماده شوند.",
     "rate": 8.6,
     "release_date": "1954-04-26",
     "country": "Japan",
     "runtime": 207,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "drama"]
+    "genres": [
+      "action",
+      "drama"
+    ]
   },
   {
     "fa_title": "زندگی زیباست",
     "orj_title": "Life Is Beautiful",
     "slug": "life-is-beautiful",
+    "description": "پدری فداکار تلاش می‌کند در شرایط وحشتناک جنگ، امید و شادی را برای فرزندش حفظ کند.",
     "rate": 8.6,
     "release_date": "1997-12-20",
     "country": "Italy",
     "runtime": 116,
     "is_serie": false,
     "adult": false,
-    "genres": ["comedy", "drama", "romance"]
+    "genres": [
+      "comedy",
+      "drama",
+      "romance"
+    ]
   },
   {
     "fa_title": "شهر خدا",
     "orj_title": "City of God",
     "slug": "city-of-god",
+    "description": "زندگی چند جوان در محله‌ای فقیر و خشونت‌زده در برزیل روایت می‌شود.",
     "rate": 8.6,
     "release_date": "2002-08-30",
     "country": "Brazil",
     "runtime": 130,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama"]
+    "genres": [
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "بین ستاره‌ای",
     "orj_title": "Interstellar",
     "slug": "interstellar",
+    "description": "گروهی از فضانوردان برای یافتن آینده‌ای جدید برای بشریت، سفری فراتر از منظومه شمسی آغاز می‌کنند.",
     "rate": 8.7,
     "release_date": "2014-11-07",
     "country": "USA",
     "runtime": 169,
     "is_serie": false,
     "adult": false,
-    "genres": ["adventure", "drama", "science-fiction"]
+    "genres": [
+      "adventure",
+      "drama",
+      "science-fiction"
+    ]
   },
   {
     "fa_title": "نجات سرباز رایان",
     "orj_title": "Saving Private Ryan",
     "slug": "saving-private-ryan",
+    "description": "گروهی از سربازان آمریکایی مأمور می‌شوند یک سرباز را از میدان جنگ پیدا و به خانه بازگردانند.",
     "rate": 8.6,
     "release_date": "1998-07-24",
     "country": "USA",
     "runtime": 169,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "war"]
+    "genres": [
+      "drama",
+      "war"
+    ]
   },
   {
     "fa_title": "ترمیناتور ۲: روز داوری",
     "orj_title": "Terminator 2 Judgment Day",
     "slug": "terminator-2-judgment-day",
+    "description": "رباتی از آینده برای محافظت از پسری فرستاده می‌شود که سرنوشت بشریت به او وابسته است.",
     "rate": 8.6,
     "release_date": "1991-07-03",
     "country": "USA",
     "runtime": 137,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "science-fiction"]
+    "genres": [
+      "action",
+      "science-fiction"
+    ]
   },
   {
     "fa_title": "سکوت بره‌ها",
     "orj_title": "The Silence of the Lambs",
     "slug": "the-silence-of-the-lambs",
+    "description": "مامور جوان اف‌بی‌آی برای دستگیری یک قاتل زنجیره‌ای از کمک زندانی خطرناکی بهره می‌گیرد.",
     "rate": 8.6,
     "release_date": "1991-02-14",
     "country": "USA",
     "runtime": 118,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama", "thriller"]
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ]
   },
   {
     "fa_title": "مسیر سبز",
     "orj_title": "The Green Mile",
     "slug": "the-green-mile",
+    "description": "نگهبان زندانی با زندانی مرموزی روبه‌رو می‌شود که توانایی‌های خارق‌العاده‌ای دارد.",
     "rate": 8.6,
     "release_date": "1999-12-10",
     "country": "USA",
     "runtime": 189,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama", "fantasy"]
+    "genres": [
+      "crime",
+      "drama",
+      "fantasy"
+    ]
   },
   {
     "fa_title": "سفر روح",
     "orj_title": "Spirited Away",
     "slug": "spirited-away",
+    "description": "دختری جوان وارد دنیایی جادویی از ارواح و موجودات عجیب می‌شود و برای نجات خانواده‌اش تلاش می‌کند.",
     "rate": 8.6,
     "release_date": "2001-07-20",
     "country": "Japan",
     "runtime": 125,
     "is_serie": false,
     "adult": false,
-    "genres": ["animation", "adventure", "fantasy"]
+    "genres": [
+      "animation",
+      "adventure",
+      "fantasy"
+    ]
   },
   {
     "fa_title": "انگل",
     "orj_title": "Parasite",
     "slug": "parasite",
+    "description": "خانواده‌ای فقیر به تدریج وارد زندگی خانواده‌ای ثروتمند می‌شوند و ماجراهایی پیچیده رقم می‌زنند.",
     "rate": 8.5,
     "release_date": "2019-05-30",
     "country": "South Korea",
     "runtime": 132,
     "is_serie": false,
     "adult": false,
-    "genres": ["comedy", "drama", "thriller"]
+    "genres": [
+      "comedy",
+      "drama",
+      "thriller"
+    ]
   },
   {
     "fa_title": "لئون حرفه‌ای",
     "orj_title": "Léon: The Professional",
     "slug": "leon-the-professional",
+    "description": "قاتلی حرفه‌ای از دختری نوجوان محافظت می‌کند و رابطه‌ای خاص میان آن‌ها شکل می‌گیرد.",
     "rate": 8.5,
     "release_date": "1994-09-14",
     "country": "France",
     "runtime": 110,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "crime", "drama"]
+    "genres": [
+      "action",
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "مظنونین همیشگی",
     "orj_title": "The Usual Suspects",
     "slug": "the-usual-suspects",
+    "description": "بازمانده یک جنایت مرموز، داستانی پیچیده درباره چند تبهکار و فردی افسانه‌ای تعریف می‌کند.",
     "rate": 8.5,
     "release_date": "1995-08-16",
     "country": "USA",
     "runtime": 106,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama", "mystery"]
+    "genres": [
+      "crime",
+      "drama",
+      "mystery"
+    ]
   },
   {
     "fa_title": "هاراکیری",
     "orj_title": "Harakiri",
     "slug": "harakiri",
+    "description": "سامورایی سالخورده‌ای به خانه یک خاندان قدرتمند می‌رود و حقیقتی تلخ را آشکار می‌کند.",
     "rate": 8.6,
     "release_date": "1962-09-15",
     "country": "Japan",
     "runtime": 133,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "drama", "mystery"]
+    "genres": [
+      "action",
+      "drama",
+      "mystery"
+    ]
   },
   {
     "fa_title": "پیانیست",
     "orj_title": "The Pianist",
     "slug": "the-pianist",
+    "description": "پیانیست یهودی در دوران اشغال لهستان برای زنده ماندن تلاش می‌کند.",
     "rate": 8.5,
     "release_date": "2002-09-25",
     "country": "France",
     "runtime": 150,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "music", "war"]
+    "genres": [
+      "drama",
+      "music",
+      "war"
+    ]
   },
   {
     "fa_title": "رفتگان",
     "orj_title": "The Departed",
     "slug": "the-departed",
+    "description": "یک پلیس مخفی و یک جاسوس مافیا تلاش می‌کنند هویت یکدیگر را کشف کنند.",
     "rate": 8.5,
     "release_date": "2006-10-06",
     "country": "USA",
     "runtime": 151,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama", "thriller"]
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ]
   },
   {
     "fa_title": "ویپلش",
     "orj_title": "Whiplash",
     "slug": "whiplash",
+    "description": "نوازنده جوان درام برای رسیدن به موفقیت زیر فشار شدید استاد سختگیر خود قرار می‌گیرد.",
     "rate": 8.5,
     "release_date": "2014-10-10",
     "country": "USA",
     "runtime": 106,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "music"]
+    "genres": [
+      "drama",
+      "music"
+    ]
   },
   {
     "fa_title": "گلادیاتور",
     "orj_title": "Gladiator",
     "slug": "gladiator",
+    "description": "ژنرال رومی پس از خیانت و از دست دادن خانواده‌اش، به گلادیاتوری انتقام‌جو تبدیل می‌شود.",
     "rate": 8.5,
     "release_date": "2000-05-05",
     "country": "USA",
     "runtime": 155,
     "is_serie": false,
     "adult": false,
-    "genres": ["action", "adventure", "drama"]
+    "genres": [
+      "action",
+      "adventure",
+      "drama"
+    ]
   },
   {
     "fa_title": "پرستیژ",
     "orj_title": "The Prestige",
     "slug": "the-prestige",
+    "description": "رقابت دو شعبده‌باز بااستعداد به دشمنی خطرناکی تبدیل می‌شود.",
     "rate": 8.5,
     "release_date": "2006-10-20",
     "country": "USA",
     "runtime": 130,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "mystery", "science-fiction"]
+    "genres": [
+      "drama",
+      "mystery",
+      "science-fiction"
+    ]
   },
   {
     "fa_title": "بازگشت به آینده",
     "orj_title": "Back to the Future",
     "slug": "back-to-the-future",
+    "description": "نوجوانی به گذشته سفر می‌کند و ناخواسته آینده خود و خانواده‌اش را به خطر می‌اندازد.",
     "rate": 8.5,
     "release_date": "1985-07-03",
     "country": "USA",
     "runtime": 116,
     "is_serie": false,
     "adult": false,
-    "genres": ["adventure", "comedy", "science-fiction"]
+    "genres": [
+      "adventure",
+      "comedy",
+      "science-fiction"
+    ]
   },
   {
     "fa_title": "تاریخ مجهول آمریکا",
     "orj_title": "American History X",
     "slug": "american-history-x",
+    "description": "مردی پس از گذراندن دوران زندان تلاش می‌کند برادرش را از مسیر نفرت و خشونت دور کند.",
     "rate": 8.5,
     "release_date": "1998-11-20",
     "country": "USA",
     "runtime": 119,
     "is_serie": false,
     "adult": false,
-    "genres": ["crime", "drama"]
+    "genres": [
+      "crime",
+      "drama"
+    ]
   },
   {
     "fa_title": "کازابلانکا",
     "orj_title": "Casablanca",
     "slug": "casablanca",
+    "description": "در دوران جنگ جهانی دوم، صاحب یک کافه باید میان عشق قدیمی و مسئولیت اخلاقی خود انتخاب کند.",
     "rate": 8.5,
     "release_date": "1942-11-26",
     "country": "USA",
     "runtime": 102,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "romance"]
+    "genres": [
+      "drama",
+      "romance"
+    ]
   },
   {
     "fa_title": "جانگوی رها شده",
     "orj_title": "Django Unchained",
     "slug": "django-unchained",
+    "description": "برده‌ای آزادشده همراه یک شکارچی جایزه‌بگیر برای نجات همسرش راهی سفری خطرناک می‌شود.",
     "rate": 8.5,
     "release_date": "2012-12-25",
     "country": "USA",
     "runtime": 165,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "western"]
+    "genres": [
+      "drama",
+      "western"
+    ]
   },
   {
     "fa_title": "دست‌نیافتنی‌ها",
     "orj_title": "The Intouchables",
     "slug": "the-intouchables",
+    "description": "دوستی غیرمنتظره میان مردی ثروتمند و معلول با مراقب جوانش شکل می‌گیرد.",
     "rate": 8.5,
     "release_date": "2011-11-02",
     "country": "France",
     "runtime": 112,
     "is_serie": false,
     "adult": false,
-    "genres": ["comedy", "drama"]
+    "genres": [
+      "comedy",
+      "drama"
+    ]
   },
   {
     "fa_title": "عصر جدید",
     "orj_title": "Modern Times",
     "slug": "modern-times",
+    "description": "کارگری ساده در عصر صنعتی با مشکلات زندگی مدرن و کارخانه‌های ماشینی دست‌وپنجه نرم می‌کند.",
     "rate": 8.5,
     "release_date": "1936-02-25",
     "country": "USA",
     "runtime": 87,
     "is_serie": false,
     "adult": false,
-    "genres": ["comedy", "drama"]
+    "genres": [
+      "comedy",
+      "drama"
+    ]
   },
   {
     "fa_title": "روانی",
     "orj_title": "Psycho",
     "slug": "psycho",
+    "description": "زنی پس از سرقت پول به متلی دورافتاده پناه می‌برد و با صاحب مرموز آن روبه‌رو می‌شود.",
     "rate": 8.5,
     "release_date": "1960-09-08",
     "country": "USA",
     "runtime": 109,
     "is_serie": false,
     "adult": false,
-    "genres": ["horror", "mystery", "thriller"]
+    "genres": [
+      "horror",
+      "mystery",
+      "thriller"
+    ]
   },
   {
     "fa_title": "روزی روزگاری در غرب",
     "orj_title": "Once Upon a Time in the West",
     "slug": "once-upon-a-time-in-the-west",
+    "description": "چند شخصیت با گذشته‌ها و انگیزه‌های متفاوت درگیر نبردی بر سر زمین و قدرت می‌شوند.",
     "rate": 8.5,
     "release_date": "1968-12-21",
     "country": "Italy",
     "runtime": 165,
     "is_serie": false,
     "adult": false,
-    "genres": ["western"]
+    "genres": [
+      "western"
+    ]
   },
   {
     "fa_title": "پنجره عقبی",
     "orj_title": "Rear Window",
     "slug": "rear-window",
+    "description": "عکاسی که خانه‌نشین شده، از پنجره آپارتمانش به همسایه‌ها نگاه می‌کند و به جنایتی مشکوک می‌شود.",
     "rate": 8.5,
     "release_date": "1954-09-01",
     "country": "USA",
     "runtime": 112,
     "is_serie": false,
     "adult": false,
-    "genres": ["mystery", "thriller"]
+    "genres": [
+      "mystery",
+      "thriller"
+    ]
   },
   {
     "fa_title": "بیگانه",
     "orj_title": "Alien",
     "slug": "alien",
+    "description": "خدمه یک سفینه فضایی با موجودی مرگبار و ناشناخته روبه‌رو می‌شوند.",
     "rate": 8.5,
     "release_date": "1979-05-25",
     "country": "USA",
     "runtime": 117,
     "is_serie": false,
     "adult": false,
-    "genres": ["horror", "science-fiction"]
+    "genres": [
+      "horror",
+      "science-fiction"
+    ]
   },
   {
     "fa_title": "یادگاری",
     "orj_title": "Memento",
     "slug": "memento",
+    "description": "مردی که حافظه کوتاه‌مدتش را از دست داده، به دنبال قاتل همسرش می‌گردد.",
     "rate": 8.4,
     "release_date": "2000-10-11",
     "country": "USA",
     "runtime": 113,
     "is_serie": false,
     "adult": false,
-    "genres": ["mystery", "thriller"]
+    "genres": [
+      "mystery",
+      "thriller"
+    ]
   },
   {
     "fa_title": "اینک آخرالزمان",
     "orj_title": "Apocalypse Now",
     "slug": "apocalypse-now",
+    "description": "افسر ارتش آمریکا مأمور می‌شود در دل جنگ ویتنام فرمانده‌ای سرکش را پیدا کند.",
     "rate": 8.4,
     "release_date": "1979-08-15",
     "country": "USA",
     "runtime": 147,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "mystery", "war"]
+    "genres": [
+      "drama",
+      "mystery",
+      "war"
+    ]
   },
   {
     "fa_title": "سینما پارادیزو",
     "orj_title": "Cinema Paradiso",
     "slug": "cinema-paradiso",
+    "description": "فیلمسازی موفق با یادآوری دوران کودکی خود و سینمای محلی شهرش به گذشته بازمی‌گردد.",
     "rate": 8.5,
     "release_date": "1988-11-17",
     "country": "Italy",
     "runtime": 155,
     "is_serie": false,
     "adult": false,
-    "genres": ["drama", "romance"]
+    "genres": [
+      "drama",
+      "romance"
+    ]
   }
 ]
