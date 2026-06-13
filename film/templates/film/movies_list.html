@@ -1,9 +1,110 @@
 {% extends "parents/base.html" %}
 {% block title %}Movie List{% endblock %}
 {% block body %}
-    <div class="movies">
+    <div class="movies-list-navbar">
+        <div class="movies-list-fillters">
+            <h4 style="width: 40%;">فیلتر بر اساس :</h4>
+
+            <!-- Genre Dropdown -->
+            <div class="filter-dropdown" id="genre-dropdown">
+                <button type="button" class="filter-btn">
+                    {{ genre_label }}
+                </button>
+
+                <div class="dropdown-menu dropdown-grid">
+                    <a class="{% if not selected_genre %}active-item{% endif %}"
+                            href="{% url 'film:movies_list' %}?{% if selected_adult %}adult={{ selected_adult }}&{% endif %}{% if selected_release_date %}release_date={{ selected_release_date }}&{% endif %}{% if selected_ordering %}ordering={{ selected_ordering }}{% endif %}">
+                        همه ژانرها
+                    </a>
+
+                    {% for genre in genres %}
+                        <a class="{% if selected_genre == genre.id|stringformat:'s' %}active-item{% endif %}"
+                                href="{% url 'film:movies_list' %}?genre_id={{ genre.id }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                            {{ genre.fa_name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Adult Dropdown -->
+            <div class="filter-dropdown">
+                <button type="button" class="filter-btn">
+                    {{ adult_label }}
+                </button>
+                <div class="dropdown-menu">
+                    <a href="{% url 'film:movies_list' %}?{% if selected_genre %}genre_id={{ selected_genre }}&{% endif %}{% if selected_release_date %}release_date={{ selected_release_date }}&{% endif %}{% if selected_ordering %}ordering={{ selected_ordering }}{% endif %}">
+                        همه رده‌ها
+                    </a>
+
+                    <a href="{% url 'film:movies_list' %}?adult=false{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                        کودک و نوجوان
+                    </a>
+
+                    <a href="{% url 'film:movies_list' %}?adult=true{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                        بزرگسال
+                    </a>
+                </div>
+            </div>
+
+            <!-- Release Year Dropdown -->
+            <div class="filter-dropdown" id="year-dropdown">
+                <button type="button" class="filter-btn">
+                    {{ release_date_label }}
+                </button>
+
+                <div class="dropdown-menu dropdown-grid">
+                    <a href="{% url 'film:movies_list' %}?{% if selected_genre %}genre_id={{ selected_genre }}&{% endif %}{% if selected_adult %}adult={{ selected_adult }}&{% endif %}{% if selected_ordering %}ordering={{ selected_ordering }}{% endif %}">
+                        همه سال‌ها
+                    </a>
+
+                    {% for year in years %}
+                        <a href="{% url 'film:movies_list' %}?release_date={{ year }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                            {{ year }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="movies-list-ordering">
+            <h4>مرتب شده بر اساس :</h4>
+
+            <div class="filter-dropdown">
+                <button type="button" class="filter-btn">
+                    {{ ordering_label }}
+                </button>
+                <div class="dropdown-menu">
+                    <a href="{% url 'film:movies_list' %}?{% if selected_genre %}genre_id={{ selected_genre }}&{% endif %}{% if selected_adult %}adult={{ selected_adult }}&{% endif %}{% if selected_release_date %}release_date={{ selected_release_date }}{% endif %}">
+                        پیش‌فرض
+                    </a>
+
+                    <a href="{% url 'film:movies_list' %}?ordering=-release_date{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
+                        جدیدترین
+                    </a>
+
+                    <a href="{% url 'film:movies_list' %}?ordering=release_date{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
+                        قدیمی‌ترین
+                    </a>
+
+                    <a href="{% url 'film:movies_list' %}?ordering=-rate{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
+                        بیشترین امتیاز
+                    </a>
+
+                    <a href="{% url 'film:movies_list' %}?ordering=rate{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
+                        کمترین امتیاز
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <a class="movies-list-return-home-page" href="{% url 'film:home_page' %}">
+            بازگشت به صفحه اصلی >>
+        </a>
+    </div>
+    <div class="movies-list">
         {% for movie in movies %}
-           <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
+            <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
                 <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster"
                      data-movie-id="{{ movie.id }}">
                 <p class="movie-title">{{ movie.fa_title }}</p>
@@ -33,4 +134,43 @@
             </a>
         {% endfor %}
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dropdowns = document.querySelectorAll(".filter-dropdown");
+
+            dropdowns.forEach(dropdown => {
+                const button = dropdown.querySelector(".filter-btn");
+                const menu = dropdown.querySelector(".dropdown-menu");
+
+                button.addEventListener("click", function (e) {
+                    e.stopPropagation();
+
+                    dropdowns.forEach(item => {
+                        if (item !== dropdown) {
+                            item.classList.remove("open");
+                        }
+                    });
+
+                    dropdown.classList.toggle("open");
+                });
+
+                if (menu) {
+                    menu.addEventListener("mouseleave", function () {
+                        dropdown.classList.remove("open");
+                    });
+
+                    menu.addEventListener("click", function (e) {
+                        e.stopPropagation();
+                    });
+                }
+            });
+
+            document.addEventListener("click", function () {
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove("open");
+                });
+            });
+        });
+    </script>
 {% endblock %}

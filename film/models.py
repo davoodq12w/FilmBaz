@@ -1,7 +1,6 @@
 from django.db import models
 from django_resized import ResizedImageField
 from account.models import FilmBazUser
-from django.utils.text import slugify
 
 
 class Genre(models.Model):

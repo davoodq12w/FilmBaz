@@ -6,6 +6,7 @@ from .models import *
 from django.views.generic import View
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.cache import cache
+import hashlib
 
 
 class HomePageView(View):
@@ -21,39 +22,180 @@ class HomePageView(View):
 
 
 class MoviesList(View):
-    filter_fields = ['genre_id', 'adult', 'is_serie', 'country', 'year']
+    filter_fields = ['genre_id', 'adult', 'release_date']
     ordering_fields = ['release_date', 'rate']
     paginate_by = 20
+    cache_timeout = 60 * 15  # 15 minutes
+
+    def get_cache_key(self, request):
+        """
+        ساخت cache key بر اساس query params.
+        طوری که این دو URL یک cache key یکسان داشته باشند:
+
+        ?genre_id=2&year=2024
+        ?year=2024&genre_id=2
+        """
+
+        params = []
+
+        for key, values in request.GET.lists():
+            for value in values:
+                params.append((key, value))
+
+        params = sorted(params)
+
+        raw_key = str(params).encode("utf-8")
+        hashed_key = hashlib.sha256(raw_key).hexdigest()
+
+        return f"movies_list_{hashed_key}"
+
+    def get_filters(self, request):
+        """
+        گرفتن فیلترهای معتبر از query string
+        """
+        filters = {}
+
+        for field in self.filter_fields:
+            value = request.GET.get(field)
+
+            if value in [None, ""]:
+                continue
+
+            if field == "adult":
+                value = value.lower()
+
+                if value == "true":
+                    filters["adult"] = True
+                elif value == "false":
+                    filters["adult"] = False
+
+            elif field == "genre_id":
+                try:
+                    filters["genres__id"] = int(value)
+                except ValueError:
+                    continue
+
+
+            elif field == "release_date":
+                try:
+                    filters["release_date__year"] = int(value)
+                except ValueError:
+                    continue
+
+        return filters
+
+    def get_ordering(self, request):
+        """
+        گرفتن ordering معتبر
+        """
+
+        ordering = request.GET.get("ordering")
+
+        if ordering and ordering.lstrip("-") in self.ordering_fields:
+            return ordering
+
+        return None
+
+    def get_context_labels(self, request):
+        adult = request.GET.get("adult")
+        genre_id = request.GET.get("genre_id")
+        release_date = request.GET.get("release_date")
+        ordering = request.GET.get("ordering")
+
+        if adult == "false":
+            adult_label = "کودک و نوجوان"
+        elif adult == "true":
+            adult_label = "بزرگسال"
+        else:
+            adult_label = "بزرگسال"
+
+        genre_label = "ژانر ها"
+
+        if genre_id:
+            genre = Genre.objects.filter(id=genre_id).first()
+            if genre:
+                genre_label = genre.fa_name
+
+        ordering_map = {
+            "release_date": "قدیمی‌ترین",
+            "-release_date": "جدیدترین",
+            "rate": "کمترین امتیاز",
+            "-rate": "بیشترین امتیاز",
+        }
+        ordering_label = ordering_map.get(ordering, "پیش‌فرض")
+
+        # get genres
+        cache_marker = object()
+        genres = cache.get("genres", cache_marker)
+
+        if genres is cache_marker:
+            genres = list(Genre.objects.all())
+            cache.set("genres", genres, 60 * 60)
+
+        # get_years
+        years = [
+            date_obj.year
+            for date_obj in Movie.objects.filter(release_date__isnull=False).dates('release_date', 'year')
+        ]
+
+        return {
+            "selected_genre": genre_id,
+            "selected_adult": adult,
+            "selected_release_date": release_date,
+            "selected_ordering": ordering,
+            "genre_label": genre_label,
+            "adult_label": adult_label,
+            "release_date_label": release_date if release_date else "سال ساخت",
+            "ordering_label": ordering_label,
+            "genres": genres,
+            "years": years,
+        }
 
     def get(self, request, *args, **kwargs):
 
-        query_string = request.META.get("QUERY_STRING", "")
-        cache_key = f"movies_list_{query_string}"  # create cache key
+        # cache
+        cache_key = self.get_cache_key(request)
+        cache_marker = object()
+        cached_movies = cache.get(cache_key, cache_marker)
 
-        # try to get cached data
-        try:
-            cache_movies = cache.get(cache_key)
-            if cache_movies:
-                context = {"movies": cache_movies}
-                return render(request, "film/movies_list.html", context)
+        # if cache avalable render page
+        if cached_movies is not cache_marker:
+            context = {
+                "movies": cached_movies,
+            }
+            context.update(self.get_context_labels(request))
 
-            # if cached data is not avalable
-            # get query set of movies
-            movies = Movie.objects.all()
+            return render(request, "film/movies_list.html", context)
 
-            # aplly ordering
-            ordering = request.GET.get("ordering", None)
+        # get base qs
+        movies = Movie.objects.all()
 
-            if ordering:
-                if ordering.lstrip("-") in self.ordering_fields:
-                    movies = movies.order_by(ordering)
+        # get filters
+        filters = self.get_filters(request)
 
-            # set cache
-            cache.set(cache_key, movies)
-        except Exception as e:
-            print(f"error in MoviesListView : {e}")
+        # applay filters
+        if filters:
+            movies = movies.filter(**filters)
 
-        context = {"movies": movies}
+        # get ordering
+        ordering = self.get_ordering(request)
+
+        # applay ordering
+        if ordering:
+            movies = movies.order_by(ordering)
+
+        movies = list(movies)
+
+        # set new cache
+        cache.set(cache_key, movies, timeout=self.cache_timeout)
+
+        # create context
+        context = {
+            "movies": movies,
+        }
+        # add labels for context
+        context.update(self.get_context_labels(request))
+
         return render(request, "film/movies_list.html", context)
 
 
