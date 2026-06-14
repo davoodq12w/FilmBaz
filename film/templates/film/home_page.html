@@ -11,7 +11,7 @@
 
             <span>تازه ترین ها</span>
         </h2>
-        <a class="list-more" href="{% url 'film:movies_list' %}?ordering=-release_date">
+        <a class="list-more" href="{% url 'film:movies_list' %}?ordering=-release_date&page_size=21">
             <span>بیشتر</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
                 <path fill-rule="evenodd"
@@ -64,7 +64,7 @@
 
             <span>برترین ها</span>
         </h2>
-        <a class="list-more" href="{% url 'film:movies_list' %}?ordering=-rate">
+        <a class="list-more" href="{% url 'film:movies_list' %}?ordering=-rate&page_size=21">
             <span>بیشتر</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
                 <path fill-rule="evenodd"

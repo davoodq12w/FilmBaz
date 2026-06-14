@@ -13,13 +13,18 @@
 
                 <div class="dropdown-menu dropdown-grid">
                     <a class="{% if not selected_genre %}active-item{% endif %}"
-                            href="{% url 'film:movies_list' %}?{% if selected_adult %}adult={{ selected_adult }}&{% endif %}{% if selected_release_date %}release_date={{ selected_release_date }}&{% endif %}{% if selected_ordering %}ordering={{ selected_ordering }}{% endif %}">
+                       href="{% url 'film:movies_list' %}?{% if selected_adult %}adult={{ selected_adult }}&{% endif %}{% if selected_release_date %}release_date={{ selected_release_date }}&{% endif %}{% if selected_ordering %}ordering={{ selected_ordering }}{% endif %}">
                         همه ژانرها
                     </a>
 
                     {% for genre in genres %}
                         <a class="{% if selected_genre == genre.id|stringformat:'s' %}active-item{% endif %}"
-                                href="{% url 'film:movies_list' %}?genre_id={{ genre.id }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                           href="{% url 'film:movies_list' %}?genre_id=
+
+
+
+
+                                   {{ genre.id }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                             {{ genre.fa_name }}
                         </a>
                     {% endfor %}
@@ -58,7 +63,12 @@
                     </a>
 
                     {% for year in years %}
-                        <a href="{% url 'film:movies_list' %}?release_date={{ year }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                        <a href="{% url 'film:movies_list' %}?release_date=
+
+
+
+
+                                {{ year }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                             {{ year }}
                         </a>
                     {% endfor %}
@@ -102,75 +112,90 @@
             بازگشت به صفحه اصلی >>
         </a>
     </div>
-    <div class="movies-list">
-        {% for movie in movies %}
-            <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
-                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster"
-                     data-movie-id="{{ movie.id }}">
-                <p class="movie-title">{{ movie.fa_title }}</p>
-                <div class="movie-detail-hidden" id="detail-{{ movie.id }}">
-                    <div class="movie-director">
-                        <span>کارگردان : </span>
-                        <span>{{ movie.get_director }}</span>
-                    </div>
-                    <div class="movie-year">
-                        <span>سال ساخت : </span>
-                        <span>{{ movie.release_date }}</span>
-                    </div>
-                    <div class="movie-rate">
-                        <span>امتیاز در IMDB : </span>
-                        <div>
-                            <span>{{ movie.rate }}</span>
-                        </div>
-                    </div>
-                    <div class="movie-genres">
-                        <div class="genres">
-                            {% for genre in movie.genres.all %}
-                                <span>{{ genre.fa_name }}{% if not forloop.last %} , {% endif %}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </a>
-        {% endfor %}
+    <div class="movies-list" id="movies-list">
+        {% include "ajax/movie_cards.html" with movies=movies %}
     </div>
 
+    <div id="movies-loader" style="height: 40px;"></div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const dropdowns = document.querySelectorAll(".filter-dropdown");
+        $(document).ready(function () {
+            const dropdowns = $(".filter-dropdown");
+            const moviesList = $("#movies-list");
+            const loader = $("#movies-loader");
 
-            dropdowns.forEach(dropdown => {
-                const button = dropdown.querySelector(".filter-btn");
-                const menu = dropdown.querySelector(".dropdown-menu");
+            let nextPage = 2;
+            let hasNext = true;
+            let isLoading = false;
 
-                button.addEventListener("click", function (e) {
+            const observer = new IntersectionObserver(function (entries) {
+                if (!entries[0].isIntersecting || !hasNext || isLoading) {
+                    return;
+                }
+
+                isLoading = true;
+
+                const url = new URL(window.location.href);
+                url.searchParams.set("page", nextPage);
+                url.searchParams.set("page_size", "21");
+
+                $.ajax({
+                    url: url.toString(),
+                    type: "GET",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    success: function (data) {
+                        moviesList.append(data.html);
+
+                        hasNext = data.has_next;
+                        nextPage = data.next_page;
+
+                        if (!hasNext) {
+                            observer.disconnect();
+                            loader.remove();
+                        }
+                    },
+                    complete: function () {
+                        isLoading = false;
+                    }
+                });
+            });
+
+            observer.observe(loader[0]);
+
+            dropdowns.each(function () {
+                const dropdown = $(this);
+                const button = dropdown.find(".filter-btn");
+                const menu = dropdown.find(".dropdown-menu");
+
+                button.on("click", function (e) {
                     e.stopPropagation();
 
-                    dropdowns.forEach(item => {
-                        if (item !== dropdown) {
-                            item.classList.remove("open");
-                        }
-                    });
-
-                    dropdown.classList.toggle("open");
+                    dropdowns.not(dropdown).removeClass("open");
+                    dropdown.toggleClass("open");
                 });
 
-                if (menu) {
-                    menu.addEventListener("mouseleave", function () {
-                        dropdown.classList.remove("open");
+                if (menu.length) {
+                    menu.on("mouseleave", function () {
+                        dropdown.removeClass("open");
                     });
 
-                    menu.addEventListener("click", function (e) {
+                    menu.on("click", function (e) {
                         e.stopPropagation();
                     });
                 }
             });
 
-            document.addEventListener("click", function () {
-                dropdowns.forEach(dropdown => {
-                    dropdown.classList.remove("open");
-                });
+            $(document).on("click", function () {
+                dropdowns.removeClass("open");
             });
         });
     </script>
+
 {% endblock %}

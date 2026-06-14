@@ -7,6 +7,10 @@ from django.views.generic import View
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.cache import cache
 import hashlib
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+
 
 
 class HomePageView(View):
@@ -26,19 +30,18 @@ class MoviesList(View):
     ordering_fields = ['release_date', 'rate']
     paginate_by = 20
     cache_timeout = 60 * 15  # 15 minutes
+    min_paginate_by = 7
+    max_paginate_by = 30
 
     def get_cache_key(self, request):
-        """
-        ساخت cache key بر اساس query params.
-        طوری که این دو URL یک cache key یکسان داشته باشند:
-
-        ?genre_id=2&year=2024
-        ?year=2024&genre_id=2
-        """
-
         params = []
 
+        ignored_params = {"page", "page_size"}
+
         for key, values in request.GET.lists():
+            if key in ignored_params:
+                continue
+
             for value in values:
                 params.append((key, value))
 
@@ -151,6 +154,29 @@ class MoviesList(View):
             "years": years,
         }
 
+    def get_page_size(self, request):
+        try:
+            page_size = int(request.GET.get("page_size", self.paginate_by))
+        except ValueError:
+            page_size = self.paginate_by
+
+        return max(self.min_paginate_by, min(page_size, self.max_paginate_by))
+
+    def paginate_movies(self, request, movies):
+        page_size = self.get_page_size(request)
+        page_number = request.GET.get("page", 1)
+
+        paginator = Paginator(movies, page_size)
+
+        try:
+            page_obj = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+
+        return page_obj, paginator, page_size
+
     def get(self, request, *args, **kwargs):
 
         # cache
@@ -160,8 +186,26 @@ class MoviesList(View):
 
         # if cache avalable render page
         if cached_movies is not cache_marker:
+            page_obj, paginator, page_size = self.paginate_movies(request, cached_movies)
+
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                html = render_to_string(
+                    "ajax/movie_cards.html",
+                    {"movies": page_obj},
+                    request=request
+                )
+
+                return JsonResponse({
+                    "html": html,
+                    "has_next": page_obj.has_next(),
+                    "next_page": page_obj.next_page_number() if page_obj.has_next() else None,
+                })
+
             context = {
-                "movies": cached_movies,
+                "movies": page_obj,
+                "page_obj": page_obj,
+                "paginator": paginator,
+                "page_size": page_size,
             }
             context.update(self.get_context_labels(request))
 
@@ -186,12 +230,31 @@ class MoviesList(View):
 
         movies = list(movies)
 
+        page_obj, paginator, page_size = self.paginate_movies(request, movies)
+
+        # if request is AJAX
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            html = render_to_string(
+                "ajax/movie_cards.html",
+                {"movies": page_obj},
+                request=request
+            )
+
+            return JsonResponse({
+                "html": html,
+                "has_next": page_obj.has_next(),
+                "next_page": page_obj.next_page_number() if page_obj.has_next() else None,
+            })
+
         # set new cache
         cache.set(cache_key, movies, timeout=self.cache_timeout)
 
         # create context
         context = {
-            "movies": movies,
+            "movies": page_obj,
+            "page_obj": page_obj,
+            "paginator": paginator,
+            "page_size": page_size,
         }
         # add labels for context
         context.update(self.get_context_labels(request))

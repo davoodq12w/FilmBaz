@@ -1,0 +1,30 @@
+{% for movie in movies %}
+    <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster"
+             data-movie-id="{{ movie.id }}">
+        <p class="movie-title">{{ movie.fa_title }}</p>
+        <div class="movie-detail-hidden" id="detail-{{ movie.id }}">
+            <div class="movie-director">
+                <span>کارگردان : </span>
+                <span>{{ movie.get_director }}</span>
+            </div>
+            <div class="movie-year">
+                <span>سال ساخت : </span>
+                <span>{{ movie.release_date }}</span>
+            </div>
+            <div class="movie-rate">
+                <span>امتیاز در IMDB : </span>
+                <div>
+                    <span>{{ movie.rate }}</span>
+                </div>
+            </div>
+            <div class="movie-genres">
+                <div class="genres">
+                    {% for genre in movie.genres.all %}
+                        <span>{{ genre.fa_name }}{% if not forloop.last %} , {% endif %}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </a>
+{% endfor %}
