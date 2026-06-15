@@ -8,7 +8,6 @@ class Cast(models.Model):
     slug = models.SlugField(
         max_length=200,
         unique=True,
-        db_index=True
     )
 
     image = ResizedImageField(
@@ -39,7 +38,6 @@ class CrewMember(models.Model):
     slug = models.SlugField(
         max_length=200,
         unique=True,
-        db_index=True
     )
 
     image = ResizedImageField(
@@ -89,4 +87,4 @@ class MovieCrew(models.Model):
         )
 
     def __str__(self):
-        return f"{self.movie} - {self.crew} ({self.role})"
+        return f"{self.movie.orj_title} - {self.crew.en_name} ({self.role})"
