@@ -1,6 +1,7 @@
 from django.db import models
 from django_resized import ResizedImageField
 from account.models import FilmBazUser
+from people.models import MovieCrew
 
 
 class Genre(models.Model):
@@ -9,14 +10,10 @@ class Genre(models.Model):
     slug = models.SlugField(
         max_length=200,
         unique=True,
-        db_index=True
     )
 
     class Meta:
         ordering = ['en_name']
-        indexes = [
-            models.Index(fields=['en_name']),
-        ]
 
     def __str__(self):
         return f"{self.en_name}/{self.fa_name}"
@@ -59,9 +56,6 @@ class Movie(models.Model):
 
     class Meta:
         ordering = ['-created']
-        indexes = [
-            models.Index(fields=['-created']),
-        ]
 
     def __str__(self):
         return f"{self.fa_title} - {self.release_date}"
@@ -82,35 +76,34 @@ class Movie(models.Model):
 
     @property
     def get_director(self):
-        try:
-            return self.movie_crews.filter(role="director").first().crew
-        except:
-            return None
+        movie_crew = self.movie_crews.filter(
+            role=MovieCrew.CrewRole.DIRECTOR
+        ).first()
+
+        return movie_crew.crew if movie_crew else None
 
     @property
     def get_producer(self):
-        try:
-            return self.movie_crews.filter(role="producer").first().crew
-        except:
-            return None
+        movie_crew = self.movie_crews.filter(
+            role=MovieCrew.CrewRole.PRODUCER
+        ).first()
+
+        return movie_crew.crew if movie_crew else None
 
     @property
     def get_writer(self):
-        try:
-            return self.movie_crews.filter(role="writer").first().crew
-        except:
-            return None
+        movie_crew = self.movie_crews.filter(
+            role=MovieCrew.CrewRole.WRITER
+        ).first()
+
+        return movie_crew.crew if movie_crew else None
 
 
 class Comment(models.Model):
     text = models.TextField(max_length=300)
     movie = models.ForeignKey(Movie, related_name="comments", on_delete=models.CASCADE)
     user = models.ForeignKey(FilmBazUser, related_name="comments", on_delete=models.CASCADE)
-
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created']
-        indexes = [
-            models.Index(fields=['-created'])
-        ]
