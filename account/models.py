@@ -44,7 +44,6 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
         ordering = ['username', '-created']
         indexes = [
             models.Index(fields=['username']),
-            models.Index(fields=['-created']),
         ]
 
     def __str__(self):
