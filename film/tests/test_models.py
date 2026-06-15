@@ -1,3 +1,4 @@
+from datetime import date
 from django.test import TestCase
 from film.models import Genre, Movie
 from people.models import CrewMember, MovieCrew
