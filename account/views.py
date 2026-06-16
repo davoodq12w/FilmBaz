@@ -22,7 +22,7 @@ class UserLogout(LogoutView):
 class CreateUser(FormView):
     template_name = "authentication/create_user.html"
     form_class = CreateUserForm
-    success_url = reverse_lazy("film:movies_list")
+    success_url = reverse_lazy("film:home_page")
 
     def _create_user(self, data):
         password = data.get('password')
@@ -61,12 +61,7 @@ class EditUser(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        try:
-            user = FilmBazUser.objects.get(id=self.request.user.id)
-        except Exception as e:
-            raise ValueError(f"error: {e}")
-
-        context["user"] = user
+        context["user"] = self.request.user
         return context
 
 

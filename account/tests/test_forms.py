@@ -124,7 +124,7 @@ class TestEditUserForm(TestCase):
 
     def setUp(self):
         self.user = FilmBazUser.objects.create(username="davoodq12w", phone="09037246850",
-                                          email="davod.q12w@gmail.com", password="davodrashi13811212")
+                                               email="davod.q12w@gmail.com", password="davodrashi13811212")
         self.data = {
             "username": "not_davood",
             "email": "not_davood@gmail.com",
@@ -135,8 +135,8 @@ class TestEditUserForm(TestCase):
     def test_edit_user_is_valid(self):
         form = EditUserForm(instance=self.user, data=self.data)
 
-        self.assertEqual(len(form.errors), 0)
         self.assertTrue(form.is_valid())
+        self.assertEqual(len(form.errors), 0)
 
     def test_username_is_not_valid(self):
         data = self.data
@@ -144,8 +144,8 @@ class TestEditUserForm(TestCase):
 
         form = EditUserForm(instance=self.user, data=data)
 
-        self.assertIn("نام کاربری باید از اعداد و حروف و _ تشکیل شده باشد", form.errors["username"])
         self.assertFalse(form.is_valid())
+        self.assertIn("نام کاربری باید از اعداد و حروف و _ تشکیل شده باشد", form.errors["username"])
 
     def test_username_is_exists(self):
         data = self.data
@@ -218,6 +218,15 @@ class TestEditUserForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('شماره تلفن باید با 09 شروع شود', form.errors["phone"])
 
+    def test_phone_valid(self):
+        data = self.data.copy()
+        data["phone"] = "09000000000"
+
+        form = EditUserForm(instance=self.user, data=data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(len(form.errors), 0)
+
     def test_email_is_not_valid(self):
         emails = [
             "davood@gmail.comm",
@@ -250,5 +259,36 @@ class TestEditUserForm(TestCase):
 
         form = EditUserForm(instance=self.user, data=data)
 
-        self.assertTrue(form.is_valid)
+        self.assertTrue(form.is_valid())
         self.assertEqual(len(form.errors), 0)
+
+    def test_email_valid(self):
+        data = self.data.copy()
+        data["email"] = "new_email@gmail.com"
+
+        form = EditUserForm(instance=self.user, data=data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(len(form.errors), 0)
+
+    def test_image_is_optional(self):
+        data = self.data.copy()
+        data["image"] = None
+
+        form = EditUserForm(instance=self.user, data=data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(len(form.errors), 0)
+
+    def test_form_updates_user_instance(self):
+        data = self.data.copy()
+
+        form = EditUserForm(instance=self.user, data=data)
+
+        self.assertTrue(form.is_valid())
+
+        user = form.save()
+
+        self.assertEqual(user.username, "not_davood")
+        self.assertEqual(user.email, "not_davood@gmail.com")
+        self.assertEqual(user.phone, "09000000000")

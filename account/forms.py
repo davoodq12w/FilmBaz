@@ -28,7 +28,7 @@ class LoginForm(AuthenticationForm):
         is_valid = re.findall(r"^[a-zA-Z0-9_]+$", username)
 
         if not is_valid:
-            raise forms.ValidationError("نام کاربری باید از اعداد و حروف و _ تشکیل شده باشد!")
+            raise forms.ValidationError("نام کاربری باید از اعداد و حروف انگلیسی و _ تشکیل شده باشد")
 
         if not FilmBazUser.objects.filter(username=username).exists():
             raise forms.ValidationError("نام کاربری وجود ندارد!")
@@ -65,7 +65,7 @@ class CreateUserForm(forms.ModelForm):
         password2 = self.cleaned_data.get('password2')
         if not password == password2:
             raise forms.ValidationError("رمز ها باهم یکسان نیستند!")
-        return password
+        return password2
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
