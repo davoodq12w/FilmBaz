@@ -145,7 +145,7 @@ class TestEditUserForm(TestCase):
         form = EditUserForm(instance=self.user, data=data)
 
         self.assertFalse(form.is_valid())
-        self.assertIn("نام کاربری باید از اعداد و حروف و _ تشکیل شده باشد", form.errors["username"])
+        self.assertIn("نام کاربری باید از اعداد و حروف انگلیسی و _ تشکیل شده باشد", form.errors["username"])
 
     def test_username_is_exists(self):
         data = self.data

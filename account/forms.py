@@ -122,7 +122,7 @@ class EditUserForm(forms.ModelForm):
         is_valid = re.findall(r"^[a-zA-Z0-9_]+$", username)
 
         if not is_valid:
-            raise forms.ValidationError("نام کاربری باید از اعداد و حروف و _ تشکیل شده باشد")
+            raise forms.ValidationError("نام کاربری باید از اعداد و حروف انگلیسی و _ تشکیل شده باشد")
 
         if FilmBazUser.objects.filter(username=username).exclude(id=self.instance.pk).exists():
             raise forms.ValidationError("نام کاربری از قبل وجود دارد")
