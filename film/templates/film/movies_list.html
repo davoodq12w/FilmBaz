@@ -24,6 +24,9 @@
 
 
 
+
+
+
                                    {{ genre.id }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                             {{ genre.fa_name }}
                         </a>
@@ -64,6 +67,9 @@
 
                     {% for year in years %}
                         <a href="{% url 'film:movies_list' %}?release_date=
+
+
+
 
 
 
@@ -116,8 +122,6 @@
         {% include "ajax/movie_cards.html" with movies=movies %}
     </div>
 
-    <div id="movies-loader" style="height: 40px;"></div>
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
             integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
@@ -127,16 +131,13 @@
         $(document).ready(function () {
             const dropdowns = $(".filter-dropdown");
             const moviesList = $("#movies-list");
-            const loader = $("#movies-loader");
 
             let nextPage = 2;
             let hasNext = true;
             let isLoading = false;
 
-            const observer = new IntersectionObserver(function (entries) {
-                if (!entries[0].isIntersecting || !hasNext || isLoading) {
-                    return;
-                }
+            function loadMoreMovies() {
+                if (!hasNext || isLoading) return;
 
                 isLoading = true;
 
@@ -157,17 +158,29 @@
                         nextPage = data.next_page;
 
                         if (!hasNext) {
-                            observer.disconnect();
-                            loader.remove();
+                            $(window).off("scroll", onScroll);
                         }
                     },
                     complete: function () {
                         isLoading = false;
                     }
                 });
-            });
+            }
 
-            observer.observe(loader[0]);
+            function onScroll() {
+                const scrollTop = $(window).scrollTop();
+                const windowHeight = $(window).height();
+                const documentHeight = $(document).height();
+
+
+                if (scrollTop + windowHeight >= documentHeight - 200) {
+                    loadMoreMovies();
+                }
+            }
+
+            $(window).on("scroll", onScroll);
+            $(window).on("resize", onScroll);
+            onScroll();
 
             dropdowns.each(function () {
                 const dropdown = $(this);
@@ -197,5 +210,6 @@
             });
         });
     </script>
+
 
 {% endblock %}

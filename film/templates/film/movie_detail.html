@@ -32,17 +32,27 @@
                     </svg>
                 </div>
                 <div class="detail-construction">
-                    <br>
-                    <p><span>سال ساخت :  </span><span> {{ movie.release_date }} </span></p>
+                    <p><span>تاریخ ساخت :  </span><span> {{ movie.release_date }} </span></p>
                     <p><span>محصول کشور :  </span><span> {{ movie.country }} </span></p>
                 </div>
                 <div class="detail-genres">
-                    <p>ژانر : </p>
+                    <p style="margin-left:50px;">ژانر : </p>
                     <div class="genres">
                         {% for genre in movie.genres.all %}
                             <p class="detail-genre">{{ genre.fa_name }}</p>
                         {% endfor %}
                     </div>
+                </div>
+                <div class="detial-more-info">
+                    <p>
+                        <span>رده سنی : </span>
+                        {% if movie.adult %}
+                            <span> بزرگسال </span>
+                        {% else %}
+                            <span> کودک و نوجوان </span>
+                        {% endif %}
+                    </p>
+                    <p><span>مدت زمان فیلم :  </span><span> {{ movie.runtime }} </span><span> دقیقه </span></p>
                 </div>
             </div>
             <div class="detail-actions">

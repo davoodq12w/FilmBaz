@@ -35,7 +35,7 @@
                     {% if user.email %}
                         <p>{{ user.email }}</p>
                     {% else %}
-                        <p><a href="{% url 'account:edit_user' user.id user.username%}">ایمیل خود را وارد کنید!</a></p>
+                        <p><a href="{% url 'account:edit_user'%}">ایمیل خود را وارد کنید!</a></p>
                     {% endif %}
                 </div>
             </div>

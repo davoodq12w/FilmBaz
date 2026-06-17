@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
-from django.http import JsonResponse
 from .models import *
 from django.views.generic import View
 from django.contrib.postgres.search import TrigramSimilarity

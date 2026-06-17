@@ -190,7 +190,7 @@ a {
     }
 }
 
-.movies-list{
+.movies-list {
     margin-top: 50px;
 }
 
@@ -271,7 +271,7 @@ a {
             }
         }
 
-        & .detail-construction {
+        & .detail-construction, .detial-more-info {
             width: 100%;
 
             & p {
@@ -283,6 +283,7 @@ a {
 
         & .detail-genres {
             width: 100%;
+            display: flex;
 
             & .genres {
                 display: flex;
@@ -1710,6 +1711,7 @@ a {
 .errorlist {
     color: #F5F7F8;
 }
+
 .movies-list-navbar {
     border-radius: 8px;
     border: 2px solid #ff9f29;

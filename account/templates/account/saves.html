@@ -7,12 +7,12 @@
             <div style="color:#F5F7F8;" class="saves-movie">
 
                 <a href="{% url 'film:movies_detail' movie.id movie.slug %}">
-                    <img src="{{ movie.thumbnail.url }}" alt="{{ movie.english_title }}" class="saves-thumbnail">
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.orj_title }}" class="saves-thumbnail">
                 </a>
 
                 <div class="saves-title-remove">
                     <a class="saves-title"
-                       href="{% url 'film:movies_detail' movie.id movie.slug %}">{{ movie.title }}</a>
+                       href="{% url 'film:movies_detail' movie.id movie.slug %}">{{ movie.fa_title }}</a>
                     <p class="saves-remove" id="remove-{{ movie.id }}" data-movie-pk="{{ movie.id }}"
                        data-movie-slug="{{ movie.slug }}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
