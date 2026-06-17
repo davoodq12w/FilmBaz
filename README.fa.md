@@ -253,6 +253,6 @@ docker compose up --build
 
 # 👨‍💻 توسعه‌دهنده
 
-داوود قربانی
+داوود رشی
 
 برنامه‌نویس Backend و Django

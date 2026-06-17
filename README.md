@@ -276,6 +276,6 @@ The application and all required services will start automatically.
 
 # 👨‍💻 Developer
 
-Developed by Davood Ghorbani
+Developed by Davood Rashi
 
 Backend Developer | Django Developer | DevOps Enthusiast
