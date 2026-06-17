@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views.generic import FormView, UpdateView, ListView, View
 from .forms import *
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.core.mail import send_mail
+from account.tasks import send_confirm_email
 
 
 # Create your views here.
@@ -67,8 +67,9 @@ class EditUser(UpdateView):
 
 @method_decorator(login_required(), name="dispatch")
 class TicketView(FormView):
-    # template_name = "account/profile.html"
     form_class = TicketForm
+    http_method_names = ["get", "post"]
+    template_name = "account/profile.html"
 
     def get_success_url(self):
         return reverse_lazy("account:profile")
@@ -81,21 +82,21 @@ class TicketView(FormView):
         except Exception as e:
             raise ModuleNotFoundError(f"error: {e}")
         ticket.save()
-        self._send_confirm_email()
-
-    def _send_confirm_email(self):
-        message = f" عزیز از بازخورد شما ممنونیم{self.request.user.username} \n\n \n با تشکر , فیمباز "
-        send_mail(
-            subject="ارسال تیکت موفقیت آمیز بود",
-            message=message,
-            from_email="davodrashiworking@gmail.com",
-            recipient_list=[self.request.user.email],
-            fail_silently=False,
+        send_confirm_email.delay(
+            username=self.request.user.username,
+            email=self.request.user.email,
         )
 
     def form_valid(self, form):
         self._set_args(form)
         return super().form_valid(form)
+
+    def get(self, *args, **kwargs):
+        return redirect("account:profile")
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        super().http_method_not_allowed(request, *args, **kwargs)
+        return render(request, "partials/not_allowed.html")
 
 
 @method_decorator(login_required(), name="dispatch")
