@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect, reverse
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, UpdateView, ListView, View
 from .forms import *
@@ -29,9 +30,20 @@ class CreateUser(FormView):
         user = FilmBazUser.objects.create(username=data['username'], email=data['email'], phone=data['phone'])
         user.set_password(password)
         user.save()
+        return user
 
     def form_valid(self, form):
-        self._create_user(form.cleaned_data)
+        data = form.cleaned_data
+        self._create_user(data)
+
+        user = authenticate(
+            self.request,
+            username=data["username"],
+            password=data["password"],
+        )
+        if user is not None:
+            login(self.request, user)
+
         return super().form_valid(form)
 
 

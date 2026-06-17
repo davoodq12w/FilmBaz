@@ -60,6 +60,8 @@ def get_support_session_for_admin(request, support_session_id=None):
         })
 
     support_session = get_object_or_404(SupportSession, id=support_session_id)
+    support_session.status = SupportSession.Status.OPEN
+    support_session.save()
     messages = SupportMessage.objects.filter(session=support_session).order_by("created_at")
 
     for message in messages:

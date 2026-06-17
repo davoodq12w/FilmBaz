@@ -13,24 +13,18 @@
 
                 <div class="dropdown-menu dropdown-grid">
                     <a class="{% if not selected_genre %}active-item{% endif %}"
-                       href="{% url 'film:movies_list' %}?{% if selected_adult %}adult={{ selected_adult }}&{% endif %}{% if selected_release_date %}release_date={{ selected_release_date }}&{% endif %}{% if selected_ordering %}ordering={{ selected_ordering }}{% endif %}">
+                       href="{% url 'film:movies_list' %}?page_size={{ page_size }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                         همه ژانرها
                     </a>
 
+
                     {% for genre in genres %}
                         <a class="{% if selected_genre == genre.id|stringformat:'s' %}active-item{% endif %}"
-                           href="{% url 'film:movies_list' %}?genre_id=
-
-
-
-
-
-
-
-                                   {{ genre.id }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                           href="{% url 'film:movies_list' %}?page_size={{ page_size }}&genre_id={{ genre.id }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                             {{ genre.fa_name }}
                         </a>
                     {% endfor %}
+
                 </div>
             </div>
 
@@ -40,15 +34,13 @@
                     {{ adult_label }}
                 </button>
                 <div class="dropdown-menu">
-                    <a href="{% url 'film:movies_list' %}?{% if selected_genre %}genre_id={{ selected_genre }}&{% endif %}{% if selected_release_date %}release_date={{ selected_release_date }}&{% endif %}{% if selected_ordering %}ordering={{ selected_ordering }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                         همه رده‌ها
                     </a>
-
-                    <a href="{% url 'film:movies_list' %}?adult=false{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}&adult=false{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                         کودک و نوجوان
                     </a>
-
-                    <a href="{% url 'film:movies_list' %}?adult=true{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}&adult=true{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                         بزرگسال
                     </a>
                 </div>
@@ -61,20 +53,11 @@
                 </button>
 
                 <div class="dropdown-menu dropdown-grid">
-                    <a href="{% url 'film:movies_list' %}?{% if selected_genre %}genre_id={{ selected_genre }}&{% endif %}{% if selected_adult %}adult={{ selected_adult }}&{% endif %}{% if selected_ordering %}ordering={{ selected_ordering }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                         همه سال‌ها
                     </a>
-
                     {% for year in years %}
-                        <a href="{% url 'film:movies_list' %}?release_date=
-
-
-
-
-
-
-
-                                {{ year }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
+                        <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}&release_date={{ year }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                             {{ year }}
                         </a>
                     {% endfor %}
@@ -91,23 +74,19 @@
                     {{ ordering_label }}
                 </button>
                 <div class="dropdown-menu">
-                    <a href="{% url 'film:movies_list' %}?{% if selected_genre %}genre_id={{ selected_genre }}&{% endif %}{% if selected_adult %}adult={{ selected_adult }}&{% endif %}{% if selected_release_date %}release_date={{ selected_release_date }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
                         پیش‌فرض
                     </a>
-
-                    <a href="{% url 'film:movies_list' %}?ordering=-release_date{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}&ordering=-release_date{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
                         جدیدترین
                     </a>
-
-                    <a href="{% url 'film:movies_list' %}?ordering=release_date{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}&ordering=release_date{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
                         قدیمی‌ترین
                     </a>
-
-                    <a href="{% url 'film:movies_list' %}?ordering=-rate{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}&ordering=-rate{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
                         بیشترین امتیاز
                     </a>
-
-                    <a href="{% url 'film:movies_list' %}?ordering=rate{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
+                    <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}&ordering=rate{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
                         کمترین امتیاز
                     </a>
                 </div>
@@ -126,24 +105,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
             integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <script>
         $(document).ready(function () {
             const dropdowns = $(".filter-dropdown");
             const moviesList = $("#movies-list");
 
-            let nextPage = 2;
-            let hasNext = true;
+            let nextPage = {% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}null{% endif %};
+            let hasNext = {{ page_obj.has_next|yesno:"true,false" }};
             let isLoading = false;
+            let currentPageSize = "{{ page_size }}";
 
             function loadMoreMovies() {
-                if (!hasNext || isLoading) return;
+                if (!hasNext || isLoading || !nextPage) return;
 
                 isLoading = true;
 
                 const url = new URL(window.location.href);
                 url.searchParams.set("page", nextPage);
-                url.searchParams.set("page_size", "21");
+                url.searchParams.set("page_size", currentPageSize);
 
                 $.ajax({
                     url: url.toString(),
@@ -159,6 +138,7 @@
 
                         if (!hasNext) {
                             $(window).off("scroll", onScroll);
+                            $(window).off("resize", onScroll);
                         }
                     },
                     complete: function () {
@@ -168,10 +148,11 @@
             }
 
             function onScroll() {
+                if (!hasNext || isLoading || !nextPage) return;
+
                 const scrollTop = $(window).scrollTop();
                 const windowHeight = $(window).height();
                 const documentHeight = $(document).height();
-
 
                 if (scrollTop + windowHeight >= documentHeight - 200) {
                     loadMoreMovies();
@@ -210,6 +191,5 @@
             });
         });
     </script>
-
 
 {% endblock %}

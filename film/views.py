@@ -27,10 +27,10 @@ class HomePageView(View):
 class MoviesList(View):
     filter_fields = ['genre_id', 'adult', 'release_date']
     ordering_fields = ['release_date', 'rate']
-    paginate_by = 20
     cache_timeout = 60 * 15  # 15 minutes
+    paginate_by = 21
     min_paginate_by = 7
-    max_paginate_by = 30
+    max_paginate_by = 21
 
     def get_cache_key(self, request):
         params = []
@@ -151,6 +151,7 @@ class MoviesList(View):
             "ordering_label": ordering_label,
             "genres": genres,
             "years": years,
+            "page_size_param": request.GET.get("page_size", self.paginate_by),
         }
 
     def get_page_size(self, request):
