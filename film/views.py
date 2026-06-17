@@ -341,7 +341,7 @@ class SearchMovie(View):
 
         movie_result = self._get_results(query)
 
-        movie_names = [movie.title for movie in movie_result][:6]
+        movie_names = [movie.fa_title for movie in movie_result][:6]
         context = {
             'movie_names': movie_names,
         }
@@ -350,8 +350,8 @@ class SearchMovie(View):
     def _get_results(self, query):
 
         try:
-            result1 = Movie.objects.annotate(similarity=TrigramSimilarity("title", query)).filter(similarity__gt=0.1)
-            result2 = Movie.objects.annotate(similarity=TrigramSimilarity("english_title", query)).filter(
+            result1 = Movie.objects.annotate(similarity=TrigramSimilarity("fa_title", query)).filter(similarity__gt=0.1)
+            result2 = Movie.objects.annotate(similarity=TrigramSimilarity("orj_title", query)).filter(
                 similarity__gt=0.1)
 
             movie_result = (result1 | result2).order_by("-similarity")

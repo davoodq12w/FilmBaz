@@ -15,7 +15,10 @@ class SupportSessionView(View, LoginRequiredMixin):
         if request.user.is_staff and request.user.is_superuser:
             support_sessions = self.model.objects.filter(
                 Q(supporter=request.user) | Q(supporter__isnull=True),
-                status__in=["Pending", "Open"]
+                status__in=[
+                    SupportSession.Status.OPEN,
+                    SupportSession.Status.PENDING,
+                ]
             )
             session_serializer = SupportSessionSerializer(support_sessions, many=True)
             data = {
@@ -25,7 +28,10 @@ class SupportSessionView(View, LoginRequiredMixin):
             }
             return JsonResponse(data)
         else:
-            support_session = self.model.objects.filter(user=request.user, status__in=["Pending", "Open"]).first()
+            support_session = self.model.objects.filter(user=request.user, status__in=[
+                SupportSession.Status.OPEN,
+                SupportSession.Status.PENDING,
+            ]).first()
 
             if support_session is None:
                 data = {
@@ -60,7 +66,12 @@ def get_support_session_for_admin(request, support_session_id=None):
         })
 
     support_session = get_object_or_404(SupportSession, id=support_session_id)
+    if support_session.status not in [SupportSession.Status.OPEN, SupportSession.Status.PENDING, ]:
+        return JsonResponse({
+            "ok": False,
+        })
     support_session.status = SupportSession.Status.OPEN
+    support_session.supporter = user
     support_session.save()
     messages = SupportMessage.objects.filter(session=support_session).order_by("created_at")
 
