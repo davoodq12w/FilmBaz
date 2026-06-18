@@ -11,7 +11,6 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 
 
-
 class HomePageView(View):
     def get(self, request, *args, **kwargs):
         new_movies = Movie.objects.order_by('-release_date')[:7]
@@ -113,8 +112,13 @@ class MoviesList(View):
 
         genre_label = "ژانر ها"
 
-        if genre_id:
-            genre = Genre.objects.filter(id=genre_id).first()
+        try:
+            genre_pk = int(genre_id) if genre_id else None
+        except ValueError:
+            genre_pk = None
+
+        if genre_pk:
+            genre = Genre.objects.filter(id=genre_pk).first()
             if genre:
                 genre_label = genre.fa_name
 
