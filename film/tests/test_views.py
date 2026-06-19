@@ -4,6 +4,8 @@ from film.models import Movie, Genre
 from datetime import timedelta, date
 from django.utils import timezone
 from django.shortcuts import reverse
+from django.http import JsonResponse
+from unittest.mock import patch
 
 
 class HomePageViewTest(TestCase):
@@ -321,4 +323,116 @@ class MoviesListViewPaginationTest(TestCase):
         self.assertEqual(page.has_next(), False)
         self.assertEqual(page.has_previous(), True)
         self.assertEqual(page.previous_page_number(), 1)
+
+
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "test-cache",
+        }
+    }
+)
+class MoviesListViewAjaxTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.movies = []
+        for i in range(1, 11):
+            movie = baker.make(
+                Movie,
+                orj_title=f"{i}",
+                rate=5.0,
+            )
+            cls.movies.append(movie)
+
+        baker.make(
+            Movie,
+            orj_title=f"{11}",
+            adult=True,
+            rate=6.0
+        )
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:movies_list")
+
+    def test_movies_ajax_response_is_jsonresponse(self):
+        response = self.client.get(
+            self.url,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response["Content-Type"], "application/json")
+
+    def test_movies_ajax_context(self):
+        response = self.client.get(
+            f"{self.url}?page_size=7",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        data = response.json()
+        self.assertIn("html", data)
+        self.assertIn("has_next", data)
+        self.assertIn("next_page", data)
+        self.assertIsInstance(data["html"], str)
+        self.assertIsInstance(data["has_next"], bool)
+        self.assertIsInstance(data["next_page"], int)
+
+        self.assertEqual(data["has_next"], True)
+        self.assertEqual(data["next_page"], 2)
+
+        response = self.client.get(
+            f"{self.url}?page_size=7&page={data['next_page']}",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        data = response.json()
+        self.assertEqual(data["has_next"], False)
+        self.assertEqual(data["next_page"], None)
+
+    @patch("film.views.render_to_string")
+    def test_ajax_renders_movie_cards_template(self, mock_render_to_string):
+        mock_render_to_string.return_value = "<div>movies html</div>"
+
+        response = self.client.get(
+            self.url,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response, JsonResponse)
+
+        mock_render_to_string.assert_called_once()
+
+        template_name = mock_render_to_string.call_args.args[0]
+        self.assertEqual(template_name, "ajax/movie_cards.html")
+
+
+    @patch("film.views.render_to_string")
+    def test_movies_ajax_with_filters(self, mock_render_to_string):
+        mock_render_to_string.return_value = "<div>fake html</div>"
+
+        response = self.client.get(
+            f"{self.url}?adult=true",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+
+        mock_render_to_string.assert_called_once()
+        context = mock_render_to_string.call_args.args[1]
+        movies = context["movies"]
+        self.assertEqual(movies[0].orj_title, "11")
+
+    @patch("film.views.render_to_string")
+    def test_movies_ajax_with_ordering(self, mock_render_to_string):
+        mock_render_to_string.return_value = "<div>fake html</div>"
+
+        response = self.client.get(
+            f"{self.url}?ordering=-rate",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+
+        mock_render_to_string.assert_called_once()
+        context = mock_render_to_string.call_args.args[1]
+        movies = context["movies"]
+        self.assertEqual(movies[0].orj_title, "11")
+
 

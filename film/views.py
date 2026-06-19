@@ -34,12 +34,7 @@ class MoviesList(View):
     def get_cache_key(self, request):
         params = []
 
-        ignored_params = {"page", "page_size"}
-
         for key, values in request.GET.lists():
-            if key in ignored_params:
-                continue
-
             for value in values:
                 params.append((key, value))
 
