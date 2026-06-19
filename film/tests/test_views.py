@@ -163,4 +163,162 @@ class MoviesListViewFiltersTest(TestCase):
     }
 )
 class MoviesListViewOrderingTest(TestCase):
-    ...
+    @classmethod
+    def setUpTestData(cls):
+        cls.movie1 = baker.make(Movie, orj_title="1", release_date=date(2019, 3, 3), rate=5.0)
+        cls.movie2 = baker.make(Movie, orj_title="2", release_date=date(2018, 3, 3), rate=6.0)
+        cls.movie3 = baker.make(Movie, orj_title="3", release_date=date(2017, 3, 3), rate=7.0)
+        cls.movie4 = baker.make(Movie, orj_title="4", release_date=date(2016, 3, 3), rate=8.0)
+        cls.movie5 = baker.make(Movie, orj_title="5", release_date=date(2015, 3, 3), rate=9.0)
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:movies_list")
+
+    def test_movies_order_by_oldest(self):
+        response = self.client.get(f"{self.url}?ordering=release_date")
+        self.assertEqual(response.status_code, 200)
+        movies = response.context["movies"]
+
+        self.assertEqual(movies[0].orj_title, "5")
+        self.assertEqual(movies[-1].orj_title, "1")
+
+    def test_movies_order_by_latest(self):
+        response = self.client.get(f"{self.url}?ordering=-release_date")
+        self.assertEqual(response.status_code, 200)
+        movies = response.context["movies"]
+
+        self.assertEqual(movies[0].orj_title, "1")
+        self.assertEqual(movies[-1].orj_title, "5")
+
+    def test_movies_order_by_most_rated(self):
+        response = self.client.get(f"{self.url}?ordering=-rate")
+        self.assertEqual(response.status_code, 200)
+        movies = response.context["movies"]
+
+        self.assertEqual(movies[0].orj_title, "5")
+        self.assertEqual(movies[-1].orj_title, "1")
+
+    def test_movies_order_by_less_rated(self):
+        response = self.client.get(f"{self.url}?ordering=rate")
+        self.assertEqual(response.status_code, 200)
+        movies = response.context["movies"]
+
+        self.assertEqual(movies[0].orj_title, "1")
+        self.assertEqual(movies[-1].orj_title, "5")
+
+    def test_movies_invalid_ordering(self):
+        response = self.client.get(f"{self.url}?ordering=true")
+        self.assertEqual(response.status_code, 200)
+        movies = response.context["movies"]
+
+        self.assertEqual(movies[0].orj_title, "1")
+        self.assertEqual(movies[-1].orj_title, "5")
+
+
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "test-cache",
+        }
+    }
+)
+class MoviesListViewPaginationTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.movies = []
+        for i in range(1, 26):
+            movie = baker.make(
+                Movie,
+                orj_title=f"{i}",
+            )
+            cls.movies.append(movie)
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:movies_list")
+
+    def test_movies_pagination(self):
+        response = self.client.get(f"{self.url}?page=3&page_size=10")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 5)
+
+    def test_movies_pagination_by_default_paginate(self):
+        response = self.client.get(f"{self.url}?page=1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 21)
+
+        response = self.client.get(f"{self.url}?page=2")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 4)
+
+    def test_movies_pagination_by_custom_paginate(self):
+        response = self.client.get(f"{self.url}?page=1&page_size=10")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 10)
+
+    def test_movies_pagination_by_out_of_range_paginate(self):
+        response = self.client.get(f"{self.url}?page=1&page_size=5")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 7)
+
+        response = self.client.get(f"{self.url}?page=1&page_size=30")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 21)
+
+    def test_movies_pagination_by_invalid_paginate(self):
+        response = self.client.get(f"{self.url}?page=1&page_size=true")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 21)
+
+    def test_movies_pagination_with_negetive_paginate(self):
+        response = self.client.get(f"{self.url}?page=1&page_size=-1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 7)
+
+    def test_movies_pagination_with_float_paginate(self):
+        response = self.client.get(f"{self.url}?page=1&page_size=10.5")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 21)
+
+    def test_movies_pagination_with_out_of_range_page(self):
+        response = self.client.get(f"{self.url}?page=7")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 4)
+
+    def test_movies_pagination_with_zero_page(self):
+        response = self.client.get(f"{self.url}?page=0")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 4)
+
+    def test_movies_pagination_with_negetive_page(self):
+        response = self.client.get(f"{self.url}?page=-1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 4)
+
+    def test_movies_pagination_with_invalid_page(self):
+        response = self.client.get(f"{self.url}?page=true")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 21)
+
+    def test_movies_pagination_next_page(self):
+        response = self.client.get(f"{self.url}?page=1")
+        self.assertEqual(response.status_code, 200)
+
+        page = response.context["page_obj"]
+
+        self.assertEqual(page.has_next(), True)
+        self.assertEqual(page.next_page_number(), 2)
+        self.assertEqual(page.has_previous(), False)
+
+    def test_movies_pagination_pre_page(self):
+        response = self.client.get(f"{self.url}?page=2")
+        self.assertEqual(response.status_code, 200)
+
+        page = response.context["page_obj"]
+
+        self.assertEqual(page.has_next(), False)
+        self.assertEqual(page.has_previous(), True)
+        self.assertEqual(page.previous_page_number(), 1)
+
