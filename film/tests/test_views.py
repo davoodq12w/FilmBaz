@@ -690,3 +690,19 @@ class MoviesListViewContextTest(TestCase):
         self.assertIsInstance(context.get("paginator"), Paginator)
         self.assertEqual(context.get("page_size"), 7)
         self.assertEqual(context.get("page_size_param"), "7")
+
+
+class MoviesListViewTemplatesTest(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:movies_list")
+
+    def test_movies_template_used(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "film/movies_list.html")
+
+
+
+
