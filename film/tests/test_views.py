@@ -9,6 +9,7 @@ from unittest.mock import patch
 from django.core.cache import cache
 import hashlib
 from film.views import MoviesList
+from django.core.paginator import Page, Paginator
 
 
 class HomePageViewTest(TestCase):
@@ -587,3 +588,105 @@ class MoviesListViewCacheTest(TestCase):
         self.assertEqual(cached_genres, genres)
 
 
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "test-cache",
+        }
+    }
+)
+class MoviesListViewContextTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.genre1 = baker.make(Genre, id=1, en_name="1", fa_name="یک")
+        cls.genre2 = baker.make(Genre, id=2, en_name="2", fa_name="دو")
+        cls.movie1 = baker.make(Movie, orj_title="1", adult=False, genres=[cls.genre1], release_date=date(2020, 3, 3))
+        cls.movie2 = baker.make(Movie, orj_title="2", adult=False, genres=[cls.genre2], release_date=date(2020, 3, 3))
+        cls.movie3 = baker.make(Movie, orj_title="3", adult=True, genres=[cls.genre1], release_date=date(2021, 3, 3))
+        cls.movie4 = baker.make(Movie, orj_title="4", adult=True, genres=[cls.genre2], release_date=date(2021, 3, 3))
+        cls.movie5 = baker.make(Movie, orj_title="5", adult=False, genres=[cls.genre1], release_date=date(2021, 3, 3))
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:movies_list")
+        self.data = [
+            ("genre_id", "1"),
+            ("release_date", "2020"),
+            ("adult", "false"),
+            ("ordering", "-rate"),
+            ("page", "1"),
+            ("page_size", "7"),
+        ]
+
+    def get_context(self):
+        cache.clear()
+
+        response = self.client.get(self.url, data=self.data)
+        return response.context
+
+    def test_movies_context_contain_values(self):
+        context = self.get_context()
+        keys = [
+            "selected_genre",
+            "selected_adult",
+            "selected_release_date",
+            "selected_ordering",
+            "genre_label",
+            "adult_label",
+            "release_date_label",
+            "ordering_label",
+            "genres",
+            "years",
+            "page_size_param",
+            "movies",
+            "page_obj",
+            "paginator",
+            "page_size",
+        ]
+        for i in keys:
+            self.assertIn(i, context)
+
+    def test_movies_context_selected_filters_orders(self):
+        context = self.get_context()
+
+        self.assertEqual(context.get("selected_genre"), "1")
+        self.assertEqual(context.get("selected_adult"), "false")
+        self.assertEqual(context.get("selected_release_date"), "2020")
+        self.assertEqual(context.get("selected_ordering"), "-rate")
+
+    def test_movies_context_labels(self):
+        context = self.get_context()
+
+        self.assertEqual(context.get("genre_label"), "یک")
+        self.assertEqual(context.get("adult_label"), "کودک و نوجوان")
+        self.assertEqual(context.get("release_date_label"), "2020")
+        self.assertEqual(context.get("ordering_label"), 'بیشترین امتیاز')
+
+    def test_movies_context_lists(self):
+        context = self.get_context()
+
+        movies = Movie.objects.all()
+        years = [
+            date_obj.year
+            for date_obj in movies.filter(release_date__isnull=False).dates('release_date', 'year')
+        ]
+        genres = list(Genre.objects.all())
+        movies = Movie.objects.filter(
+            genres__id=1,
+            release_date=date(2020, 3, 3),
+            adult=False,
+        ).order_by("-rate")
+        movies = list(movies)
+
+        self.assertEqual(movies, list(context["movies"]))
+        self.assertEqual(years, list(context["years"]))
+        self.assertEqual(genres, list(context["genres"]))
+
+    def test_movies_context_page_objs(self):
+        context = self.get_context()
+
+        self.assertIsInstance(context.get("page_obj"), Page)
+        self.assertIsInstance(context.get("paginator"), Paginator)
+        self.assertEqual(context.get("page_size"), 7)
+        self.assertEqual(context.get("page_size_param"), "7")
