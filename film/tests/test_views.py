@@ -6,6 +6,9 @@ from django.utils import timezone
 from django.shortcuts import reverse
 from django.http import JsonResponse
 from unittest.mock import patch
+from django.core.cache import cache
+import hashlib
+from film.views import MoviesList
 
 
 class HomePageViewTest(TestCase):
@@ -406,7 +409,6 @@ class MoviesListViewAjaxTest(TestCase):
         template_name = mock_render_to_string.call_args.args[0]
         self.assertEqual(template_name, "ajax/movie_cards.html")
 
-
     @patch("film.views.render_to_string")
     def test_movies_ajax_with_filters(self, mock_render_to_string):
         mock_render_to_string.return_value = "<div>fake html</div>"
@@ -434,5 +436,154 @@ class MoviesListViewAjaxTest(TestCase):
         context = mock_render_to_string.call_args.args[1]
         movies = context["movies"]
         self.assertEqual(movies[0].orj_title, "11")
+
+
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "test-cache",
+        }
+    }
+)
+class MoviesListViewCacheTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.genre1 = baker.make(Genre, id=1, en_name="1")
+        cls.genre2 = baker.make(Genre, id=2, en_name="2")
+        cls.movie1 = baker.make(Movie, orj_title="1", genres=[cls.genre1], release_date=date(2020, 3, 3))
+        cls.movie2 = baker.make(Movie, orj_title="2", genres=[cls.genre1], release_date=date(2020, 3, 3))
+        cls.movie3 = baker.make(Movie, orj_title="3", adult=True, genres=[cls.genre1], release_date=date(2020, 3, 3))
+        cls.movie4 = baker.make(Movie, orj_title="4", adult=True, genres=[cls.genre2], release_date=date(2021, 3, 3))
+        cls.movie5 = baker.make(Movie, orj_title="5", adult=True, genres=[cls.genre2], release_date=date(2021, 3, 3))
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:movies_list")
+
+    def test_movies_cache_key_for_url(self):
+        cache.clear()
+
+        query_params = [
+            ("adult", "true"),
+            ("genre_id", "1"),
+            ("ordering", "-rate"),
+            ("release_date", "2020"),
+        ]
+
+        response = self.client.get(
+            self.url,
+            data=query_params,
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        movies = list(response.context["movies"])
+
+        expected_params = sorted(query_params)
+        expected_hash = hashlib.sha256(
+            str(expected_params).encode("utf-8")
+        ).hexdigest()
+
+        cache_key = f"movies_list_{expected_hash}"
+        cached_movies = list(cache.get(cache_key))
+
+        self.assertIsNotNone(cached_movies)
+        self.assertEqual(movies, cached_movies)
+
+    def test_movies_cache_key_same_query_different_order(self):
+        cache.clear()
+
+        request_1 = self.client.get(
+            self.url,
+            data=[
+                ("ordering", "-rate"),
+                ("release_date", "2020"),
+                ("adult", "true"),
+                ("genre_id", "1"),
+            ],
+        ).wsgi_request
+
+        request_2 = self.client.get(
+            self.url,
+            data=[
+                ("adult", "true"),
+                ("genre_id", "1"),
+                ("ordering", "-rate"),
+                ("release_date", "2020"),
+            ],
+        ).wsgi_request
+
+        view = MoviesList()
+
+        cache_key_1 = view.get_cache_key(request_1)
+        cache_key_2 = view.get_cache_key(request_2)
+
+        self.assertEqual(cache_key_1, cache_key_2)
+
+    def test_movies_cache_key_different_query(self):
+        cache.clear()
+
+        request_1 = self.client.get(
+            self.url,
+            data=[
+                ("adult", "true"),
+                ("genre_id", "1"),
+                ("ordering", "-rate"),
+                ("release_date", "2020"),
+            ],
+        ).wsgi_request
+
+        request_2 = self.client.get(
+            self.url,
+            data=[
+                ("adult", "true"),
+                ("genre_id", "2"),
+                ("ordering", "-rate"),
+                ("release_date", "2020"),
+            ],
+        ).wsgi_request
+
+        view = MoviesList()
+
+        cache_key_1 = view.get_cache_key(request_1)
+        cache_key_2 = view.get_cache_key(request_2)
+
+        self.assertNotEqual(cache_key_1, cache_key_2)
+
+    def test_movies_set_cache(self):
+        cache.clear()
+        data = [
+            ("genre_id", "1"),
+            ("release_date", "2020"),
+        ]
+
+        expected_params = sorted(data)
+        expected_hash = hashlib.sha256(
+            str(expected_params).encode("utf-8")
+        ).hexdigest()
+
+        cache_key = f"movies_list_{expected_hash}"
+        cached_movies = cache.get(cache_key)
+
+        self.assertEqual(cached_movies, None)
+
+        response = self.client.get(self.url, data=data)
+        movies = list(response.context["movies"])
+        cached_movies = list(cache.get(cache_key))
+
+        self.assertEqual(movies, cached_movies)
+
+    def test_movies_geres_cache(self):
+        cache.clear()
+
+        cached_genres = cache.get("genres")
+        self.assertEqual(cached_genres, None)
+
+        response = self.client.get(self.url)
+
+        genres = list(response.context["genres"])
+        cached_genres = list(cache.get("genres"))
+        self.assertEqual(cached_genres, genres)
 
 

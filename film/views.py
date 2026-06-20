@@ -103,7 +103,7 @@ class MoviesList(View):
         elif adult == "true":
             adult_label = "بزرگسال"
         else:
-            adult_label = "بزرگسال"
+            adult_label = "همه"
 
         genre_label = "ژانر ها"
 
