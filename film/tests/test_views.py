@@ -1,6 +1,6 @@
 from django.test import TestCase, Client, override_settings
 from model_bakery import baker
-from film.models import Movie, Genre
+from film.models import Movie, Genre, Comment
 from datetime import timedelta, date
 from django.utils import timezone
 from django.shortcuts import reverse
@@ -10,6 +10,7 @@ from django.core.cache import cache
 import hashlib
 from film.views import MoviesList
 from django.core.paginator import Page, Paginator
+from account.models import FilmBazUser
 
 
 class HomePageViewTest(TestCase):
@@ -704,5 +705,78 @@ class MoviesListViewTemplatesTest(TestCase):
         self.assertTemplateUsed(response, "film/movies_list.html")
 
 
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "test-cache",
+        }
+    }
+)
+class MovieDetailViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.movie = baker.make(
+            Movie,
+            fa_title="بتمن",
+            orj_title="Batman",
+            slug="batman"
+        )
+        cls.another_movie = baker.make(
+            Movie,
+            fa_title="جوکر",
+            orj_title="Joker",
+            slug="joker"
+        )
+        cls.user = baker.make(
+            FilmBazUser,
+            username="user",
+            phone="09112223344",
+            email="user@gmail.com"
+        )
+        for i in range(1, 11):
+            baker.make(
+                Comment,
+                text=f"{i}",
+                movie=cls.movie,
+                user=cls.user,
+            )
+        for i in range(11, 21):
+            baker.make(
+                Comment,
+                text=f"{i}",
+                movie=cls.another_movie,
+                user=cls.user,
+            )
 
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:movies_detail", kwargs={"pk": self.movie.id, "slug": self.movie.slug})
 
+    def test_movie_detail_get(self):
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, "film/movie_detail.html")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["movie"], self.movie)
+        self.assertEqual(list(response.context["comments"]), list(self.movie.comments.all()))
+        self.assertEqual(len(response.context.get("comments")), 10)
+
+    def test_movie_detail_cache(self):
+        cache.clear()
+        movie_key = f"movie_detail_{self.movie.id}_{self.movie.slug}"
+        comments_key = f"movie_comments_{self.movie.id}_{self.movie.slug}"
+
+        cached_movie = cache.get(movie_key)
+        cached_comments = cache.get(comments_key)
+
+        self.assertEqual(cached_movie, None)
+        self.assertEqual(cached_comments, None)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        cached_movie = cache.get(movie_key)
+        cached_comments = list(cache.get(comments_key))
+
+        self.assertEqual(response.context.get("movie"), cached_movie)
+        self.assertEqual(list(response.context.get("comments")), cached_comments)
