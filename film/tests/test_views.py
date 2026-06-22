@@ -11,6 +11,7 @@ import hashlib
 from film.views import MoviesList
 from django.core.paginator import Page, Paginator
 from account.models import FilmBazUser
+import json
 
 
 class HomePageViewTest(TestCase):
@@ -693,6 +694,14 @@ class MoviesListViewContextTest(TestCase):
         self.assertEqual(context.get("page_size_param"), "7")
 
 
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "test-cache",
+        }
+    }
+)
 class MoviesListViewTemplatesTest(TestCase):
 
     def setUp(self):
@@ -780,3 +789,222 @@ class MovieDetailViewTest(TestCase):
 
         self.assertEqual(response.context.get("movie"), cached_movie)
         self.assertEqual(list(response.context.get("comments")), cached_comments)
+
+
+class CommentViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.movie = baker.make(
+            Movie,
+            id=1,
+            orj_title="batman"
+        )
+        cls.user = baker.make(
+            FilmBazUser,
+            username="user"
+        )
+        cls.user.set_password("testpass")
+        cls.user.save()
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:add_comment")
+
+    def test_create_comment_not_complete_data(self):
+        self.client.login(username="user", password="testpass")
+        response = self.client.post(self.url, data={"movie_id": self.movie.id})
+        self.assertEqual(response.status_code, 302)
+        expected_url = reverse("film:home_page")
+        self.assertRedirects(response, expected_url)
+        self.assertEqual(Comment.objects.count(), 0)
+
+    def test_create_comment(self):
+        self.client.login(username="user", password="testpass")
+        response = self.client.post(self.url, data={"movie_id": self.movie.id, "text": "test comment"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "ajax/add_comment.html")
+        self.assertEqual(response.context["comment"].text, "test comment")
+        self.assertEqual(Comment.objects.count(), 1)
+
+    def test_create_comment_anonymous_user(self):
+        response = self.client.post(self.url, data={"movie_id": self.movie.id, "text": "test comment"})
+        self.assertEqual(response.status_code, 302)
+        login_url = reverse("account:login")
+        expected_url = f"{login_url}?next={self.url}"
+        self.assertRedirects(response, expected_url)
+
+    def test_not_allowed(self):
+        self.client.login(username="user", password="testpass")
+        response = self.client.delete(self.url, data={"movie_id": self.movie.id, "text": "test comment"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "partials/not_allowed.html")
+
+
+class SearchMovieViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:search")
+
+    @patch("film.views.SearchMovie._get_results")
+    def test_search_get_method(self, mock_get_results):
+        movies = [
+            baker.prepare(Movie, id=123, fa_title="بتمن", orj_title="Batman", slug="batman")
+        ]
+
+        mock_get_results.return_value = movies
+        response = self.client.get(self.url, data={"query": "بتمن"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "film/search_results.html")
+        self.assertEqual(response.context["movie_result"], movies)
+        self.assertEqual(response.context["query"], "بتمن")
+
+        mock_get_results.assert_called_once_with("بتمن")
+
+    @patch("film.views.SearchMovie._get_results")
+    def test_get_search_without_query_calls_get_results_with_none(self, mock_get_results):
+        mock_get_results.return_value = []
+        self.client.get(self.url)
+
+        mock_get_results.assert_called_once_with(None)
+
+    @patch("film.views.SearchMovie._get_results")
+    def test_get_search_with_empty_query_calls_get_results_with_empty_string(self, mock_get_results):
+        mock_get_results.return_value = []
+
+        self.client.get(self.url, data={"query": ""})
+
+        mock_get_results.assert_called_once_with("")
+
+    @patch("film.views.SearchMovie._get_results")
+    def test_post_search_returns_inline_results_with_movie_names(self, mock_get_results):
+        movies = [
+            baker.prepare(Movie, fa_title="بتمن", orj_title="Batman"),
+            baker.prepare(Movie, fa_title="جوکر", orj_title="Joker"),
+            baker.prepare(Movie, fa_title="سوپرمن", orj_title="Superman"),
+        ]
+
+        mock_get_results.return_value = movies
+
+        response = self.client.post(self.url, data={"query": "بتمن"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "ajax/inline_search_results.html")
+        self.assertEqual(response.context["movie_names"], ["بتمن", "جوکر", "سوپرمن"])
+        mock_get_results.assert_called_once_with("بتمن")
+
+    @patch("film.views.SearchMovie._get_results")
+    def test_post_search_returns_fa_titles_only_and_limits_to_first_6(self, mock_get_results):
+        movies = [
+            baker.prepare(Movie, fa_title="فیلم ۱", orj_title="Movie 1"),
+            baker.prepare(Movie, fa_title="فیلم ۲", orj_title="Movie 2"),
+            baker.prepare(Movie, fa_title="فیلم ۳", orj_title="Movie 3"),
+            baker.prepare(Movie, fa_title="فیلم ۴", orj_title="Movie 4"),
+            baker.prepare(Movie, fa_title="فیلم ۵", orj_title="Movie 5"),
+            baker.prepare(Movie, fa_title="فیلم ۶", orj_title="Movie 6"),
+            baker.prepare(Movie, fa_title="فیلم ۷", orj_title="Movie 7"),
+        ]
+
+        mock_get_results.return_value = movies
+
+        response = self.client.post(self.url, data={"query": "فیلم"})
+
+        self.assertEqual(response.context["movie_names"], [
+            "فیلم ۱",
+            "فیلم ۲",
+            "فیلم ۳",
+            "فیلم ۴",
+            "فیلم ۵",
+            "فیلم ۶",
+        ])
+        self.assertNotIn("Movie 1", response.context["movie_names"])
+        self.assertNotIn("فیلم ۷", response.context["movie_names"])
+
+    @patch("film.views.SearchMovie._get_results")
+    def test_post_search_without_query_calls_get_results_with_none(self, mock_get_results):
+        mock_get_results.return_value = []
+
+        self.client.post(self.url)
+
+        mock_get_results.assert_called_once_with(None)
+
+    @patch("film.views.SearchMovie._get_results")
+    def test_post_search_with_empty_query_calls_get_results_with_empty_string(self, mock_get_results):
+        mock_get_results.return_value = []
+
+        self.client.post(self.url, data={"query": ""})
+
+        mock_get_results.assert_called_once_with("")
+
+    def test_not_allowed(self):
+        response = self.client.delete(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "partials/not_allowed.html")
+
+
+class SaveMovieViewTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = baker.make(FilmBazUser, username="testuser")
+        cls.user.set_password("testpass123")
+        cls.user.save()
+
+        cls.movie = baker.make(
+            Movie,
+            fa_title="تلقین",
+            orj_title="Inception",
+            slug="inception",
+        )
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("film:save_movie")
+        self.client.login(username="testuser", password="testpass123")
+
+    def test_save_movie_login_required(self):
+        self.client.logout()
+        response = self.client.post(self.url, {"pk": self.movie.pk, "slug": self.movie.slug})
+
+        self.assertEqual(response.status_code, 302)
+        login_url = reverse("account:login")
+        expected_url = f"{login_url}?next={self.url}"
+        self.assertRedirects(response, expected_url)
+
+    def test_save_movie_http_method_not_allowed(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "partials/not_allowed.html")
+
+    def test_save_movie_add_to_saves(self):
+        response = self.client.post(self.url, {
+            "pk": self.movie.pk,
+            "slug": self.movie.slug
+        })
+        data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(data["is_save"])
+        self.assertIn(self.movie, self.user.saves.all())
+
+    def test_save_movie_remove_from_saves(self):
+        self.user.saves.add(self.movie)
+
+        response = self.client.post(self.url, {
+            "pk": self.movie.pk,
+            "slug": self.movie.slug
+        })
+        data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(data["is_save"])
+        self.assertNotIn(self.movie, self.user.saves.all())
+
+    def test_save_movie_not_found_exception(self):
+        response = self.client.post(self.url, {
+            "pk": 9999,
+            "slug": "wrong-slug"
+        })
+        self.assertEqual(response.status_code, 404)
+        self.assertNotIn(self.movie, self.user.saves.all())

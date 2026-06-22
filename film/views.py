@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.views.generic import View
 from django.contrib.postgres.search import TrigramSimilarity
@@ -300,10 +300,23 @@ class CommentView(View):
 
     def post(self, request):
         user = request.user
-        movie = Movie.objects.get(id=request.POST.get("movie_id"))
+        movie_id = request.POST.get("movie_id")
         text = request.POST.get("text")
-        comment = Comment.objects.create(movie=movie, user=user, text=text)
-        comment.save()
+
+        if not movie_id or not text:
+            return redirect("film:home_page")
+
+        try:
+            movie = Movie.objects.get(id=movie_id)
+        except Movie.DoesNotExist:
+            return redirect("film:home_page")
+
+        comment = Comment.objects.create(
+            movie=movie,
+            user=user,
+            text=text
+        )
+
         return render(request, "ajax/add_comment.html", {"comment": comment})
 
     def http_method_not_allowed(self, request, *args, **kwargs):
@@ -314,7 +327,7 @@ class CommentView(View):
 class SearchMovie(View):
     http_method_names = ["get", "post"]
 
-    # ⚠️ don't forget: install the pg-trgm in your postgres database.
+    # Install pg_trgm in your PostgreSQL database before using trigram search.
 
     def get(self, request):
 
@@ -371,20 +384,14 @@ class SaveMovieView(View):
         slug = request.POST.get('slug')
         pk = request.POST.get("pk")
         user = request.user
-        try:
-            movie = Movie.objects.get(pk=pk, slug=slug)
-        except Exception as e:
-            raise ModuleNotFoundError(f"error: {e}")
+        movie = get_object_or_404(Movie, id=pk, slug=slug)
 
-        try:
-            if movie in user.saves.all():
-                user.saves.remove(movie)
-                is_save = False
-            else:
-                user.saves.add(movie)
-                is_save = True
-        except Exception as e:
-            raise ValueError(f"error {e}")
+        if movie in user.saves.all():
+            user.saves.remove(movie)
+            is_save = False
+        else:
+            user.saves.add(movie)
+            is_save = True
 
         return JsonResponse({"is_save": is_save})
 
