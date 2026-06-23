@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.views.generic import View
 
 
-class SupportSessionView(View, LoginRequiredMixin):
+class SupportSessionView(LoginRequiredMixin, View):
     model = SupportSession
 
     def get(self, request, *args, **kwargs):
@@ -37,7 +37,7 @@ class SupportSessionView(View, LoginRequiredMixin):
                 data = {
                     "user": request.user,
                     "supporter": None,
-                    "status": "Pending",
+                    "status": SupportSession.Status.PENDING,
                 }
                 support_session = self.model.objects.create(**data)
 
@@ -66,7 +66,11 @@ def get_support_session_for_admin(request, support_session_id=None):
         })
 
     support_session = get_object_or_404(SupportSession, id=support_session_id)
-    if support_session.status not in [SupportSession.Status.OPEN, SupportSession.Status.PENDING, ]:
+    if support_session.status not in [SupportSession.Status.OPEN, SupportSession.Status.PENDING]:
+        return JsonResponse({
+            "ok": False,
+        })
+    if support_session.supporter not in [None, request.user]:
         return JsonResponse({
             "ok": False,
         })
