@@ -186,3 +186,185 @@ class SupportSessionViewTest(TestCase):
         login_url = reverse("account:login")
         expected_url = f"{login_url}?next={self.url}"
         self.assertRedirects(response, expected_url)
+
+
+class GetSupportSessionForAdminTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls._p1 = patch("support.signals.send_message_to_chat.delay", return_value=None)
+        cls._p1.start()
+        super().setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        cls._p1.stop()
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user_1 = baker.make(
+            FilmBazUser,
+            username="user_1",
+            email="user_1@gmail.com",
+            phone="09000000001",
+        )
+        cls.user_1.set_password("testpass")
+        cls.user_1.save()
+
+        cls.user_2 = baker.make(
+            FilmBazUser,
+            username="user_2",
+            email="user_2@gmail.com",
+            phone="09000000006",
+        )
+        cls.user_2.set_password("testpass")
+        cls.user_2.save()
+
+        cls.user_3 = baker.make(
+            FilmBazUser,
+            username="user_3",
+            email="user_3@gmail.com",
+            phone="09000000007",
+        )
+        cls.user_3.set_password("testpass")
+        cls.user_3.save()
+
+        cls.user_4 = baker.make(
+            FilmBazUser,
+            username="user_4",
+            email="user_4@gmail.com",
+            phone="09000000008",
+        )
+        cls.user_4.set_password("testpass")
+        cls.user_4.save()
+
+        cls.user_5 = baker.make(
+            FilmBazUser,
+            username="user_5",
+            email="user_5@gmail.com",
+            phone="09000000009",
+        )
+        cls.user_5.set_password("testpass")
+        cls.user_5.save()
+
+        cls.only_superuser = baker.make(
+            FilmBazUser,
+            username="only_superuser",
+            email="only_superuser@gmail.com",
+            phone="09000000002",
+        )
+        cls.only_superuser.set_password("testpass")
+        cls.only_superuser.is_superuser = True
+        cls.only_superuser.save()
+
+        cls.only_staff = baker.make(
+            FilmBazUser,
+            username="only_staff",
+            email="only_staff@gmail.com",
+            phone="09000000003",
+        )
+        cls.only_staff.set_password("testpass")
+        cls.only_staff.is_staff = True
+        cls.only_staff.save()
+
+        cls.admin_1 = baker.make(
+            FilmBazUser,
+            username="admin_1",
+            email="admin_1@gmail.com",
+            phone="09000000004",
+        )
+        cls.admin_1.set_password("testpass")
+        cls.admin_1.is_staff = True
+        cls.admin_1.is_superuser = True
+        cls.admin_1.save()
+
+        cls.admin_2 = baker.make(
+            FilmBazUser,
+            username="admin_2",
+            email="admin_2@gmail.com",
+            phone="09000000005",
+        )
+        cls.admin_2.set_password("testpass")
+        cls.admin_2.is_staff = True
+        cls.admin_2.is_superuser = True
+        cls.admin_2.save()
+
+        cls.session_pending_unassigned = baker.make(
+            SupportSession,
+            user=cls.user_1,
+            supporter=None,
+            status=SupportSession.Status.PENDING,
+        )
+
+        cls.session_open_unassigned = baker.make(
+            SupportSession,
+            user=cls.user_2,
+            supporter=None,
+            status=SupportSession.Status.OPEN,
+        )
+
+        cls.session_open_assigned_admin1 = baker.make(
+            SupportSession,
+            user=cls.user_3,
+            supporter=cls.admin_1,
+            status=SupportSession.Status.OPEN,
+        )
+
+        cls.session_open_assigned_admin2 = baker.make(
+            SupportSession,
+            user=cls.user_4,
+            supporter=cls.admin_2,
+            status=SupportSession.Status.OPEN,
+        )
+
+        with freeze_time(timezone.now() - timedelta(days=1)):
+            cls.session_closed_unassigned = baker.make(
+                SupportSession,
+                user=cls.user_1,
+                supporter=None,
+                status=SupportSession.Status.CLOSED,
+            )
+
+        with freeze_time(timezone.now() - timedelta(days=1)):
+            cls.session_closed_assigned_admin1 = baker.make(
+                SupportSession,
+                user=cls.user_2,
+                supporter=cls.admin_1,
+                status=SupportSession.Status.CLOSED,
+            )
+
+        cls.session_for_race_claim = baker.make(
+            SupportSession,
+            user=cls.user_5,
+            supporter=None,
+            status=SupportSession.Status.PENDING,
+        )
+
+        for i in range(1, 4):
+            with freeze_time(timezone.now() + timedelta(hours=i)):
+                baker.make(
+                    SupportMessage,
+                    is_seen=True if i > 2 else False,
+                    text=f"message {i}",
+                    session=cls.session_pending_unassigned,
+                    sender=cls.user_1,
+                )
+
+        for i in range(1, 6):
+            with freeze_time(timezone.now() + timedelta(hours=i)):
+                baker.make(
+                    SupportMessage,
+                    is_seen=False,
+                    text=f"message {i}",
+                    session=cls.session_open_assigned_admin2,
+                    sender=cls.user_4,
+                )
+        for i in range(1, 3):
+            with freeze_time(timezone.now() + timedelta(hours=i)):
+                baker.make(
+                    SupportMessage,
+                    is_seen=False,
+                    text=f"race msg {i}",
+                    session=cls.session_for_race_claim,
+                    sender=cls.user_5,
+                )

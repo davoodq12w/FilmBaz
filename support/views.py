@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from .models import SupportSession, SupportMessage
@@ -6,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .serializers import SupportSessionSerializer, SupportMessageSerializer
 from django.db.models import Q
 from django.views.generic import View
+from django.db import transaction
 
 
 class SupportSessionView(LoginRequiredMixin, View):
@@ -55,7 +57,8 @@ class SupportSessionView(LoginRequiredMixin, View):
 @login_required()
 def get_support_session_for_admin(request, support_session_id=None):
     user = request.user
-    if not user.is_superuser:
+
+    if not (user.is_staff and user.is_superuser):
         return JsonResponse({
             "ok": False,
         })
@@ -65,28 +68,32 @@ def get_support_session_for_admin(request, support_session_id=None):
             "ok": False,
         })
 
-    support_session = get_object_or_404(SupportSession, id=support_session_id)
-    if support_session.status not in [SupportSession.Status.OPEN, SupportSession.Status.PENDING]:
-        return JsonResponse({
-            "ok": False,
-        })
-    if support_session.supporter not in [None, request.user]:
-        return JsonResponse({
-            "ok": False,
-        })
-    support_session.status = SupportSession.Status.OPEN
-    support_session.supporter = user
-    support_session.save()
-    messages = SupportMessage.objects.filter(session=support_session).order_by("created_at")
+    with transaction.atomic():
+        support_session = SupportSession.objects.select_for_update().filter(
+            id=support_session_id,
+            status__in=[SupportSession.Status.OPEN, SupportSession.Status.PENDING],
+        ).first()
 
-    for message in messages:
-        message.is_seen = True
-        message.save()
+        if support_session is None:
+            return JsonResponse({"ok": False})
 
-    serializer = SupportMessageSerializer(messages, many=True)
-    return JsonResponse({
-        "user_type": "admin",
-        "ok": True,
-        "support_session_id": support_session.id,
-        "messages": serializer.data
-    })
+        if support_session.supporter_id not in [None, user.id]:
+
+            return JsonResponse({
+                "ok": False,
+            })
+
+        support_session.supporter = request.user
+        support_session.status = SupportSession.Status.OPEN
+        support_session.save(update_fields=["supporter", "status"])
+
+        SupportMessage.objects.filter(session=support_session, is_seen=False).update(is_seen=True)
+        messages = SupportMessage.objects.filter(session=support_session).order_by("created_at")
+
+        serializer = SupportMessageSerializer(messages, many=True)
+        return JsonResponse({
+            "user_type": "admin",
+            "ok": True,
+            "support_session_id": support_session.id,
+            "messages": serializer.data
+        })
