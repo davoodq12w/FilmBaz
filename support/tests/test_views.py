@@ -291,6 +291,7 @@ class GetSupportSessionForAdminTest(TestCase):
 
         cls.session_pending_unassigned = baker.make(
             SupportSession,
+            id=1,
             user=cls.user_1,
             supporter=None,
             status=SupportSession.Status.PENDING,
@@ -298,6 +299,7 @@ class GetSupportSessionForAdminTest(TestCase):
 
         cls.session_open_unassigned = baker.make(
             SupportSession,
+            id=2,
             user=cls.user_2,
             supporter=None,
             status=SupportSession.Status.OPEN,
@@ -305,6 +307,7 @@ class GetSupportSessionForAdminTest(TestCase):
 
         cls.session_open_assigned_admin1 = baker.make(
             SupportSession,
+            id=3,
             user=cls.user_3,
             supporter=cls.admin_1,
             status=SupportSession.Status.OPEN,
@@ -312,6 +315,7 @@ class GetSupportSessionForAdminTest(TestCase):
 
         cls.session_open_assigned_admin2 = baker.make(
             SupportSession,
+            id=4,
             user=cls.user_4,
             supporter=cls.admin_2,
             status=SupportSession.Status.OPEN,
@@ -320,6 +324,7 @@ class GetSupportSessionForAdminTest(TestCase):
         with freeze_time(timezone.now() - timedelta(days=1)):
             cls.session_closed_unassigned = baker.make(
                 SupportSession,
+                id=5,
                 user=cls.user_1,
                 supporter=None,
                 status=SupportSession.Status.CLOSED,
@@ -328,6 +333,7 @@ class GetSupportSessionForAdminTest(TestCase):
         with freeze_time(timezone.now() - timedelta(days=1)):
             cls.session_closed_assigned_admin1 = baker.make(
                 SupportSession,
+                id=6,
                 user=cls.user_2,
                 supporter=cls.admin_1,
                 status=SupportSession.Status.CLOSED,
@@ -335,6 +341,7 @@ class GetSupportSessionForAdminTest(TestCase):
 
         cls.session_for_race_claim = baker.make(
             SupportSession,
+            id=7,
             user=cls.user_5,
             supporter=None,
             status=SupportSession.Status.PENDING,
@@ -368,3 +375,99 @@ class GetSupportSessionForAdminTest(TestCase):
                     session=cls.session_for_race_claim,
                     sender=cls.user_5,
                 )
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_get_sessions_anonymous_user(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_pending_unassigned.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 302)
+        login_url = reverse("account:login")
+        expected_url = f"{login_url}?next={url}"
+        self.assertRedirects(response, expected_url)
+
+    def test_get_sessions_simple_user(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_pending_unassigned.id])
+        self.client.login(username=self.user_1.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertIn("ok", data)
+        self.assertFalse(data["ok"])
+
+    def test_get_sessions_staff_only(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_pending_unassigned.id])
+
+        self.client.login(username=self.only_staff.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertIn("ok", data)
+        self.assertFalse(data["ok"])
+
+    def test_get_sessions_superuser_only(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_pending_unassigned.id])
+
+        self.client.login(username=self.only_superuser.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertIn("ok", data)
+        self.assertFalse(data["ok"])
+
+    def test_get_sessions_session_id_not_found(self):
+        url = reverse("support:get_support_session_for_admin", args=[999])
+
+        self.client.login(username=self.only_superuser.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertIn("ok", data)
+        self.assertFalse(data["ok"])
+
+    def test_get_sissions_session_is_closed(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_closed_unassigned.id])
+        self.client.login(username=self.admin_1.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertIn("ok", data)
+        self.assertFalse(data["ok"])
+
+    def test_get_sissions_session_is_pending(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_pending_unassigned.id])
+        self.client.login(username=self.admin_1.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertIn("ok", data)
+        self.assertTrue(data["ok"])
+        self.assertIn("user_type", data)
+        self.assertIn("support_session_id", data)
+        self.assertIn("messages", data)
+
+        self.assertEqual(data["user_type"], "admin")
+        self.assertEqual(data["support_session_id"], self.session_pending_unassigned.id)
+
+        messages = SupportMessageSerializer(self.session_pending_unassigned.messages.all(), many=True).data
+        self.assertEqual(len(data["messages"]), len(messages))
+
+
+    def test_get_sissions_session_is_open(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_open_unassigned.id])
+        self.client.login(username=self.admin_1.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertIn("ok", data)
+        self.assertTrue(data["ok"])
+        self.assertIn("user_type", data)
+        self.assertIn("support_session_id", data)
+        self.assertIn("messages", data)
+
+        self.assertEqual(data["user_type"], "admin")
+        self.assertEqual(data["support_session_id"], self.session_open_unassigned.id)
+
+        self.assertEqual(list(data["messages"]), [])

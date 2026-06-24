@@ -68,6 +68,13 @@ def get_support_session_for_admin(request, support_session_id=None):
             "ok": False,
         })
 
+    try:
+        support_session_id = int(support_session_id)
+    except (TypeError, ValueError):
+        return JsonResponse({
+            "ok": False,
+        })
+
     with transaction.atomic():
         support_session = SupportSession.objects.select_for_update().filter(
             id=support_session_id,
@@ -78,7 +85,6 @@ def get_support_session_for_admin(request, support_session_id=None):
             return JsonResponse({"ok": False})
 
         if support_session.supporter_id not in [None, user.id]:
-
             return JsonResponse({
                 "ok": False,
             })
