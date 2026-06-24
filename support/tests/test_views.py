@@ -363,7 +363,7 @@ class GetSupportSessionForAdminTest(TestCase):
                     SupportMessage,
                     is_seen=False,
                     text=f"message {i}",
-                    session=cls.session_open_assigned_admin2,
+                    session=cls.session_closed_unassigned,
                     sender=cls.user_4,
                 )
         for i in range(1, 3):
@@ -451,9 +451,15 @@ class GetSupportSessionForAdminTest(TestCase):
         self.assertEqual(data["user_type"], "admin")
         self.assertEqual(data["support_session_id"], self.session_pending_unassigned.id)
 
-        messages = SupportMessageSerializer(self.session_pending_unassigned.messages.all(), many=True).data
+        messages = SupportMessageSerializer(
+            self.session_pending_unassigned.messages.all().order_by("created_at"),
+            many=True
+        ).data
         self.assertEqual(len(data["messages"]), len(messages))
+        self.assertEqual(list(data["messages"]), list(messages))
 
+        for i in list(data["messages"]):
+            self.assertEqual(int(i["session_id"]), self.session_pending_unassigned.id)
 
     def test_get_sissions_session_is_open(self):
         url = reverse("support:get_support_session_for_admin", args=[self.session_open_unassigned.id])
@@ -471,3 +477,74 @@ class GetSupportSessionForAdminTest(TestCase):
         self.assertEqual(data["support_session_id"], self.session_open_unassigned.id)
 
         self.assertEqual(list(data["messages"]), [])
+
+    def test_get_sessions_claim_session(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_pending_unassigned.id])
+        self.client.login(username=self.admin_1.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        session = SupportSession.objects.get(id=int(data["support_session_id"]))
+        self.assertEqual(session.status, SupportSession.Status.OPEN)
+        self.assertEqual(session.supporter.username, self.admin_1.username)
+        self.assertTrue(data["ok"])
+
+        session_messages = SupportMessageSerializer(session.messages.all(), many=True).data
+        for i in session_messages:
+            self.assertTrue(i["is_seen"])
+
+        other_session_messages = SupportMessageSerializer(self.session_closed_unassigned.messages.all(), many=True).data
+        for i in other_session_messages:
+            self.assertFalse(i["is_seen"])
+
+    def test_get_sessions_claimed_session(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_open_assigned_admin1.id])
+        self.client.login(username=self.admin_1.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertTrue(data["ok"])
+
+    def test_get_sissions_anonymous_supporter_session(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_open_assigned_admin1.id])
+        self.client.login(username=self.admin_2.username, password="testpass")
+        response = self.client.get(url)
+
+        data = response.json()
+        self.assertFalse(data["ok"])
+
+    def test_get_sessions_race_claim(self):
+        url = reverse("support:get_support_session_for_admin", args=[self.session_for_race_claim.id])
+
+        client_admin_1 = Client()
+        client_admin_2 = Client()
+
+        login_ok_1 = client_admin_1.login(username=self.admin_1.username, password="testpass")
+        login_ok_2 = client_admin_2.login(username=self.admin_2.username, password="testpass")
+
+        self.assertTrue(login_ok_1)
+        self.assertTrue(login_ok_2)
+
+
+        response_1 = client_admin_1.get(url)
+        response_2 = client_admin_2.get(url)
+
+        self.assertEqual(response_1.status_code, 200)
+        self.assertEqual(response_2.status_code, 200)
+
+        data1 = response_1.json()
+        data2 = response_2.json()
+
+
+        self.assertNotEqual(data1["ok"], data2["ok"])
+        self.assertTrue(data1["ok"] or data2["ok"])
+
+        self.session_for_race_claim.refresh_from_db()
+
+        self.assertIn(
+            self.session_for_race_claim.supporter_id,
+            [self.admin_1.id, self.admin_2.id]
+        )
+
+        winner_id = self.admin_1.id if data1["ok"] else self.admin_2.id
+        self.assertEqual(self.session_for_race_claim.supporter_id, winner_id)
