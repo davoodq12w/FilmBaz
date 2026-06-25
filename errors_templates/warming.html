@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>در حال آماده‌سازی</title>
+    <style>
+
+        @font-face {
+            font-family: 'VazirFD';
+            src: url('../film/static/fonts/vazir-font-v16.1.0/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff') format('woff');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* فونت انگلیسی */
+        @font-face {
+            font-family: 'PoppinsCustom';
+            src: url('../film/static/fonts/Poppins/Poppins-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            margin: 0;
+            font-family: tahoma, sans-serif;
+            background: #090808;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .box {
+            background: #3A6351;
+            border: 1px solid #ff9f29;
+            border-radius: 16px;
+            padding: 28px;
+            width: min(92%, 520px);
+            text-align: center;
+            box-shadow: 0 3px 10px #ff9f29;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 22px;
+            color: #f8fafc;
+        }
+
+        p {
+            margin: 0 0 18px;
+            line-height: 1.9;
+            color: #cbd5e1;
+        }
+
+        button {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 15px;
+            cursor: pointer;
+            background: #ff9f29;
+            color: #000104;
+            font-weight: 700;
+        }
+
+        .timer {
+            margin-top: 14px;
+            color: #ff9f29;
+            font-size: 14px;
+        }
+
+        .sec {
+            color: #f8fafc;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h1>سایت در حال آماده‌سازی است</h1>
+    <p>داده‌ها به‌صورت خودکار در حال بارگذاری هستند.<br>زمان انتظار تقریبی: یک دقیقه</p>
+
+    <button onclick="location.reload()">بارگذاری مجدد</button>
+
+    <div class="timer">
+        <span class="sec" id="count">60</span>
+        ثانیه تا ریلود خودکار
+    </div>
+</div>
+
+<script>
+    let sec = 60;
+    const countEl = document.getElementById('count');
+
+    const timer = setInterval(() => {
+        sec--;
+        countEl.textContent = sec;
+        if (sec <= 0) {
+            clearInterval(timer);
+            location.reload();
+        }
+    }, 1000);
+</script>
+</body>
+</html>
