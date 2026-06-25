@@ -83,7 +83,7 @@ class SupportMessageCreateSerializerTestCase(TestCase):
     def test_session_id_required(self):
         serializer = SupportMessageCreateSerializer(
             data={"text": "hello"},
-            context={"user": self.user1}  # اصلاح شد
+            context={"user": self.user1}
         )
 
         self.assertFalse(serializer.is_valid())
