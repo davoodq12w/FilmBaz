@@ -57,6 +57,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - static_volume:/app/staticfiles
       - media_volume:/app/media
+      - ./errors_templates/warming.html:/app/errors_templates/warming.html
 
   db:
     image: postgres:15
