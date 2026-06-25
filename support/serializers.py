@@ -43,7 +43,7 @@ class SupportMessageCreateSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def validate_session(self, session):
+    def validate_session_id(self, session):
         if session.status == SupportSession.Status.CLOSED:
             raise serializers.ValidationError(
                 "این سشن بسته شده و امکان ارسال پیام وجود ندارد."
