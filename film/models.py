@@ -40,11 +40,17 @@ class Movie(models.Model):
     runtime = models.PositiveSmallIntegerField(null=True, blank=True)
     # ----------------------------------------------------------------
     users_saved = models.ManyToManyField(FilmBazUser, related_name="saves", blank=True)
+    users_liked = models.ManyToManyField(FilmBazUser, related_name="likes", blank=True)
     # ----------------------------------------------------------------
     is_serie = models.BooleanField(default=False)
     adult = models.BooleanField(default=False)
     # ----------------------------------------------------------------
     genres = models.ManyToManyField(Genre, related_name="movies")
+    favorite_genres = models.ManyToManyField(
+        Genre,
+        related_name='fans',
+        blank=True
+    )
     # ----------------------------------------------------------------
     created = models.DateField(auto_now_add=True)
     crew_members = models.ManyToManyField(
