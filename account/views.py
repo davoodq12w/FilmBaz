@@ -7,6 +7,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from account.tasks import send_confirm_email
+from film.models import Genre, Movie
 
 
 # Create your views here.
@@ -120,3 +121,33 @@ class UserSavesList(ListView):
     def get_queryset(self):
         user = self.request.user
         return user.saves.all()
+
+
+@method_decorator(login_required(), name="dispatch")
+class UserFavoriteGenres(View):
+    http_method_names = ["get", "post"]
+
+    def get(self, request):
+        user = request.user
+        initial_data = {
+            "genres": user.favorite_genres.all()
+        }
+        form = FavoriteGenresForm(initial=initial_data)
+        context = {
+            "form": form,
+        }
+        return render(request, "account/choose_favorite_genres.html", context)
+
+    def post(self, request):
+        user = request.user
+        form = FavoriteGenresForm(request.POST)
+        if form.is_valid():
+            genres = form.cleaned_data["genres"]
+            user.favorite_genres.set(genres)
+            user.save()
+            return redirect("film:home_page")
+        form.initial["genres"] = user.favorite_genres.all()
+        context = {
+            "form": form,
+        }
+        return render(request, "account/choose_favorite_genres.html", context)

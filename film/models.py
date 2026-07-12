@@ -18,6 +18,9 @@ class Genre(models.Model):
     def __str__(self):
         return f"{self.en_name}/{self.fa_name}"
 
+    def top_3_movies(self):
+        return self.movies.all().order_by("-rate")[:3]
+
 
 class Movie(models.Model):
     # ----------------------------------------------------------------
@@ -46,11 +49,6 @@ class Movie(models.Model):
     adult = models.BooleanField(default=False)
     # ----------------------------------------------------------------
     genres = models.ManyToManyField(Genre, related_name="movies")
-    favorite_genres = models.ManyToManyField(
-        Genre,
-        related_name='fans',
-        blank=True
-    )
     # ----------------------------------------------------------------
     created = models.DateField(auto_now_add=True)
     crew_members = models.ManyToManyField(

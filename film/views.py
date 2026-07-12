@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect, get_object_or_404
+from analytics.models import Interaction
 from .models import *
 from django.views.generic import View
 from django.contrib.postgres.search import TrigramSimilarity
@@ -9,16 +10,29 @@ import hashlib
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from datetime import timedelta
+from django.utils import timezone
 
 
 class HomePageView(View):
     def get(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated:
+            favorite_genres = request.user.favorite_genres.all()
+            if favorite_genres is None:
+                return redirect("account:choose_favorite_genres")
+            else:
+                by_chosen_genres = Movie.objects.filter(genres__in=favorite_genres).order_by('-rate')[:7]
+        else:
+            by_chosen_genres = []
+
         new_movies = Movie.objects.order_by('-release_date')[:7]
         top_movies = Movie.objects.order_by('-rate')[:7]
 
         context = {
             "new_movies": new_movies,
             "top_movies": top_movies,
+            "by_chosen_genres": by_chosen_genres,
         }
         return render(request, "film/home_page.html", context)
 
@@ -288,6 +302,14 @@ class MovieDetail(View):
                 context["comments"] = comments
                 cache.set(comments_cache_key, comments)
 
+            if request.user.is_authenticated:
+                Interaction.objects.get_or_create(
+                    user=request.user,
+                    movie=context["movie"],
+                    interaction_type=Interaction.Type.VIEW,
+                    weight=0.2
+                )
+
         except Exception as e:
             print(f"error in MovieDetail : {e}")
 
@@ -315,6 +337,13 @@ class CommentView(View):
             movie=movie,
             user=user,
             text=text
+        )
+
+        Interaction.objects.create(
+            user=request.user,
+            movie=movie,
+            interaction_type=Interaction.Type.COMMENT,
+            weight=0.5
         )
 
         return render(request, "ajax/add_comment.html", {"comment": comment})
@@ -357,6 +386,19 @@ class SearchMovie(View):
         context = {
             'movie_names': movie_names,
         }
+
+        if request.user.is_authenticated:
+            try:
+                Interaction.objects.create(
+                    user=request.user,
+                    movie=Movie.objects.get(fa_title=movie_names[0]),
+                    interaction_type=Interaction.Type.SEARCH,
+                    weight=0.1
+                )
+            except Exception as e:
+                print(f"Error in create Search Intraction : {e}")
+                pass
+
         return render(request, "ajax/inline_search_results.html", context)
 
     def _get_results(self, query):
@@ -389,9 +431,25 @@ class SaveMovieView(View):
         if movie in user.saves.all():
             user.saves.remove(movie)
             is_save = False
+            try:
+                intraction = Interaction.objects.get(
+                    user=user,
+                    movie=movie,
+                    interaction_type=Interaction.Type.SAVE,
+                    timestamp__gt=timezone.now() - timedelta(minutes=5)
+                )
+                intraction.delete()
+            except Interaction.DoesNotExist:
+                pass
         else:
             user.saves.add(movie)
             is_save = True
+            Interaction.objects.create(
+                user=user,
+                movie=movie,
+                interaction_type=Interaction.Type.SAVE,
+                weight=1.5
+            )
 
         return JsonResponse({"is_save": is_save})
 
@@ -402,3 +460,43 @@ class SaveMovieView(View):
 
 def page_not_found(request, exception):
     return render(request, "partials/not_allowed.html", status=404)
+
+
+@method_decorator(login_required(), name="dispatch")
+class LikeMovieView(View):
+    http_method_names = ['post']
+
+    def post(self, request):
+        slug = request.POST.get('slug')
+        pk = request.POST.get('pk')
+        user = request.user
+        movie = get_object_or_404(Movie, id=pk, slug=slug)
+
+        if movie in user.likes.all():
+            user.likes.remove(movie)
+            is_like = False
+            try:
+                intraction = Interaction.objects.get(
+                    user=user,
+                    movie=movie,
+                    interaction_type=Interaction.Type.LIKE,
+                    timestamp__gt=timezone.now() - timedelta(minutes=5)
+                )
+                intraction.delete()
+            except Interaction.DoesNotExist:
+                pass
+        else:
+            user.likes.add(movie)
+            is_like = True
+            Interaction.objects.create(
+                user=user,
+                movie=movie,
+                interaction_type=Interaction.Type.LIKE,
+                weight=1.0
+            )
+
+        return JsonResponse({"is_like": is_like})
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        super().http_method_not_allowed(request, *args, **kwargs)
+        return render(request, "partials/not_allowed.html")

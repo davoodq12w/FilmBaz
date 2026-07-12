@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "daphne",
     "account.apps.AccountConfig",
     "film.apps.FilmConfig",
@@ -234,3 +235,4 @@ CELERY_TASK_QUEUES = (
     Queue("support"),
     Queue("default"),
 )
+

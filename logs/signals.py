@@ -4,8 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from .models import Log
 
 MODELS_TO_LOG = [
-    'FilmBazUser', 'Ticket', 'Interaction', 'Comment', 'Genre', 'Movie',
-    'Cast', 'CrewMember', 'MovieCrew', 'SupportMessage', 'SupportSession'
+    'FilmBazUser', 'Ticket', 'Interaction', 'Comment', 'Genre', 'Movie', 'SupportMessage', 'SupportSession'
 ]
 
 
