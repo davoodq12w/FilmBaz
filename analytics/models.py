@@ -17,7 +17,7 @@ class Interaction(models.Model):
     )
     movie = models.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name='interactions',
-        null=True, blank=True  # برای SEARCH که ممکن است فیلمی نباشد
+        null=True, blank=True
     )
     interaction_type = models.CharField(
         max_length=10, choices=Type.choices
