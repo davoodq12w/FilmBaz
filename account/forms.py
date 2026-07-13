@@ -174,7 +174,7 @@ class TicketForm(forms.ModelForm):
 class FavoriteGenresForm(forms.Form):
     genres = forms.ModelMultipleChoiceField(
         queryset=Genre.objects.all(),
-        widget=forms.CheckboxSelectMultiple,  # نمایش به صورت چک‌باکس
+        widget=forms.CheckboxSelectMultiple,
         label="ژانرهای مورد علاقه",
         required=True,
     )
@@ -182,7 +182,7 @@ class FavoriteGenresForm(forms.Form):
     def clean_genres(self):
         genres = self.cleaned_data.get("genres")
         if genres.count() < 3:
-            raise forms.ValidationError("لطفاً حداقل سه ژانر انتخاب کنید.")
+            raise forms.ValidationError("لطفاً حداقل سه ژانر انتخاب کنید")
         return genres
 
 

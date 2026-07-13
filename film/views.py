@@ -19,10 +19,10 @@ class HomePageView(View):
 
         if request.user.is_authenticated:
             favorite_genres = request.user.favorite_genres.all()
-            if favorite_genres is None:
+            if not favorite_genres.exists():
                 return redirect("account:choose_favorite_genres")
             else:
-                by_chosen_genres = Movie.objects.filter(genres__in=favorite_genres).order_by('-rate')[:7]
+                by_chosen_genres = Movie.objects.filter(genres__in=favorite_genres).distinct().order_by('-rate')[:7]
         else:
             by_chosen_genres = []
 

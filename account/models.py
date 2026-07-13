@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django_resized import ResizedImageField
-from film.models import Genre
 
 
 # Create your models here.
@@ -34,7 +33,7 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
     image = ResizedImageField(upload_to="profile_images/%Y/%m/%d", quality=100, crop=["middle", "center"],
                               size=[500, 500], null=True)
     favorite_genres = models.ManyToManyField(
-        Genre,
+        "film.Genre",
         related_name='fans',
         blank=True
     )

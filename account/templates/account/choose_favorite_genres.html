@@ -1,6 +1,42 @@
 {% extends "parents/base.html" %}
 {% load static %}
 {% block title %}Chosse Favorites{% endblock %}
-
 {% block body %}
+    <h2 style="color: #ff9f29; text-align: center; margin: 20px auto">لطفا ژانر های مورد علاقه خود را انتخاب کنید</h2>
+    <form method="post" class="choose-genres-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for err in form.genres.errors %}
+            <p class="choose-genres-error">{{ err }}</p>
+        {% endfor %}
+
+        <div class="choose-genres-container">
+            {% for genre, checkbox in genres_with_cb %}
+                <label class="choose-genres-genre-card">
+                    {{ checkbox.tag }}
+
+                    <div class="choose-genres-genre-content">
+                        <div class="choose-genres-genre-title">
+                            <span class="choose-genres-genre-en-name">{{ genre.en_name }}</span> /
+                            <span class="choose-genres-genre-fa-name">{{ genre.fa_name }}</span>
+                        </div>
+                        <div class="choose-genres-genre-movies">
+                            {% for movie in genre.top_3_movies %}
+                                <div class="movie-card">
+                                    <img src="{{ movie.backdrop_url }}" alt="{{ movie.fa_title }}"
+                                         class="choose-genres-movie-backdrop">
+                                    <p class="choose-genres-movie-title">{{ movie.fa_title }}</p>
+                                </div>
+                            {% empty %}
+                                <p>نمونه ناموجود</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </label>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="choose-genres-save-button">ذخیره انتخاب‌ها</button>
+    </form>
 {% endblock %}

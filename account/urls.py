@@ -12,6 +12,7 @@ urlpatterns = [
     path("edit_user/", views.EditUser.as_view(), name="edit_user"),
     path("ticket/", views.TicketView.as_view(), name="ticket"),
     path("profile/saves", views.UserSavesList.as_view(), name="saves"),
+    path("profile/likes", views.UserLikesList.as_view(), name="likes"),
     path("chooose_favorite_genres/", views.UserFavoriteGenres.as_view(), name="choose_favorite_genres"),
     # =====================================
     # for password reset
