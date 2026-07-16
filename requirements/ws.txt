@@ -1,0 +1,18 @@
+-r base.txt
+
+channels==4.3.2
+channels_redis==4.3.0
+daphne==4.2.1
+autobahn==25.12.2
+Automat==25.4.16
+constantly==23.10.4
+hyperlink==21.0.0
+Incremental==24.11.0
+Twisted==25.5.0
+txaio==25.12.2
+service-identity==24.2.0
+pyOpenSSL==26.0.0
+zope.interface==8.2
+cbor2==5.8.0
+py-ubjson==0.16.1
+msgpack==1.1.2

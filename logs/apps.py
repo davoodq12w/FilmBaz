@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class FilmConfig(AppConfig):
+class LogsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'film'
+    name = 'logs'
 
     def ready(self):
-        import film.signals
+        import logs.signals

@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from .models import FilmBazUser, Ticket
 import re
 from django.contrib.auth.forms import AuthenticationForm
+from film.models import Genre
 
 
 class FilmBazUserCreationForm(UserCreationForm):
@@ -168,3 +169,20 @@ class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ["subject", "text", ]
+
+
+class FavoriteGenresForm(forms.Form):
+    genres = forms.ModelMultipleChoiceField(
+        queryset=Genre.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        label="ژانرهای مورد علاقه",
+        required=True,
+    )
+
+    def clean_genres(self):
+        genres = self.cleaned_data.get("genres")
+        if genres.count() < 3:
+            raise forms.ValidationError("لطفاً حداقل سه ژانر انتخاب کنید")
+        return genres
+
+

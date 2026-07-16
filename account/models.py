@@ -30,8 +30,13 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=11, unique=True)
     email = models.CharField(max_length=200, unique=True)
     created = models.DateTimeField(auto_now_add=True)
-    image = ResizedImageField(upload_to="profile_images/%Y/%m/%d", quality=100, crop=["middle", "center"], size=[500, 500],null=True)
-
+    image = ResizedImageField(upload_to="profile_images/%Y/%m/%d", quality=100, crop=["middle", "center"],
+                              size=[500, 500], null=True)
+    favorite_genres = models.ManyToManyField(
+        "film.Genre",
+        related_name='fans',
+        blank=True
+    )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -51,7 +56,6 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Ticket(models.Model):
-
     class Subject(models.TextChoices):
         CRITICISM = 'Criticism', 'انتقاد'
         PROPOSAL = 'Proposal', 'پیشنهاد'
@@ -61,4 +65,3 @@ class Ticket(models.Model):
     text = models.TextField(max_length=2000)
     phone = models.CharField(max_length=11)
     email = models.EmailField(max_length=50)
-

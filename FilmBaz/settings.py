@@ -35,11 +35,14 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "daphne",
     "account.apps.AccountConfig",
     "film.apps.FilmConfig",
     "support.apps.SupportConfig",
     "people.apps.PeopleConfig",
+    "analytics.apps.AnalyticsConfig",
+    "logs.apps.LogsConfig",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,7 +56,6 @@ INSTALLED_APPS = [
     "storages",
     "rest_framework",
     "channels",
-
 ]
 
 MIDDLEWARE = [
@@ -233,3 +235,4 @@ CELERY_TASK_QUEUES = (
     Queue("support"),
     Queue("default"),
 )
+

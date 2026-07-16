@@ -18,6 +18,9 @@ class Genre(models.Model):
     def __str__(self):
         return f"{self.en_name}/{self.fa_name}"
 
+    def top_3_movies(self):
+        return self.movies.all().order_by("-rate")[:3]
+
 
 class Movie(models.Model):
     # ----------------------------------------------------------------
@@ -40,6 +43,7 @@ class Movie(models.Model):
     runtime = models.PositiveSmallIntegerField(null=True, blank=True)
     # ----------------------------------------------------------------
     users_saved = models.ManyToManyField(FilmBazUser, related_name="saves", blank=True)
+    users_liked = models.ManyToManyField(FilmBazUser, related_name="likes", blank=True)
     # ----------------------------------------------------------------
     is_serie = models.BooleanField(default=False)
     adult = models.BooleanField(default=False)

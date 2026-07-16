@@ -35,7 +35,7 @@
                     {% if user.email %}
                         <p>{{ user.email }}</p>
                     {% else %}
-                        <p><a href="{% url 'account:edit_user'%}">ایمیل خود را وارد کنید!</a></p>
+                        <p><a href="{% url 'account:edit_user' %}">ایمیل خود را وارد کنید!</a></p>
                     {% endif %}
                 </div>
             </div>
@@ -43,6 +43,8 @@
             <div class="profile-actions">
                 <a href="{% url 'account:saves' %}">ذخیره ها</a>
                 <a id="ticket">ارسال تیکت</a>
+                <a href="{% url 'account:likes' %}">لایک شده ها</a>
+                <a href="{% url 'account:choose_favorite_genres' %}">ژانر های موردعلاقه</a>
             </div>
         </div>
     </div>
@@ -70,11 +72,11 @@
             let form = $("#ticket-form");
             $("#ticket").click(function () {
                 form.addClass("profile-ticket-form");
-                $(".ticket-form").css("display","block");
+                $(".ticket-form").css("display", "block");
             });
             $("#ticket-cancel").click(function () {
                 form.removeClass("profile-ticket-form");
-                $(".ticket-form").css("display","none");
+                $(".ticket-form").css("display", "none");
 
             });
         });

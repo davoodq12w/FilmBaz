@@ -10,4 +10,5 @@ urlpatterns = [
     path("movies/add-comment/", views.CommentView.as_view(), name="add_comment"),
     path("movies/search/", views.SearchMovie.as_view(), name="search"),
     path("save_movie/", views.SaveMovieView.as_view(), name="save_movie"),
+    path("like_movie/", views.LikeMovieView.as_view(), name="like_movie"),
 ]
