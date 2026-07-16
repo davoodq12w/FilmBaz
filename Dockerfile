@@ -6,11 +6,9 @@ LABEL author_email="davod.q12w@gmail.com"
 WORKDIR /app
 ENV PYTHONUNBUFFERED 1
 
-ARG REQUIREMENTS_FILE=requirements/base.txt
-
-COPY requirements/ /app/requirements/
+COPY rq.txt /app/
 RUN pip install -U pip
-RUN pip install --no-cache-dir -r ${REQUIREMENTS_FILE}
+RUN pip install --no-cache-dir -r rq.txt
 
 COPY . /app/
 RUN mkdir -p /app/staticfiles
