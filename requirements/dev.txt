@@ -1,0 +1,4 @@
+-r base.txt
+
+freezegun==1.5.5
+model-bakery==1.23.5
