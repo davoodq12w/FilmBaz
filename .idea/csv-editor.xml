@@ -10,13 +10,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\analytics\traning_datas\train_dataset.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
       </map>
     </option>
   </component>
