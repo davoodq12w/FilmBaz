@@ -303,7 +303,7 @@ class MovieDetail(View):
                 cache.set(comments_cache_key, comments)
 
             if request.user.is_authenticated:
-                Interaction.objects.get_or_create(
+                Interaction.objects.create(
                     user=request.user,
                     movie=context["movie"],
                     interaction_type=Interaction.Type.VIEW,
