@@ -3,7 +3,14 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\analytics\traning_datas\recommendation_dataset.csv">
+        <entry key="\ml_service\datasets\processed\dataset_20260719_224239.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\ml_service\datasets\raw\dataset_20260720_221103.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
