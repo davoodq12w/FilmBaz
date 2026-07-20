@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-
+from logs.logging_state import disable_logging
 from film.models import Movie
 from people.models import Cast, CrewMember
 
@@ -8,9 +8,10 @@ class Command(BaseCommand):
     help = "Set image paths for crews, casts, and movie posters/backdrops."
 
     def handle(self, *args, **options):
-        self.set_crew_photos()
-        self.set_cast_photos()
-        self.set_movie_photos()
+        with disable_logging():
+            self.set_crew_photos()
+            self.set_cast_photos()
+            self.set_movie_photos()
 
     def set_crew_photos(self):
         success_saves = 0

@@ -237,7 +237,7 @@ CELERY_TASK_QUEUES = (
 )
 
 JAZZMIN_SETTINGS = {
-    "show_ui_builder": False,
+    "show_ui_builder": True,
 }
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
@@ -246,7 +246,7 @@ JAZZMIN_UI_TWEAKS = {
     "brand_small_text": False,
     "brand_colour": "navbar-warning",
     "accent": "accent-warning",
-    "navbar": "navbar-gray-dark navbar-dark",
+    "navbar": "navbar-dark",
     "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
@@ -259,8 +259,8 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": True,
     "sidebar_nav_flat_style": True,
-    "theme": "default",
-    "dark_mode_theme": "darkly",
+    "theme": "superhero",
+    "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",

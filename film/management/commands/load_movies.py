@@ -2,6 +2,7 @@ import json
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from film.models import Movie, Genre
+from logs.logging_state import disable_logging
 
 
 class Command(BaseCommand):
@@ -9,56 +10,56 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        with disable_logging():
+            file_path = "film/management/fixtures/movies.json"
 
-        file_path = "film/management/fixtures/movies.json"
+            try:
 
-        try:
+                with open(file_path, "r", encoding="utf-8") as file:
+                    movies = json.load(file)
 
-            with open(file_path, "r", encoding="utf-8") as file:
-                movies = json.load(file)
+                created_count = 0
+                updated_count = 0
 
-            created_count = 0
-            updated_count = 0
+                for data in movies:
 
-            for data in movies:
+                    movie, created = Movie.objects.update_or_create(
+                        slug=data["slug"],
+                        defaults={
+                            "fa_title": data["fa_title"],
+                            "orj_title": data["orj_title"],
+                            "rate": data["rate"],
+                            "release_date": data["release_date"],
+                            "country": data["country"],
+                            "runtime": data["runtime"],
+                            "is_serie": data["is_serie"],
+                            "adult": data["adult"],
+                            "description": data["description"],
+                        }
+                    )
 
-                movie, created = Movie.objects.update_or_create(
-                    slug=data["slug"],
-                    defaults={
-                        "fa_title": data["fa_title"],
-                        "orj_title": data["orj_title"],
-                        "rate": data["rate"],
-                        "release_date": data["release_date"],
-                        "country": data["country"],
-                        "runtime": data["runtime"],
-                        "is_serie": data["is_serie"],
-                        "adult": data["adult"],
-                        "description": data["description"],
-                    }
+                    genres = Genre.objects.filter(
+                        slug__in=data["genres"]
+                    )
+
+                    movie.genres.set(genres)
+
+                    if created:
+                        created_count += 1
+                    else:
+                        updated_count += 1
+
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"فیلم ها || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
+                    )
+                )
+            except FileNotFoundError:
+                self.stdout.write(
+                    self.style.ERROR(f"File not found: {file_path}")
                 )
 
-                genres = Genre.objects.filter(
-                    slug__in=data["genres"]
+            except Exception as e:
+                self.stdout.write(
+                    self.style.ERROR(str(e))
                 )
-
-                movie.genres.set(genres)
-
-                if created:
-                    created_count += 1
-                else:
-                    updated_count += 1
-
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"فیلم ها || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
-                )
-            )
-        except FileNotFoundError:
-            self.stdout.write(
-                self.style.ERROR(f"File not found: {file_path}")
-            )
-
-        except Exception as e:
-            self.stdout.write(
-                self.style.ERROR(str(e))
-            )
