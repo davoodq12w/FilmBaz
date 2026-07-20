@@ -12,7 +12,7 @@ services:
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
-      - ./analytics/traning_datas:/app/analytics/traning_datas
+      - ./ml_service/datasets/raw:/app//ml_service/datasets/raw
     depends_on:
       - db
       - redis
@@ -149,6 +149,25 @@ services:
       DJANGO_SETTINGS_MODULE: FilmBaz.settings
     networks:
       - main
+
+#  ml_service:
+#    build:
+#      context: ./ml_service
+#      dockerfile: Dockerfile
+#    container_name: ml_service
+#    restart: always
+#    command: uvicorn app.main:app --host 0.0.0.0 --port 8002
+#    volumes:
+#      - ./ml_service:/app
+#      - ./ml_service/datasets:/app/datasets
+#      - ./ml_service/saved_models:/app/saved_models
+#      - ./ml_service/logs:/app/logs
+#    expose:
+#      - "8002"
+#    depends_on:
+#      - postgres
+#    networks:
+#      - main
 
 volumes:
   postgres_data:

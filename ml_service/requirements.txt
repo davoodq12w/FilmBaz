@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+tensorflow
+tensorflow-recommenders
+pandas
+numpy
+scikit-learn
+pyarrow
+python-dotenv
+pydantic
+pydantic-settings
+loguru
+tqdm
+httpx
