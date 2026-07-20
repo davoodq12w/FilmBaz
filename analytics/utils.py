@@ -86,7 +86,7 @@ class DatasetBuilder:
                 ),
                 "favorite_directors": list(favorite_directors),
                 "favorite_writers": list(favorite_writers),
-                "interaction_count": len(interactions),
+                "user_interaction_count": len(interactions),
                 "active_days": (
                     (last_interaction.timestamp - first_interaction.timestamp).days
                     if last_interaction and first_interaction
@@ -111,7 +111,7 @@ class DatasetBuilder:
             "preferred_release_year",
             "favorite_directors",
             "favorite_writers",
-            "interaction_count",
+            "user_interaction_count",
             "active_days",
         ]]
 
@@ -187,14 +187,14 @@ class DatasetBuilder:
                     "shared": False,
                     "comment_count": 0,
                     "search_count": 0,
-                    "interaction_count": 0,
+                    "movie_interaction_count": 0,
                     "target_score": 0,
                     "last_interaction": interaction.timestamp,
                 }
 
             row = grouped[key]
 
-            row["interaction_count"] += 1
+            row["movie_interaction_count"] += 1
             row["target_score"] += interaction.weight
 
             if interaction.timestamp > row["last_interaction"]:
@@ -230,7 +230,7 @@ class DatasetBuilder:
             "shared",
             "comment_count",
             "search_count",
-            "interaction_count",
+            "movie_interaction_count",
             "target_score",
             "last_interaction",
         ]]

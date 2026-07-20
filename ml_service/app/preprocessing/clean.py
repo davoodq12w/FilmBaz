@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 from ast import literal_eval
 
-def cleaned_data(df):
 
+def cleaned_data(df):
     df.replace(
         {
             "": np.nan,
@@ -37,12 +37,10 @@ def cleaned_data(df):
     df.drop_duplicates(inplace=True)
     df.reset_index(drop=True, inplace=True)
 
-
     df["last_interaction"] = pd.to_datetime(
         df["last_interaction"],
         utc=True
     )
-
 
     bool_columns = [
         "liked",
@@ -53,7 +51,6 @@ def cleaned_data(df):
     ]
 
     df[bool_columns] = df[bool_columns].astype(bool)
-
 
     int_columns = [
         "user_id",
@@ -76,21 +73,19 @@ def cleaned_data(df):
         "release_year",
         "runtime",
         "popularity",
+        "user_interaction_count",
+        "movie_interaction_count",
     ]
 
     df[int_columns] = df[int_columns].astype("int32")
 
-
     float_columns = [
-        "interaction_count_x",
-        "interaction_count_y",
         "target_score",
         "avg_interaction_weight",
         "rate",
     ]
 
     df[float_columns] = df[float_columns].astype("float32")
-
 
     list_columns = [
         "favorite_genres",
