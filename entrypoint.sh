@@ -48,6 +48,9 @@ python manage.py load_relations
 echo "Setting pictures..."
 python manage.py load_pictures
 
+echo "Setting movie files..."
+python manage.py load_movie_files
+
 python manage.py shell -c "
 from django.contrib.auth import get_user_model;
 User = get_user_model();

@@ -34,11 +34,20 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(MovieTrailer)
 class MovieTrailerAdmin(admin.ModelAdmin):
-    list_display = ["movie__orj_title", "created"]
+    list_display = ["movie__orj_title", "timestamp"]
     search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug"]
+    list_filter = ["movie__orj_title"]
 
 
 @admin.register(MovieFile)
 class MovieFileAdmin(admin.ModelAdmin):
-    list_display = ["movie__orj_title", "season", "episode", "created"]
+    list_display = ["movie__orj_title", "season", "episode", "timestamp"]
     search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug"]
+
+
+@admin.register(WatchTime)
+class WatchTimeAdmin(admin.ModelAdmin):
+    list_display = ["movie__orj_title", "user__username", "timestamp"]
+    search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug", "user__username", "user__email",
+                     "user__phone"]
+    list_filter = ["movie__orj_title", "user__username"]

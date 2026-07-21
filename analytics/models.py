@@ -11,6 +11,7 @@ class Interaction(models.Model):
         COMMENT = 'comment', 'Comment'
         SHARE = 'share', 'Share'
         SEARCH = 'search', 'Search'
+        WATCH = 'watch', 'Watch'
 
     user = models.ForeignKey(
         FilmBazUser, on_delete=models.CASCADE, related_name='interactions'

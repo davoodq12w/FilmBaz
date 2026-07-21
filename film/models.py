@@ -104,26 +104,43 @@ class Movie(models.Model):
 
 
 class MovieFile(models.Model):
-    episode = models.SmallIntegerField(default=1)
-    season = models.SmallIntegerField(default=1)
+    episode = models.PositiveSmallIntegerField(default=1)
+    season = models.PositiveSmallIntegerField(default=1)
+    seen_by = models.ManyToManyField(FilmBazUser, related_name="seened_movies", blank=True)
     file = models.FileField(upload_to=f"movies/movies/", )
     movie = models.ForeignKey(Movie, related_name="files", on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created']
+        ordering = ['-timestamp']
 
     def __str__(self):
         return f"{self.movie.orj_title}:S{self.season}:E{self.episode}"
 
 
 class MovieTrailer(models.Model):
+    seen_by = models.ManyToManyField(FilmBazUser, related_name="seened_trailers", blank=True)
     file = models.FileField(upload_to=f"movies/trailers/", )
     movie = models.ForeignKey(Movie, related_name="trailer", on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created']
+        ordering = ['-timestamp']
+
+
+class WatchTime(models.Model):
+    user = models.ForeignKey(FilmBazUser, related_name="watch_times", on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, related_name="watch_times", on_delete=models.CASCADE)
+    hour = models.PositiveSmallIntegerField(default=0)
+    minute = models.PositiveSmallIntegerField(default=0)
+    second = models.PositiveSmallIntegerField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.user.username}-{self.movie.orj_title}/{self.hour}:{self.minute}:{self.second}"
 
 
 class Comment(models.Model):

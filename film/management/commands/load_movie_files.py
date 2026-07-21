@@ -8,15 +8,46 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with disable_logging():
-            movie_file_path = "movies/movies/sample_movie.mp4"
-            trailer_path = "movies/trailers/sample_trailer.mp4"
+            try:
+                movie_file_path = "movies/movies/sample_movie.mp4"
+                trailer_path = "movies/trailers/sample_trailer.mp4"
 
-            for movie in Movie.objects.all():
-                MovieFile.objects.create(
-                    file=movie_file_path,
-                    movie=movie,
+                file_created_count = 0
+                file_updated_count = 0
+                trailer_created_count = 0
+                trailer_updated_count = 0
+
+                for movie in Movie.objects.all():
+                    obj, file_created = MovieFile.objects.update_or_create(
+                        file=movie_file_path,
+                        movie=movie,
+                    )
+                    if file_created:
+                        file_created_count += 1
+                    else:
+                        file_updated_count += 1
+
+                    obj, trailer_created = MovieTrailer.objects.update_or_create(
+                        file=trailer_path,
+                        movie=movie,
+                    )
+                    if trailer_created:
+                        trailer_created_count += 1
+                    else:
+                        trailer_updated_count += 1
+
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"فایل ها || ساخته شده ها: {file_created_count} | آپدیت شده ها: {file_updated_count}"
+                    )
                 )
-                MovieTrailer.objects.create(
-                    file=trailer_path,
-                    movie=movie,
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"فایل ها || ساخته شده ها: {trailer_created_count} | آپدیت شده ها: {trailer_updated_count}"
+                    )
+                )
+
+            except Exception as e:
+                self.stdout.write(
+                    self.style.ERROR(f"Error: {e}")
                 )

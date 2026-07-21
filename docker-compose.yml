@@ -12,7 +12,7 @@ services:
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
-      - ./ml_service/datasets/raw:/app//ml_service/datasets/raw
+      - ./ml_service/datasets/raw:/app/ml_service/datasets/raw
     depends_on:
       - db
       - redis
