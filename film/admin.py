@@ -47,7 +47,12 @@ class MovieFileAdmin(admin.ModelAdmin):
 
 @admin.register(WatchTime)
 class WatchTimeAdmin(admin.ModelAdmin):
-    list_display = ["movie__orj_title", "user__username", "timestamp"]
-    search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug", "user__username", "user__email",
+    list_display = ["movie_file", "user__username", "timestamp"]
+    search_fields = ["movie__movie__orj_title", "movie__movie__fa_title", "movie__movie__slug", "user__username",
+                     "user__email",
                      "user__phone"]
-    list_filter = ["movie__orj_title", "user__username"]
+    list_filter = ["movie__movie__orj_title", "user__username"]
+
+    @admin.display(description="Episode")
+    def movie_file(self, obj):
+        return str(obj.movie)

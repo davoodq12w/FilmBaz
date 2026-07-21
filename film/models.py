@@ -109,6 +109,9 @@ class MovieFile(models.Model):
     seen_by = models.ManyToManyField(FilmBazUser, related_name="seened_movies", blank=True)
     file = models.FileField(upload_to=f"movies/movies/", )
     movie = models.ForeignKey(Movie, related_name="files", on_delete=models.CASCADE)
+    hour = models.PositiveSmallIntegerField(default=0)
+    minute = models.PositiveSmallIntegerField(default=0)
+    second = models.PositiveSmallIntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -130,7 +133,7 @@ class MovieTrailer(models.Model):
 
 class WatchTime(models.Model):
     user = models.ForeignKey(FilmBazUser, related_name="watch_times", on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, related_name="watch_times", on_delete=models.CASCADE)
+    movie = models.ForeignKey(MovieFile, related_name="watch_times", on_delete=models.CASCADE)
     hour = models.PositiveSmallIntegerField(default=0)
     minute = models.PositiveSmallIntegerField(default=0)
     second = models.PositiveSmallIntegerField(default=0)
@@ -140,7 +143,7 @@ class WatchTime(models.Model):
         ordering = ['-timestamp']
 
     def __str__(self):
-        return f"{self.user.username}-{self.movie.orj_title}/{self.hour}:{self.minute}:{self.second}"
+        return f"{self.user.username}-{str(self.movie)}/{self.hour}:{self.minute}:{self.second}"
 
 
 class Comment(models.Model):
