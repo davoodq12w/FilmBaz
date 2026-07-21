@@ -5,7 +5,8 @@ from .models import Log
 import logs.logging_state as logging_state
 
 MODELS_TO_LOG = [
-    'FilmBazUser', 'Ticket', 'Interaction', 'Comment', 'Genre', 'Movie', 'SupportMessage', 'SupportSession'
+    'FilmBazUser', 'Ticket', 'Interaction', 'Comment', 'Genre', 'Movie', 'SupportMessage', 'SupportSession',
+    'MovieTrailer','MovieFile'
 ]
 
 

@@ -103,6 +103,29 @@ class Movie(models.Model):
         return movie_crew.crew if movie_crew else None
 
 
+class MovieFile(models.Model):
+    episode = models.SmallIntegerField(default=1)
+    season = models.SmallIntegerField(default=1)
+    file = models.FileField(upload_to=f"movies/movies/", )
+    movie = models.ForeignKey(Movie, related_name="files", on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return f"{self.movie.orj_title}:S{self.season}:E{self.episode}"
+
+
+class MovieTrailer(models.Model):
+    file = models.FileField(upload_to=f"movies/trailers/", )
+    movie = models.ForeignKey(Movie, related_name="trailer", on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created']
+
+
 class Comment(models.Model):
     text = models.TextField(max_length=300)
     movie = models.ForeignKey(Movie, related_name="comments", on_delete=models.CASCADE)

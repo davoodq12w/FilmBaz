@@ -30,3 +30,15 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ['user', 'movie', 'created', 'text']
     search_fields = ["text"]
     raw_id_fields = ['user', 'movie']
+
+
+@admin.register(MovieTrailer)
+class MovieTrailerAdmin(admin.ModelAdmin):
+    list_display = ["movie__orj_title", "created"]
+    search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug"]
+
+
+@admin.register(MovieFile)
+class MovieFileAdmin(admin.ModelAdmin):
+    list_display = ["movie__orj_title", "season", "episode", "created"]
+    search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug"]
