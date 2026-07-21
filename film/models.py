@@ -103,12 +103,12 @@ class Movie(models.Model):
         return movie_crew.crew if movie_crew else None
 
 
-class MovieFile(models.Model):
+class MovieEpisode(models.Model):
     episode = models.PositiveSmallIntegerField(default=1)
     season = models.PositiveSmallIntegerField(default=1)
     seen_by = models.ManyToManyField(FilmBazUser, related_name="seened_movies", blank=True)
     file = models.FileField(upload_to=f"movies/movies/", )
-    movie = models.ForeignKey(Movie, related_name="files", on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, related_name="episodes", on_delete=models.CASCADE)
     hour = models.PositiveSmallIntegerField(default=0)
     minute = models.PositiveSmallIntegerField(default=0)
     second = models.PositiveSmallIntegerField(default=0)
@@ -133,7 +133,7 @@ class MovieTrailer(models.Model):
 
 class WatchTime(models.Model):
     user = models.ForeignKey(FilmBazUser, related_name="watch_times", on_delete=models.CASCADE)
-    movie = models.ForeignKey(MovieFile, related_name="watch_times", on_delete=models.CASCADE)
+    movie = models.ForeignKey(MovieEpisode, related_name="watch_times", on_delete=models.CASCADE)
     hour = models.PositiveSmallIntegerField(default=0)
     minute = models.PositiveSmallIntegerField(default=0)
     second = models.PositiveSmallIntegerField(default=0)

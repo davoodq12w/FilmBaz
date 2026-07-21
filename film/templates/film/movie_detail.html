@@ -121,6 +121,18 @@
             </div>
         </div>
 
+        <div class="detail-play-movie">
+            {% for episode in movie.episodes.all %}
+                <a href="{{ episode.file.url }}">
+                    {% if movie.is_serie %}
+                        پخش قسمت {{ episode.episode }}فصل {{ episode.season }}
+                    {% else %}
+                        پخش فیلم
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+
         <div class="detail-casts-description">
             <div class="detail-description">
                 <p>{{ movie.description }}</p>

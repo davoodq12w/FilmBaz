@@ -39,8 +39,8 @@ class MovieTrailerAdmin(admin.ModelAdmin):
     list_filter = ["movie__orj_title"]
 
 
-@admin.register(MovieFile)
-class MovieFileAdmin(admin.ModelAdmin):
+@admin.register(MovieEpisode)
+class MovieEpisodeAdmin(admin.ModelAdmin):
     list_display = ["movie__orj_title", "season", "episode", "timestamp"]
     search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug"]
 

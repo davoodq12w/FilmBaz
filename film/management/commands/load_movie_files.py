@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from film.models import Movie, MovieFile, MovieTrailer
+from film.models import Movie, MovieEpisode, MovieTrailer
 from logs.logging_state import disable_logging
 
 
@@ -18,9 +18,10 @@ class Command(BaseCommand):
                 trailer_updated_count = 0
 
                 for movie in Movie.objects.all():
-                    obj, file_created = MovieFile.objects.update_or_create(
+                    obj, file_created = MovieEpisode.objects.update_or_create(
                         file=movie_file_path,
                         movie=movie,
+                        minute=5,
                     )
                     if file_created:
                         file_created_count += 1
