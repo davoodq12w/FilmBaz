@@ -114,6 +114,7 @@ class MovieEpisode(models.Model):
     second = models.PositiveSmallIntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+
     class Meta:
         ordering = ['-timestamp']
 
@@ -124,7 +125,7 @@ class MovieEpisode(models.Model):
 class MovieTrailer(models.Model):
     seen_by = models.ManyToManyField(FilmBazUser, related_name="seened_trailers", blank=True)
     file = models.FileField(upload_to=f"movies/trailers/", )
-    movie = models.ForeignKey(Movie, related_name="trailer", on_delete=models.CASCADE)
+    movie = models.OneToOneField(Movie, related_name="trailer", on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
