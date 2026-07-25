@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'player/videojs/video-js.min.css' %}">
+    <link rel="stylesheet" href="{% static 'player/plugins/overlay/videojs-overlay.css' %}">
+    <link rel="stylesheet" href="{% static 'player/plugins/markers/videojs-markers.css' %}">
+    <link rel="stylesheet" href="{% static 'player/themes/filmbaz-dark.css' %}">
+
+</head>
+
+<body class="watch-page">
+
+<div id="player-container">
+
+    <video
+            id="movie-player"
+            class="video-js"
+            controls
+            preload="auto">
+
+        <source src="{{ episode.file.url }}" type="video/mp4">
+
+    </video>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="{% static 'player/videojs/video.min.js' %}"></script>
+<script src="{% static 'player/plugins/hotkeys/videojs.hotkeys.min.js' %}"></script>
+<script src="{% static 'player/plugins/overlay/videojs-overlay.min.js' %}"></script>
+<script src="{% static 'player/plugins/markers/videojs-markers.min.js' %}"></script>
+<script src="{% static 'js/player.js' %}"></script>
+
+</body>
+</html>

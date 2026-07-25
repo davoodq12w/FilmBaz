@@ -1,4 +1,4 @@
-FROM python:3.13
+FROM python:3.13-slim
 
 LABEL authors="davoodq12w"
 LABEL author_email="davod.q12w@gmail.com"

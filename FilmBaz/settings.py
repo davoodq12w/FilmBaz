@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "django_cleanup",
     "django_resized",
     "django_social_share",
-    "django_celery_beat",
     "storages",
     "rest_framework",
     "channels",
