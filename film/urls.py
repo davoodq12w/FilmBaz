@@ -11,4 +11,5 @@ urlpatterns = [
     path("movies/search/", views.SearchMovie.as_view(), name="search"),
     path("save_movie/", views.SaveMovieView.as_view(), name="save_movie"),
     path("like_movie/", views.LikeMovieView.as_view(), name="like_movie"),
+    path("watch_movie/<int:pk>/", views.WatchMovieView.as_view(), name="watch_movie"),
 ]

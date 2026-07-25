@@ -500,3 +500,16 @@ class LikeMovieView(View):
     def http_method_not_allowed(self, request, *args, **kwargs):
         super().http_method_not_allowed(request, *args, **kwargs)
         return render(request, "partials/not_allowed.html")
+
+
+@method_decorator(login_required(), name="dispatch")
+class WatchMovieView(View):
+    http_method_names = ['get']
+
+    def get(self, request, pk):
+        episode = get_object_or_404(MovieEpisode, id=pk)
+        return render(request, "film/watch.html", {"episode": episode})
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        super().http_method_not_allowed(request, *args, **kwargs)
+        return render(request, "partials/not_allowed.html")
