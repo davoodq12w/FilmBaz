@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
 from django_resized import ResizedImageField
 from account.models import FilmBazUser
 from people.models import MovieCrew
@@ -123,6 +124,22 @@ class MovieEpisode(models.Model):
             return f"{self.movie.orj_title} - S{self.season:02}E{self.episode:02}"
 
         return self.movie.orj_title
+
+    def get_next_episode(self):
+        season = self.season
+        episode = self.episode
+
+        obj = self.movie.episodes.filter(season=season, episode=episode + 1).first()
+
+        if obj is not None:
+            return obj
+        else:
+            obj = self.movie.episodes.filter(season=season + 1, episode=1).first()
+            if obj is not None:
+                return obj
+            else:
+                obj = self.movie.episodes.filter(season=1, episode=1).first()
+                return obj
 
     def save(self, *args, **kwargs):
         old_file = None

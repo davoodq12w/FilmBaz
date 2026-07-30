@@ -280,20 +280,16 @@ class MovieDetail(View):
     def get(self, request, pk=None, slug=None, *args, **kwargs):
 
         # create cache key
-        movie_cache_key = f"movie_detail_{pk}_{slug}"
         comments_cache_key = f"movie_comments_{pk}_{slug}"
+        epoisodes_cache_key = f"movie_episodes_{pk}_{slug}"
         context = {}
         # try to get cached data
         try:
-            cached_movie = cache.get(movie_cache_key)
+
             cached_comments = cache.get(comments_cache_key)
 
-            if cached_movie:
-                context["movie"] = cached_movie
-            else:
-                movie = Movie.objects.get(pk=pk, slug=slug)
-                context["movie"] = movie
-                cache.set(movie_cache_key, movie)
+            movie = Movie.objects.get(pk=pk, slug=slug)
+            context["movie"] = movie
 
             if cached_comments:
                 context["comments"] = cached_comments
@@ -301,6 +297,14 @@ class MovieDetail(View):
                 comments = Comment.objects.filter(movie__slug=slug, movie__id=pk)
                 context["comments"] = comments
                 cache.set(comments_cache_key, comments)
+            if movie.is_serie:
+                cached_episodes = cache.get(epoisodes_cache_key)
+                if cached_episodes:
+                    context["episodes"] = cached_episodes
+                else:
+                    episodes = MovieEpisode.objects.filter(movie__slug=slug, movie__id=pk)
+                    context["episodes"] = episodes
+                    cache.set(epoisodes_cache_key, episodes)
 
             if request.user.is_authenticated:
                 Interaction.objects.create(
@@ -309,6 +313,21 @@ class MovieDetail(View):
                     interaction_type=Interaction.Type.VIEW,
                     weight=0.2
                 )
+
+                last_watch = WatchProgress.objects.filter(
+                    episode__movie__slug=slug,
+                    episode__movie__id=pk,
+                    user=request.user,
+                    completed=True,
+                ).order_by("episode__season").order_by("episode__episode").first()
+                if last_watch is not None:
+                    unwatched_episode = last_watch.episode.get_next_episode()
+                else:
+                    unwatched_episode = movie.episodes.filter(season=1, episode=1).first()
+            else:
+                unwatched_episode = movie.episodes.filter(season=1, episode=1).first()
+
+            context["unwatched_episode"] = unwatched_episode
 
         except Exception as e:
             print(f"error in MovieDetail : {e}")
