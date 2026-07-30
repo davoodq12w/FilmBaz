@@ -11,7 +11,29 @@ $(function () {
         player.hotkeys({
             volumeStep: 0.1,
             seekStep: 10,
-            enableModifiersForNumbers: false
+            enableModifiersForNumbers: false,
+
+            rewindKey: function () {
+                return false;
+            },
+
+            forwardKey: function () {
+                return false;
+            }
+        });
+
+        player.on("keydown", function (e) {
+
+            if (e.which === 37) {
+                e.preventDefault();
+                seek(-10);
+            }
+
+            if (e.which === 39) {
+                e.preventDefault();
+                seek(10);
+            }
+
         });
 
         const playerElement = player.el();
@@ -48,6 +70,23 @@ $(function () {
 
         }
 
+        function seek(seconds) {
+
+            let targetTime = player.currentTime() + seconds;
+
+            targetTime = Math.max(
+                0,
+                Math.min(player.duration(), targetTime)
+            );
+
+            player.currentTime(targetTime);
+
+            showSeekAnimation(
+                seconds > 0 ? "forward" : "backward"
+            );
+
+        }
+
         playerElement.addEventListener("dblclick", function (e) {
 
             // اگر روی کنترل‌های پلیر دابل کلیک شد، کاری انجام نده
@@ -61,23 +100,13 @@ $(function () {
 
             // 30 درصد سمت چپ
             if (clickX <= width * 0.3) {
-
-                player.currentTime(
-                    Math.max(0, player.currentTime() - 10)
-                );
-
-                showSeekAnimation("backward", 10);
-
+                seek(-10);
             }
 
             // 30 درصد سمت راست
             else if (clickX >= width * 0.7) {
 
-                player.currentTime(
-                    Math.min(player.duration(), player.currentTime() + 10)
-                );
-
-                showSeekAnimation("forward", 10);
+                seek(10);
 
             }
 

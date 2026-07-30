@@ -21,7 +21,6 @@ class Command(BaseCommand):
                     obj, file_created = MovieEpisode.objects.update_or_create(
                         file=movie_file_path,
                         movie=movie,
-                        minute=5,
                     )
                     if file_created:
                         file_created_count += 1
