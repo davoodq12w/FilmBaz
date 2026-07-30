@@ -213,7 +213,7 @@
             <div class="detail-episodes-list">
                 {% for episode in episodes %}
                     <div class="detial-episode">
-                        <a class="detail-episode-play">
+                        <a class="detail-episode-play" href="{% url 'film:watch_movie' episode.id %}">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                  class="size-6">
                                 <path fill-rule="evenodd"
@@ -222,7 +222,7 @@
                             </svg>
                             <span>پخش</span>
                         </a>
-                        <p class="detail-episode-numbers"> قسمت {{ episode.episode }}فصل {{ episode.season }} </p>
+                        <p class="detail-episode-numbers"> قسمت {{ episode.episode }} فصل {{ episode.season }} </p>
                     </div>
                 {% endfor %}
             </div>
