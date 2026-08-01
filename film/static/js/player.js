@@ -22,6 +22,16 @@ $(function () {
             }
         });
 
+        const PLAY_REQUEST_INTERVAL = 60;
+        const PAUSE_REQUEST_COOLDOWN = 20;
+
+        let playTimer = null;
+
+        let playTimerSeconds = 0;
+        let pauseElapsedSeconds = PAUSE_REQUEST_COOLDOWN;
+
+        let isSendingRequest = false;
+
         player.on("keydown", function (e) {
 
             if (e.which === 37) {
@@ -84,6 +94,111 @@ $(function () {
             showSeekAnimation(
                 seconds > 0 ? "forward" : "backward"
             );
+
+        }
+
+        function startPlayTimer() {
+
+            if (playTimer !== null) {
+                return;
+            }
+
+            playTimer = setInterval(function () {
+
+                playTimerSeconds++;
+                pauseElapsedSeconds++;
+
+                if (playTimerSeconds >= PLAY_REQUEST_INTERVAL) {
+                    sendWatchRequest("play");
+                }
+
+            }, 1000);
+
+        }
+
+        player.on("play", function () {
+
+            startPlayTimer();
+
+        });
+
+
+        player.on("pause", function () {
+
+            clearInterval(playTimer);
+            playTimer = null;
+
+            if (pauseElapsedSeconds >= PAUSE_REQUEST_COOLDOWN) {
+                sendWatchRequest("pause");
+            }
+
+        });
+
+        player.on("ended", function () {
+
+            clearInterval(playTimer);
+            playTimer = null;
+
+            sendWatchRequest("ended", true);
+
+        });
+
+        function sendWatchRequest(reason, completed = false) {
+
+            if (isSendingRequest) {
+                return;
+            }
+
+            isSendingRequest = true;
+            clearInterval(playTimer);
+            playTimer = null;
+            $.ajax({
+
+                url: "",
+                type: "POST",
+
+                data: {
+                    current_time: Math.floor(player.currentTime()),
+                    completed: completed
+                },
+
+                success: function (data) {
+
+                    if (data) {
+
+                        switch (reason) {
+
+                            case "play":
+
+                                playTimerSeconds = 0;
+                                pauseElapsedSeconds = 0;
+
+                                if (!player.paused()) {
+                                    startPlayTimer();
+                                }
+
+                                break;
+
+                            case "pause":
+
+                                pauseElapsedSeconds = 0;
+
+                                break;
+
+                        }
+
+                    } else {
+                        console.log("error in saving watch progress.")
+                    }
+                },
+
+                complete: function () {
+
+                    isSendingRequest = false;
+
+                }
+
+            });
 
         }
 

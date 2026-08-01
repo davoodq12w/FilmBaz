@@ -1409,7 +1409,7 @@ a {
     visibility: hidden;
     position: absolute;
     top: 0;
-    left: 110px;
+    left: 150px;
     width: 180px;
     border-radius: 8px;
     transition: all 200ms ease;
@@ -1420,7 +1420,7 @@ a {
     visibility: visible;
     position: absolute;
     top: 0;
-    left: 130px;
+    left: 170px;
     width: 180px;
     height: 250px;
     backdrop-filter: blur(20px);

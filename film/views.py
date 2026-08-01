@@ -532,3 +532,25 @@ class WatchMovieView(View):
     def http_method_not_allowed(self, request, *args, **kwargs):
         super().http_method_not_allowed(request, *args, **kwargs)
         return render(request, "partials/not_allowed.html")
+
+
+@method_decorator(login_required(), name="dispatch")
+class WatchProgressView(View):
+    http_method_names = ['post']
+
+    def post(self, request, pk):
+        watchprogress, created = WatchProgress.objects.get_or_create(user=request.user, episode_id=pk)
+        position = request.POST.get("current_time")
+        completed = request.POST.get("completed")
+        if position and completed is not None:
+            watchprogress.position = position
+            watchprogress.completed = True if completed == "true" else False
+            watchprogress.save()
+
+            return JsonResponse({"ok": True}, status=200)
+        else:
+            return JsonResponse({"ok": False}, status=400)
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        super().http_method_not_allowed(request, *args, **kwargs)
+        return render(request, "partials/not_allowed.html")

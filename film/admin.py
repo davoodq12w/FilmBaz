@@ -56,4 +56,4 @@ class WatchProgressAdmin(admin.ModelAdmin):
 
     @admin.display(description="Episode")
     def movie_file(self, obj):
-        return str(obj.movie)
+        return str(obj.episode)
