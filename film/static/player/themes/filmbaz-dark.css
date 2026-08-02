@@ -113,3 +113,39 @@
     opacity: 1;
     transform: translateY(-50%) scale(1);
 }
+
+.video-js .skip-intro {
+    position: absolute;
+    left: 22px;
+    font-size: 16px;
+    width: 120px;
+    height: 50px;
+    border: #ff9f29 solid 1px;
+    border-radius: 15px;
+    text-align: center;
+    bottom: 80px;
+    transition: all 200ms ease;
+
+    &:hover {
+        box-shadow: #ff9f29 0 0 5px;
+        background-color: #3b321e;
+    }
+}
+
+.video-js .next-episode {
+    position: absolute;
+    right: 22px;
+    font-size: 16px;
+    width: 120px;
+    height: 50px;
+    border: #ff9f29 solid 1px;
+    border-radius: 15px;
+    text-align: center;
+    bottom: 80px;
+    transition: all 200ms ease;
+
+    &:hover {
+        box-shadow: #ff9f29 0 0 5px;
+        background-color: #3b321e;
+    }
+}

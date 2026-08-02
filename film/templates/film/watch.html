@@ -35,6 +35,15 @@
         <div class="text">+10s</div>
     </div>
 
+    <button id="skip-intro-btn" style="display:none;" class="skip-intro">
+        رد کردن تیتراژ
+    </button>
+    {% if next_episode %}
+        <button id="next-episode-btn" style="display:none;" class="next-episode">
+            قسمت بعد
+        </button>
+    {% endif %}
+
     <video
             id="movie-player"
             class="video-js"
@@ -60,6 +69,19 @@
         });
 
         player.ready(function () {
+
+            player.on("loadedmetadata", function () {
+
+                const watchPosition = {{ watch_position }};
+
+                if (
+                    watchPosition > 0 &&
+                    watchPosition < player.duration()
+                ) {
+                    player.currentTime(watchPosition);
+                }
+
+            });
 
             player.hotkeys({
                 volumeStep: 0.1,
@@ -101,6 +123,79 @@
 
             const playerElement = player.el();
 
+            playerElement.appendChild(
+                document.getElementById("skip-intro-btn")
+            );
+
+            const skipIntroButton = $("#skip-intro-btn");
+            let introButtonShown = false;
+            {% if next_episode %}
+                playerElement.appendChild(
+                    document.getElementById("next-episode-btn")
+                );
+
+                const nextEpisodeButton = $("#next-episode-btn");
+
+                let nextEpisodeButtonShown = false;
+            {% endif %}
+            player.on("timeupdate", function () {
+
+                const currentTime = player.currentTime();
+
+                if (
+                    !introButtonShown &&
+                    currentTime >= {{ episode.intro_start }} &&
+                    currentTime < {{ episode.intro_end }}
+                ) {
+
+                    introButtonShown = true;
+                    skipIntroButton.fadeIn();
+
+                }
+
+                if (
+                    introButtonShown &&
+                    skipIntroButton.is(":visible") &&
+                    currentTime >= {{ episode.intro_end }}
+                ) {
+
+                    skipIntroButton.fadeOut();
+
+                }
+                {% if next_episode %}
+                    if (
+                        !nextEpisodeButtonShown &&
+                        currentTime >= {{ episode.credits_start }}
+                    ) {
+
+                        nextEpisodeButtonShown = true;
+                        nextEpisodeButton.fadeIn();
+
+                    }
+                {% endif %}
+
+            });
+
+            skipIntroButton.on("click", function () {
+
+                player.currentTime({{ episode.intro_end }});
+                skipIntroButton.fadeOut();
+
+            });
+            {% if next_episode %}
+                nextEpisodeButton.on("click", function () {
+
+                    window.location.href = "{% url 'film:watch_movie' next_episode.id %}";
+
+                });
+
+
+                player.on("ended", function () {
+
+                    nextEpisodeButton.fadeOut();
+
+                });
+            {% endif %}
             playerElement.appendChild(
                 document.getElementById("seek-backward-indicator")
             );

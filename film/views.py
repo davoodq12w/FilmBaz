@@ -527,7 +527,19 @@ class WatchMovieView(View):
 
     def get(self, request, pk):
         episode = get_object_or_404(MovieEpisode, id=pk)
-        return render(request, "film/watch.html", {"episode": episode})
+        watch_progress = episode.watch_progress.filter(user=request.user).first()
+        if watch_progress is not None:
+            watch_position = watch_progress.position
+        else:
+            watch_position = 0
+
+        if episode.movie.is_serie:
+            next_episode = episode.get_next_episode()
+        else:
+            next_episode = None
+
+        context = {"episode": episode, "watch_position": watch_position, "next_episode": next_episode}
+        return render(request, "film/watch.html", context)
 
     def http_method_not_allowed(self, request, *args, **kwargs):
         super().http_method_not_allowed(request, *args, **kwargs)
