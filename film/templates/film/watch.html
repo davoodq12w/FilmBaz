@@ -184,7 +184,7 @@
             });
             {% if next_episode %}
                 nextEpisodeButton.on("click", function () {
-
+                    sendWatchRequest("next", true)
                     window.location.href = "{% url 'film:watch_movie' next_episode.id %}";
 
                 });

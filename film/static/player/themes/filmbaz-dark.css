@@ -125,6 +125,8 @@
     text-align: center;
     bottom: 80px;
     transition: all 200ms ease;
+    backdrop-filter: blur(10px);
+    background-color: #fbfbfb21;
 
     &:hover {
         box-shadow: #ff9f29 0 0 5px;
@@ -143,6 +145,8 @@
     text-align: center;
     bottom: 80px;
     transition: all 200ms ease;
+    backdrop-filter: blur(10px);
+    background-color: #fbfbfb21;
 
     &:hover {
         box-shadow: #ff9f29 0 0 5px;

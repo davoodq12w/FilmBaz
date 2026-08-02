@@ -44,6 +44,7 @@ class MovieEpisodeAdmin(admin.ModelAdmin):
     list_display = ["movie__orj_title", "season", "episode", "created_at"]
     search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug"]
     readonly_fields = ["duration"]
+    ordering = ["season", "episode"]
 
 
 @admin.register(WatchProgress)

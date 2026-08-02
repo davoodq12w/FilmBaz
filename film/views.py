@@ -302,7 +302,8 @@ class MovieDetail(View):
                 if cached_episodes:
                     context["episodes"] = cached_episodes
                 else:
-                    episodes = MovieEpisode.objects.filter(movie__slug=slug, movie__id=pk)
+                    episodes = MovieEpisode.objects.filter(movie__slug=slug, movie__id=pk).order_by(
+                        "season").order_by("episode")
                     context["episodes"] = episodes
                     cache.set(epoisodes_cache_key, episodes)
 
@@ -319,7 +320,7 @@ class MovieDetail(View):
                     episode__movie__id=pk,
                     user=request.user,
                     completed=True,
-                ).order_by("episode__season").order_by("episode__episode").first()
+                ).order_by("-episode__season").order_by("-episode__episode").first()
                 if last_watch is not None:
                     unwatched_episode = last_watch.episode.get_next_episode()
                 else:
