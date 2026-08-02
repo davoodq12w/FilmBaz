@@ -1,7 +1,9 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
 from django_resized import ResizedImageField
 from account.models import FilmBazUser
 from people.models import MovieCrew
+from .utils import get_video_duration
 
 
 class Genre(models.Model):
@@ -106,45 +108,89 @@ class Movie(models.Model):
 class MovieEpisode(models.Model):
     episode = models.PositiveSmallIntegerField(default=1)
     season = models.PositiveSmallIntegerField(default=1)
-    seen_by = models.ManyToManyField(FilmBazUser, related_name="seened_movies", blank=True)
     file = models.FileField(upload_to=f"movies/movies/", )
     movie = models.ForeignKey(Movie, related_name="episodes", on_delete=models.CASCADE)
-    hour = models.PositiveSmallIntegerField(default=0)
-    minute = models.PositiveSmallIntegerField(default=0)
-    second = models.PositiveSmallIntegerField(default=0)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
+    duration = models.PositiveIntegerField(default=0)
+    intro_start = models.PositiveIntegerField(default=0)  # second
+    intro_end = models.PositiveIntegerField(default=0)  # second
+    credits_start = models.PositiveIntegerField(default=0)  # second
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.movie.orj_title}:S{self.season}:E{self.episode}"
+        if self.movie.is_serie:
+            return f"{self.movie.orj_title} - S{self.season:02}E{self.episode:02}"
+
+        return self.movie.orj_title
+
+    def get_next_episode(self):
+        season = self.season
+        episode = self.episode
+
+        obj = self.movie.episodes.filter(season=season, episode=episode + 1).first()
+
+        if obj is not None:
+            return obj
+        else:
+            obj = self.movie.episodes.filter(season=season + 1, episode=1).first()
+            if obj is not None:
+                return obj
+            else:
+                obj = self.movie.episodes.filter(season=1, episode=1).first()
+                return obj
+
+    def save(self, *args, **kwargs):
+        old_file = None
+
+        if self.pk:
+            old_file = (
+                MovieEpisode.objects
+                .filter(pk=self.pk)
+                .values_list("file", flat=True)
+                .first()
+            )
+
+        super().save(*args, **kwargs)
+
+        if self.file and (not self.duration or old_file != self.file.name):
+            duration = get_video_duration(self.file.path)
+
+            if duration != self.duration:
+                self.duration = duration
+                super().save(update_fields=["duration"])
 
 
 class MovieTrailer(models.Model):
     seen_by = models.ManyToManyField(FilmBazUser, related_name="seened_trailers", blank=True)
     file = models.FileField(upload_to=f"movies/trailers/", )
     movie = models.OneToOneField(Movie, related_name="trailer", on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['-created_at']
 
 
-class WatchTime(models.Model):
-    user = models.ForeignKey(FilmBazUser, related_name="watch_times", on_delete=models.CASCADE)
-    movie = models.ForeignKey(MovieEpisode, related_name="watch_times", on_delete=models.CASCADE)
-    hour = models.PositiveSmallIntegerField(default=0)
-    minute = models.PositiveSmallIntegerField(default=0)
-    second = models.PositiveSmallIntegerField(default=0)
-    timestamp = models.DateTimeField(auto_now_add=True)
+class WatchProgress(models.Model):
+    user = models.ForeignKey(FilmBazUser, related_name="watch_progress", on_delete=models.CASCADE)
+    episode = models.ForeignKey(MovieEpisode, related_name="watch_progress", on_delete=models.CASCADE)
+    position = models.PositiveIntegerField(default=0)  # second
+    completed = models.BooleanField(default=False)
+
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['-updated_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "episode"],
+                name="unique_episode_progress"
+            )
+        ]
 
     def __str__(self):
-        return f"{self.user.username}-{str(self.movie)}/{self.hour}:{self.minute}:{self.second}"
+        return f"{self.user.username} - {self.episode} ({self.position}s)"
 
 
 class Comment(models.Model):

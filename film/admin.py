@@ -34,25 +34,27 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(MovieTrailer)
 class MovieTrailerAdmin(admin.ModelAdmin):
-    list_display = ["movie__orj_title", "timestamp"]
+    list_display = ["movie__orj_title", "created_at"]
     search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug"]
     list_filter = ["movie__orj_title"]
 
 
 @admin.register(MovieEpisode)
 class MovieEpisodeAdmin(admin.ModelAdmin):
-    list_display = ["movie__orj_title", "season", "episode", "timestamp"]
+    list_display = ["movie__orj_title", "season", "episode", "created_at"]
     search_fields = ["movie__orj_title", "movie__fa_title", "movie__slug"]
+    readonly_fields = ["duration"]
+    ordering = ["season", "episode"]
 
 
-@admin.register(WatchTime)
-class WatchTimeAdmin(admin.ModelAdmin):
-    list_display = ["movie_file", "user__username", "timestamp"]
-    search_fields = ["movie__movie__orj_title", "movie__movie__fa_title", "movie__movie__slug", "user__username",
+@admin.register(WatchProgress)
+class WatchProgressAdmin(admin.ModelAdmin):
+    list_display = ["movie_file", "user__username", "updated_at"]
+    search_fields = ["episode__movie__orj_title", "episode__movie__fa_title", "episode__movie__slug", "user__username",
                      "user__email",
                      "user__phone"]
-    list_filter = ["movie__movie__orj_title", "user__username"]
+    list_filter = ["episode__movie__orj_title", "user__username"]
 
     @admin.display(description="Episode")
     def movie_file(self, obj):
-        return str(obj.movie)
+        return str(obj.episode)

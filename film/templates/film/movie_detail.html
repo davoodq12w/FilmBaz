@@ -148,20 +148,18 @@
         </div>
 
         <div class="detail-play-movie">
-            {% for episode in movie.episodes.all %}
-                <a href="{% url 'film:watch_movie' episode.id %}">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path fill-rule="evenodd"
-                              d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                    {% if movie.is_serie %}
-                        پخش قسمت {{ episode.episode }}فصل {{ episode.season }}
-                    {% else %}
-                        پخش فیلم
-                    {% endif %}
-                </a>
-            {% endfor %}
+            <a href="{% url 'film:watch_movie' unwatched_episode.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                    <path fill-rule="evenodd"
+                          d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                          clip-rule="evenodd"/>
+                </svg>
+                {% if movie.is_serie %}
+                    پخش قسمت {{ unwatched_episode.episode }}فصل {{ unwatched_episode.season }}
+                {% else %}
+                    پخش فیلم
+                {% endif %}
+            </a>
         </div>
 
         <div class="detail-casts-description">
@@ -211,6 +209,24 @@
             </div>
 
         </div>
+        {% if movie.is_serie %}
+            <div class="detail-episodes-list">
+                {% for episode in episodes %}
+                    <div class="detial-episode">
+                        <a class="detail-episode-play" href="{% url 'film:watch_movie' episode.id %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                 class="size-6">
+                                <path fill-rule="evenodd"
+                                      d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span>پخش</span>
+                        </a>
+                        <p class="detail-episode-numbers"> قسمت {{ episode.episode }} فصل {{ episode.season }} </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <div class="detail-comments">
             <div class="detail-comments-header">

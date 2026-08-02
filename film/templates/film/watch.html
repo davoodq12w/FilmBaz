@@ -4,15 +4,45 @@
     {% load static %}
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'player/videojs/video-js.min.css' %}">
-    <link rel="stylesheet" href="{% static 'player/plugins/overlay/videojs-overlay.css' %}">
     <link rel="stylesheet" href="{% static 'player/plugins/markers/videojs-markers.css' %}">
     <link rel="stylesheet" href="{% static 'player/themes/filmbaz-dark.css' %}">
-
+    <link rel="shortcut icon" href="{% static 'image/icon.png' %}" type="image/x-icon">
 </head>
 
 <body class="watch-page">
 
 <div id="player-container">
+
+    <div id="seek-backward-indicator" class="seek-indicator">
+        <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5"/>
+            </svg>
+        </div>
+        <div class="text">-10s</div>
+    </div>
+
+    <div id="seek-forward-indicator" class="seek-indicator">
+        <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"/>
+            </svg>
+        </div>
+        <div class="text">+10s</div>
+    </div>
+
+    <button id="skip-intro-btn" style="display:none;" class="skip-intro">
+        رد کردن تیتراژ
+    </button>
+    {% if next_episode %}
+        <button id="next-episode-btn" style="display:none;" class="next-episode">
+            قسمت بعد
+        </button>
+    {% endif %}
 
     <video
             id="movie-player"
@@ -28,9 +58,353 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="{% static 'player/videojs/video.min.js' %}"></script>
 <script src="{% static 'player/plugins/hotkeys/videojs.hotkeys.min.js' %}"></script>
-<script src="{% static 'player/plugins/overlay/videojs-overlay.min.js' %}"></script>
 <script src="{% static 'player/plugins/markers/videojs-markers.min.js' %}"></script>
-<script src="{% static 'js/player.js' %}"></script>
+<script>
+    $(function () {
+
+        const player = videojs("movie-player", {
+            userActions: {
+                doubleClick: false
+            }
+        });
+
+        player.ready(function () {
+
+            player.on("loadedmetadata", function () {
+
+                const watchPosition = {{ watch_position }};
+
+                if (
+                    watchPosition > 0 &&
+                    watchPosition < player.duration()
+                ) {
+                    player.currentTime(watchPosition);
+                }
+
+            });
+
+            player.hotkeys({
+                volumeStep: 0.1,
+                seekStep: 10,
+                enableModifiersForNumbers: false,
+
+                rewindKey: function () {
+                    return false;
+                },
+
+                forwardKey: function () {
+                    return false;
+                }
+            });
+
+            const PLAY_REQUEST_INTERVAL = 60;
+            const PAUSE_REQUEST_COOLDOWN = 20;
+
+            let playTimer = null;
+
+            let playTimerSeconds = 0;
+            let pauseElapsedSeconds = PAUSE_REQUEST_COOLDOWN;
+
+            let isSendingRequest = false;
+
+            player.on("keydown", function (e) {
+
+                if (e.which === 37) {
+                    e.preventDefault();
+                    seek(-10);
+                }
+
+                if (e.which === 39) {
+                    e.preventDefault();
+                    seek(10);
+                }
+
+            });
+
+            const playerElement = player.el();
+
+            playerElement.appendChild(
+                document.getElementById("skip-intro-btn")
+            );
+
+            const skipIntroButton = $("#skip-intro-btn");
+            let introButtonShown = false;
+            {% if next_episode %}
+                playerElement.appendChild(
+                    document.getElementById("next-episode-btn")
+                );
+
+                const nextEpisodeButton = $("#next-episode-btn");
+
+                let nextEpisodeButtonShown = false;
+            {% endif %}
+            player.on("timeupdate", function () {
+
+                const currentTime = player.currentTime();
+
+                if (
+                    !introButtonShown &&
+                    currentTime >= {{ episode.intro_start }} &&
+                    currentTime < {{ episode.intro_end }}
+                ) {
+
+                    introButtonShown = true;
+                    skipIntroButton.fadeIn();
+
+                }
+
+                if (
+                    introButtonShown &&
+                    skipIntroButton.is(":visible") &&
+                    currentTime >= {{ episode.intro_end }}
+                ) {
+
+                    skipIntroButton.fadeOut();
+
+                }
+                {% if next_episode %}
+                    if (
+                        !nextEpisodeButtonShown &&
+                        currentTime >= {{ episode.credits_start }}
+                    ) {
+
+                        nextEpisodeButtonShown = true;
+                        nextEpisodeButton.fadeIn();
+
+                    }
+                {% endif %}
+
+            });
+
+            skipIntroButton.on("click", function () {
+
+                player.currentTime({{ episode.intro_end }});
+                skipIntroButton.fadeOut();
+
+            });
+            {% if next_episode %}
+                nextEpisodeButton.on("click", function () {
+                    sendWatchRequest("next", true)
+                    window.location.href = "{% url 'film:watch_movie' next_episode.id %}";
+
+                });
+
+
+                player.on("ended", function () {
+
+                    nextEpisodeButton.fadeOut();
+
+                });
+            {% endif %}
+            playerElement.appendChild(
+                document.getElementById("seek-backward-indicator")
+            );
+
+            playerElement.appendChild(
+                document.getElementById("seek-forward-indicator")
+            );
+
+            const backwardIndicator = $("#seek-backward-indicator");
+            const forwardIndicator = $("#seek-forward-indicator");
+
+            let seekAnimationTimeout;
+
+            function showSeekAnimation(direction) {
+
+                clearTimeout(seekAnimationTimeout);
+
+                const indicator =
+                    direction === "forward"
+                        ? forwardIndicator
+                        : backwardIndicator;
+
+                $(".seek-indicator").removeClass("show");
+
+                indicator.addClass("show");
+
+                seekAnimationTimeout = setTimeout(() => {
+                    indicator.removeClass("show");
+                }, 500);
+
+            }
+
+            function seek(seconds) {
+
+                let targetTime = player.currentTime() + seconds;
+
+                targetTime = Math.max(
+                    0,
+                    Math.min(player.duration(), targetTime)
+                );
+
+                player.currentTime(targetTime);
+
+                showSeekAnimation(
+                    seconds > 0 ? "forward" : "backward"
+                );
+
+            }
+
+            function startPlayTimer() {
+
+                if (playTimer !== null) {
+                    return;
+                }
+
+                playTimer = setInterval(function () {
+
+                    playTimerSeconds++;
+                    pauseElapsedSeconds++;
+
+                    if (playTimerSeconds >= PLAY_REQUEST_INTERVAL) {
+                        sendWatchRequest("play");
+                    }
+
+                }, 1000);
+
+            }
+
+            player.on("play", function () {
+
+                startPlayTimer();
+
+            });
+
+
+            player.on("pause", function () {
+
+                clearInterval(playTimer);
+                playTimer = null;
+
+                if (pauseElapsedSeconds >= PAUSE_REQUEST_COOLDOWN) {
+                    sendWatchRequest("pause");
+                }
+
+            });
+
+            player.on("ended", function () {
+
+                clearInterval(playTimer);
+                playTimer = null;
+
+                sendWatchRequest("ended", true);
+
+            });
+
+            function sendWatchRequest(reason, completed = false) {
+
+                if (isSendingRequest) {
+                    return;
+                }
+
+                isSendingRequest = true;
+                clearInterval(playTimer);
+                playTimer = null;
+                $.ajax({
+
+                    url: "{% url 'film:watch_progress' episode.id %}",
+                    type: "POST",
+
+                    data: {
+                        "csrfmiddlewaretoken": "{{ csrf_token }}",
+                        "current_time": Math.floor(player.currentTime()),
+                        "completed": completed
+                    },
+
+                    success: function (data) {
+
+                        if (data) {
+                            switch (reason) {
+
+                                case "play":
+                                    playTimerSeconds = 0;
+                                    pauseElapsedSeconds = 0;
+
+                                    if (!player.paused()) {
+                                        startPlayTimer();
+                                    }
+
+                                    break;
+
+                                case "pause":
+                                    pauseElapsedSeconds = 0;
+
+                                    break;
+
+                            }
+
+                        } else {
+                            console.log("error in saving watch progress.")
+                        }
+                    },
+
+                    complete: function () {
+
+                        isSendingRequest = false;
+
+                    }
+
+                });
+
+            }
+
+            playerElement.addEventListener("dblclick", function (e) {
+
+                // اگر روی کنترل‌های پلیر دابل کلیک شد، کاری انجام نده
+                if (e.target.closest(".vjs-control-bar")) {
+                    return;
+                }
+
+                const rect = playerElement.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const width = rect.width;
+
+                // 30 درصد سمت چپ
+                if (clickX <= width * 0.3) {
+                    seek(-10);
+                }
+
+                // 30 درصد سمت راست
+                else if (clickX >= width * 0.7) {
+
+                    seek(10);
+
+                }
+
+                // 40 درصد وسط
+                else {
+
+                    if (player.isFullscreen()) {
+                        player.exitFullscreen();
+                    } else {
+                        player.requestFullscreen();
+                    }
+
+                }
+
+            });
+
+            player.markers({
+                markers: [
+                    {
+                        time: {{ episode.intro_start }},
+                        text: 'Intro'
+                    },
+                    {
+                        time: {{ episode.intro_end }},
+                        text: 'Fight'
+                    },
+                    {
+                        time: {{ episode.credits_start }},
+                        text: 'End'
+                    }
+                ]
+            });
+
+        });
+
+    });
+</script>
 
 </body>
 </html>
