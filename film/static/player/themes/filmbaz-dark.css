@@ -117,7 +117,7 @@
 .video-js .skip-intro {
     position: absolute;
     left: 22px;
-    font-size: 16px;
+    font-size: 18px;
     width: 120px;
     height: 50px;
     border: #ff9f29 solid 1px;
@@ -137,7 +137,7 @@
 .video-js .next-episode {
     position: absolute;
     right: 22px;
-    font-size: 16px;
+    font-size: 18px;
     width: 120px;
     height: 50px;
     border: #ff9f29 solid 1px;
@@ -147,6 +147,28 @@
     transition: all 200ms ease;
     backdrop-filter: blur(10px);
     background-color: #fbfbfb21;
+
+    &:hover {
+        box-shadow: #ff9f29 0 0 5px;
+        background-color: #3b321e;
+    }
+}
+
+.play-from-begin {
+    position: absolute;
+    right: 82px;
+    font-size: 18px;
+    width: 120px;
+    color: #F5F7F8;
+    height: 50px;
+    border: #ff9f29 solid 1px;
+    border-radius: 15px;
+    text-align: center;
+    top: 32px;
+    transition: all 200ms ease;
+    backdrop-filter: blur(10px);
+    background-color: #fbfbfb21;
+    z-index: 1000;
 
     &:hover {
         box-shadow: #ff9f29 0 0 5px;
