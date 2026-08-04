@@ -25,21 +25,3 @@ class Interaction(models.Model):
             models.Index(fields=['interaction_type']),
         ]
 
-
-class WatchInteraction(models.Model):
-    class Type(models.TextChoices):
-        PLAY = 'play', 'Play'
-        PAUSE = 'pause', 'Pause'
-        F_SEEK = 'f_seek', 'Forward_Seek'
-        B_SEEK = 'b_seek', 'Backward_Seek'
-
-    user = models.ForeignKey(FilmBazUser, on_delete=models.CASCADE, related_name='watch_interactions')
-    episode = models.ForeignKey(MovieEpisode, on_delete=models.CASCADE, related_name='watch_interactions')
-    interaction_type = models.CharField(max_length=10, choices=Type.choices)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        indexes = [
-            models.Index(fields=['user', 'episode']),
-            models.Index(fields=['interaction_type']),
-        ]

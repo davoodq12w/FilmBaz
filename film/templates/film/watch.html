@@ -43,6 +43,11 @@
             قسمت بعد
         </button>
     {% endif %}
+    {% if watch_position != 0 %}
+        <button id="play-from-begin" class="play-from-begin" style="display: none;">
+            پخش از ابتدا
+        </button>
+    {% endif %}
 
     <video
             id="movie-player"
@@ -138,6 +143,33 @@
 
                 let nextEpisodeButtonShown = false;
             {% endif %}
+            {% if watch_position != 0 %}
+                const playFromBeginButton = $("#play-from-begin");
+
+                let playFromBeginShown = false;
+
+                player.on("play", function () {
+                    if (playFromBeginShown) {
+                        return;
+                    }
+
+                    playFromBeginShown = true;
+
+                    playFromBeginButton.fadeIn();
+
+                    setTimeout(function () {
+                        playFromBeginButton.fadeOut();
+                    }, 10000);
+                });
+
+                playFromBeginButton.on("click", function () {
+                    player.currentTime(0);
+                    player.play();
+                    playFromBeginButton.fadeOut();
+                });
+            {% endif %}
+
+
             player.on("timeupdate", function () {
 
                 const currentTime = player.currentTime();
