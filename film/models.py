@@ -163,7 +163,6 @@ class MovieEpisode(models.Model):
 
 
 class MovieTrailer(models.Model):
-    seen_by = models.ManyToManyField(FilmBazUser, related_name="seened_trailers", blank=True)
     file = models.FileField(upload_to=f"movies/trailers/", )
     movie = models.OneToOneField(Movie, related_name="trailer", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
