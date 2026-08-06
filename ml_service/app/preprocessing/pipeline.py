@@ -3,7 +3,6 @@ from datetime import datetime
 import pandas as pd
 from utils import get_latest_raw_dataset
 from .clean import cleaned_data
-from .feature_engineering import days_since_last_interaction
 from .validation import validate_dataset
 
 PROCESSED_DATASET_DIR = Path("../../datasets/processed")
@@ -15,9 +14,6 @@ def get_processed_dataset() -> Path:
 
     print("Cleaning dataset...")
     df = cleaned_data(df)
-
-    print("Creating features...")
-    df = days_since_last_interaction(df)
 
     print("Validating dataset...")
     validate_dataset(df)

@@ -19,7 +19,6 @@ def cleaned_data(df):
             "favorite_genres",
             "favorite_directors",
             "favorite_writers",
-            "last_interaction",
             "preferred_runtime",
             "preferred_release_year",
         ],
@@ -37,15 +36,8 @@ def cleaned_data(df):
     df.drop_duplicates(inplace=True)
     df.reset_index(drop=True, inplace=True)
 
-    df["last_interaction"] = pd.to_datetime(
-        df["last_interaction"],
-        utc=True
-    )
 
     bool_columns = [
-        "liked",
-        "saved",
-        "shared",
         "is_series",
         "adult"
     ]
@@ -55,9 +47,6 @@ def cleaned_data(df):
     int_columns = [
         "user_id",
         "movie_id",
-        "view_count",
-        "comment_count",
-        "search_count",
         "account_age_days",
         "total_views",
         "total_likes",
@@ -65,16 +54,18 @@ def cleaned_data(df):
         "total_shares",
         "total_comments",
         "total_searches",
+        "total_watches",
+        "total_completes",
         "preferred_runtime",
         "preferred_release_year",
+        "user_interaction_count",
+        "active_days",
+        "release_year",
+        "runtime",
         "director_id",
         "writer_id",
         "producer_id",
-        "release_year",
-        "runtime",
         "popularity",
-        "user_interaction_count",
-        "movie_interaction_count",
     ]
 
     df[int_columns] = df[int_columns].astype("int32")
