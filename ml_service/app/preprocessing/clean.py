@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 from ast import literal_eval
 
-
 def cleaned_data(df):
     df.replace(
         {
@@ -78,6 +77,7 @@ def cleaned_data(df):
 
     df[float_columns] = df[float_columns].astype("float32")
 
+
     list_columns = [
         "favorite_genres",
         "favorite_directors",
@@ -86,6 +86,8 @@ def cleaned_data(df):
     ]
 
     for col in list_columns:
-        df[col] = df[col].apply(literal_eval)
+        df[col] = df[col].apply(
+            lambda x: literal_eval(x) if isinstance(x, str) else x
+        )
 
     return df

@@ -74,7 +74,7 @@ class DatasetBuilder:
                     if interaction_count else 0
                 ),
                 "favorite_genres": [
-                    g.en_name for g in user.favorite_genres.all()
+                    g.id for g in user.favorite_genres.all()
                 ],
                 "preferred_runtime": (
                     sum(m.runtime or 0 for m in favorite_movies)
@@ -132,7 +132,7 @@ class DatasetBuilder:
             movies_df.append({
                 "movie_id": movie.id,
                 "genres": [
-                    g.en_name
+                    g.id
                     for g in movie.genres.all()
                 ],
                 "rate": float(movie.rate),
