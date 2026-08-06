@@ -1,7 +1,7 @@
 import pandas as pd
 from django.utils import timezone
 from .models import Interaction
-from film.models import Movie
+from film.models import Movie, WatchProgress
 from account.models import FilmBazUser
 from people.models import MovieCrew
 
@@ -67,6 +67,8 @@ class DatasetBuilder:
                 "total_shares": sum(i.interaction_type == Interaction.Type.SHARE for i in interactions),
                 "total_comments": sum(i.interaction_type == Interaction.Type.COMMENT for i in interactions),
                 "total_searches": sum(i.interaction_type == Interaction.Type.SEARCH for i in interactions),
+                "total_watches": sum(i.interaction_type == Interaction.Type.WATCH for i in interactions),
+                "total_completes": sum(i.interaction_type == Interaction.Type.COMPLETE for i in interactions),
                 "avg_interaction_weight": (
                     sum(i.weight for i in interactions) / interaction_count
                     if interaction_count else 0
@@ -105,6 +107,8 @@ class DatasetBuilder:
             "total_shares",
             "total_comments",
             "total_searches",
+            "total_watches",
+            "total_completes",
             "avg_interaction_weight",
             "favorite_genres",
             "preferred_runtime",
@@ -181,42 +185,12 @@ class DatasetBuilder:
                 grouped[key] = {
                     "user_id": interaction.user_id,
                     "movie_id": interaction.movie_id,
-                    "view_count": 0,
-                    "liked": False,
-                    "saved": False,
-                    "shared": False,
-                    "comment_count": 0,
-                    "search_count": 0,
-                    "movie_interaction_count": 0,
                     "target_score": 0,
-                    "last_interaction": interaction.timestamp,
                 }
 
             row = grouped[key]
 
-            row["movie_interaction_count"] += 1
             row["target_score"] += interaction.weight
-
-            if interaction.timestamp > row["last_interaction"]:
-                row["last_interaction"] = interaction.timestamp
-
-            if interaction.interaction_type == Interaction.Type.VIEW:
-                row["view_count"] += 1
-
-            elif interaction.interaction_type == Interaction.Type.LIKE:
-                row["liked"] = True
-
-            elif interaction.interaction_type == Interaction.Type.SAVE:
-                row["saved"] = True
-
-            elif interaction.interaction_type == Interaction.Type.SHARE:
-                row["shared"] = True
-
-            elif interaction.interaction_type == Interaction.Type.COMMENT:
-                row["comment_count"] += 1
-
-            elif interaction.interaction_type == Interaction.Type.SEARCH:
-                row["search_count"] += 1
 
         df = pd.DataFrame(grouped.values())
         df = df.convert_dtypes()
@@ -224,15 +198,7 @@ class DatasetBuilder:
         return df[[
             "user_id",
             "movie_id",
-            "view_count",
-            "liked",
-            "saved",
-            "shared",
-            "comment_count",
-            "search_count",
-            "movie_interaction_count",
             "target_score",
-            "last_interaction",
         ]]
 
     def build(self):

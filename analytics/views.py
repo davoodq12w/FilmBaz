@@ -4,6 +4,7 @@ from django.views.generic import View
 from film.models import Movie, MovieEpisode
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from .models import Interaction
 
 
 @method_decorator(login_required(), name="dispatch")
@@ -20,7 +21,7 @@ class ShareIntractionView(View):
             user=user,
             movie=movie,
             interaction_type=Interaction.Type.SHARE,
-            defaults={"weight": 1.2}
+            weight=1.2
         )
 
         return None

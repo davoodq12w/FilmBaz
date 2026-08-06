@@ -557,7 +557,23 @@ class WatchProgressView(View):
         completed = request.POST.get("completed")
         if position and completed is not None:
             watchprogress.position = position
-            watchprogress.completed = True if completed == "true" else False
+            Interaction.objects.get_or_create(
+                user=request.user,
+                movie=watchprogress.episode.movie,
+                interaction_type=Interaction.Type.WATCH,
+                weight=0.7,
+            )
+            if completed == "true":
+                watchprogress.completed = True
+                Interaction.objects.get_or_create(
+                    user=request.user,
+                    movie=watchprogress.episode.movie,
+                    interaction_type=Interaction.Type.COMPLETE,
+                    weight=1.2,
+                )
+            else:
+                watchprogress.completed = False
+
             watchprogress.save()
 
             return JsonResponse({"ok": True}, status=200)
