@@ -1,78 +1,9 @@
 import tensorflow as tf
-from sklearn.model_selection import train_test_split
-from utils import get_latest_processed_dataset
-import pandas as pd
-from ast import literal_eval
 from tensorflow.keras import layers, Model
-
-df = pd.read_csv(get_latest_processed_dataset())
-list_columns = [
-    "favorite_genres",
-    "favorite_directors",
-    "favorite_writers",
-    "genres",
-]
-
-for col in list_columns:
-    df[col] = df[col].apply(
-        lambda x: literal_eval(x) if isinstance(x, str) else x
-    )
-
-fetures = df.drop(["target_score"], axis=1)
-target = df["target_score"]
-X_train, X_test, y_train, y_test = train_test_split(fetures, target, test_size=0.2, random_state=42)
-
-NUMERIC_COLUMNS = [
-    "account_age_days",
-    "total_views",
-    "total_likes",
-    "total_saves",
-    "total_shares",
-    "total_comments",
-    "total_searches",
-    "total_watches",
-    "total_completes",
-    "avg_interaction_weight",
-    "preferred_runtime",
-    "preferred_release_year",
-    "user_interaction_count",
-    "active_days",
-    "rate",
-    "release_year",
-    "runtime",
-    "popularity",
-]
-
-EMBEDDING_COLUMNS = [
-    "user_id",
-    "movie_id",
-    "director_id",
-    "writer_id",
-    "producer_id",
-    "country",
-]
-
-MULTI_EMBEDDING_COLUMNS = [
-    "favorite_directors",
-    "favorite_writers",
-    "genres",
-    "favorite_genres",
-]
-
-vocab_sizes = {
-    "user_id": df["user_id"].nunique() + 1,
-    "movie_id": df["movie_id"].nunique() + 1,
-    "director_id": df["director_id"].nunique() + 1,
-    "writer_id": df["writer_id"].nunique() + 1,
-    "producer_id": df["producer_id"].nunique() + 1,
-    "country": df["country"].nunique() + 1,
-    "genres": df["genres"].explode().nunique() + 1,
-    "favorite_directors": df["favorite_directors"].explode().nunique() + 1,
-    "favorite_writers": df["favorite_writers"].explode().nunique() + 1,
-}
+from training.trainer import NUMERIC_COLUMNS
 
 
-def build_model():
+def build_model(normalizer, vocabularies):
     # ---------- Inputs ----------
 
     numeric_input = layers.Input(
@@ -123,16 +54,11 @@ def build_model():
     )
 
     # ---------- Numeric ----------
-
-    normalizer = layers.Normalization()
     numeric = normalizer(numeric_input)
-    normalizer.adapt(
-        X_train[NUMERIC_COLUMNS].values.astype("float32")
-    )
 
     # ---------- Single Embeddings ----------
     country_lookup = layers.StringLookup(
-        vocabulary=df["country"].unique(),
+        vocabulary=vocabularies["country"],
         mask_token=None
     )
 
@@ -146,7 +72,7 @@ def build_model():
     country = layers.Flatten()(country)
 
     director_lookup = layers.IntegerLookup(
-        vocabulary=df["director_id"].unique(),
+        vocabulary=vocabularies["director_id"],
         mask_token=None
     )
 
@@ -160,7 +86,7 @@ def build_model():
     director = layers.Flatten()(director)
 
     writer_lookup = layers.IntegerLookup(
-        vocabulary=df["writer_id"].unique(),
+        vocabulary=vocabularies["writer_id"],
         mask_token=None
     )
 
@@ -174,7 +100,7 @@ def build_model():
     writer = layers.Flatten()(writer)
 
     producer_lookup = layers.IntegerLookup(
-        vocabulary=df["producer_id"].unique(),
+        vocabulary=vocabularies["producer_id"],
         mask_token=None
     )
 
@@ -188,7 +114,7 @@ def build_model():
     producer = layers.Flatten()(producer)
 
     user_lookup = layers.IntegerLookup(
-        vocabulary=df["user_id"].unique(),
+        vocabulary=vocabularies["user_id"],
         mask_token=None
     )
 
@@ -202,7 +128,7 @@ def build_model():
     user = layers.Flatten()(user)
 
     movie_lookup = layers.IntegerLookup(
-        vocabulary=df["movie_id"].unique(),
+        vocabulary=vocabularies["movie_id"],
         mask_token=None
     )
 
@@ -218,55 +144,58 @@ def build_model():
     # ---------- Multi Embeddings ----------
 
     favorite_director_lookup = layers.IntegerLookup(
-        vocabulary=df["favorite_directors"].explode().unique(),
+        vocabulary=vocabularies["favorite_directors"],
         mask_token=None
     )
-
     favorite_directors = favorite_director_lookup(
         favorite_directors_input
     )
-
     favorite_directors = layers.Embedding(
         input_dim=favorite_director_lookup.vocabulary_size(),
         output_dim=32,
-        mask_zero=True
+        mask_zero=True,
     )(favorite_directors)
-
-    favorite_writer_lookup = layers.IntegerLookup(
-        vocabulary=df["favorite_writers"].explode().unique(),
-        mask_token=None
+    favorite_directors = layers.GlobalAveragePooling1D()(
+        favorite_directors
     )
 
+    favorite_writer_lookup = layers.IntegerLookup(
+        vocabulary=vocabularies["favorite_writers"],
+        mask_token=None
+    )
     favorite_writers = favorite_writer_lookup(
         favorite_writers_input
     )
-
     favorite_writers = layers.Embedding(
         input_dim=favorite_writer_lookup.vocabulary_size(),
         output_dim=32,
-        mask_zero=True
+        mask_zero=True,
     )(favorite_writers)
-
-    genre_lookup = layers.IntegerLookup(
-        vocabulary=df["genres"].explode().unique(),
-        mask_token=None
+    favorite_writers = layers.GlobalAveragePooling1D()(
+        favorite_writers
     )
 
+    genre_lookup = layers.IntegerLookup(
+        vocabulary=vocabularies["genres"],
+        mask_token=None
+    )
     genres = genre_lookup(genres_input)
-
     genres = layers.Embedding(
         input_dim=genre_lookup.vocabulary_size(),
         output_dim=16,
-        mask_zero=True
+        mask_zero=True,
     )(genres)
+    genres = layers.GlobalAveragePooling1D()(genres)
 
     favorite_genres = genre_lookup(favorite_genres_input)
-
     favorite_genres = layers.Embedding(
         input_dim=genre_lookup.vocabulary_size(),
         output_dim=16,
-        mask_zero=True
+        mask_zero=True,
     )(favorite_genres)
+    favorite_genres = layers.GlobalAveragePooling1D()(
+        favorite_genres
+    )
 
     # ---------- Merge ----------
 
