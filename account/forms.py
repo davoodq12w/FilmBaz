@@ -182,7 +182,9 @@ class FavoriteGenresForm(forms.Form):
     def clean_genres(self):
         genres = self.cleaned_data.get("genres")
         if genres.count() < 3:
-            raise forms.ValidationError("لطفاً حداقل سه ژانر انتخاب کنید")
+            raise forms.ValidationError("لطفاً حداقل سه ژانر انتخاب کنید.")
+        elif genres.count() > 5:
+            raise forms.ValidationError("حداکثر پنج ژانر مورد علاقه مجاز است.")
         return genres
 
 
