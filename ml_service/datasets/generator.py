@@ -9,12 +9,12 @@ random.seed(42)
 
 n_records = 10000
 
-genres_list = [i for i in range(1, 20)]
+genres_list = [i for i in range(0, 20)]
 
 countries = ['USA', 'UK', 'Canada', 'Germany', 'France', 'Italy', 'Spain', 'Australia', 'Japan', 'South Korea', 'India']
-directors = list(range(1, 101))
-writers = list(range(1, 101))
-producers = list(range(1, 101))
+directors = list(range(0, 101))
+writers = list(range(0, 101))
+producers = list(range(0, 101))
 
 
 def generate_dataset(n):
@@ -54,16 +54,16 @@ def generate_dataset(n):
         ])
         avg_interaction_weight = sum(interactions) / total_interaction_count if total_interaction_count > 0 else 0
 
-        favorite_genres = random.sample(genres_list, random.randint(3, 6))
+        favorite_genres = random.sample(genres_list, 5)
 
         preferred_runtime = random.randint(60, 180)
         preferred_release_year = random.randint(1980, 2024)
 
-        favorite_directors = random.sample(directors, random.randint(1, 4))
-        favorite_writers = random.sample(writers, random.randint(1, 4))
+        favorite_directors = random.sample(directors, 5)
+        favorite_writers = random.sample(writers, 5)
 
         movie_id = random.randint(1000, 9999)
-        genres = random.sample(genres_list, random.randint(1, 3))
+        genres = random.sample(genres_list, 5)
         rate = round(random.uniform(1.0, 10.0), 1)
         release_year = random.randint(1980, 2024)
         runtime = random.randint(60, 180)
