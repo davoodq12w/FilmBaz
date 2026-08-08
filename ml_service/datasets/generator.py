@@ -9,12 +9,7 @@ random.seed(42)
 
 n_records = 10000
 
-genres_list = [
-    "Action", "Adventure", "Animation", "Comedy", "Crime",
-    "Documentary", "Drama", "Family", "Fantasy", "History",
-    "Horror", "Music", "Mystery", "Romance", "Science Fiction",
-    "TV Movie", "Thriller", "War", "Western"
-]
+genres_list = [i for i in range(1, 20)]
 
 countries = ['USA', 'UK', 'Canada', 'Germany', 'France', 'Italy', 'Spain', 'Australia', 'Japan', 'South Korea', 'India']
 directors = list(range(1, 101))
