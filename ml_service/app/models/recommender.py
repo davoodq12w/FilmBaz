@@ -1,7 +1,26 @@
 import tensorflow as tf
 from tensorflow.keras import layers, Model
-from training.trainer import NUMERIC_COLUMNS
 
+NUMERIC_COLUMNS = [
+    "account_age_days",
+    "total_views",
+    "total_likes",
+    "total_saves",
+    "total_shares",
+    "total_comments",
+    "total_searches",
+    "total_watches",
+    "total_completes",
+    "avg_interaction_weight",
+    "preferred_runtime",
+    "preferred_release_year",
+    "user_interaction_count",
+    "active_days",
+    "rate",
+    "release_year",
+    "runtime",
+    "popularity",
+]
 
 def build_model(normalizer, vocabularies):
     # ---------- Inputs ----------
