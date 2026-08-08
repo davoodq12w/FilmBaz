@@ -4,9 +4,13 @@ from .models import Interaction
 from film.models import Movie, WatchProgress
 from account.models import FilmBazUser
 from people.models import MovieCrew
+from collections import Counter
 
 
 class DatasetBuilder:
+
+    def padding_to_5(self, lst: list):
+        return lst[:5] + [0] * max(0, 5 - len(lst))
 
     def get_movie_crews(self, movie):
         director_id = None
@@ -46,17 +50,25 @@ class DatasetBuilder:
                     Interaction.Type.SAVE,
                     Interaction.Type.LIKE,
                     Interaction.Type.SHARE,
+                    Interaction.Type.COMPLETE,
                 }
             }
             movies_with_release = [m for m in favorite_movies if m.release_date]
-            favorite_directors = set()
-            favorite_writers = set()
-            for movie in favorite_movies:
-                director_id, writer_id, _ = self.get_movie_crews(movie)
+            all_favorite_directors = []
+            all_favorite_writers = []
+            for i in interactions:
+                director_id, writer_id, _ = self.get_movie_crews(i.movie)
                 if director_id:
-                    favorite_directors.add(director_id)
+                    all_favorite_directors.append(director_id)
                 if writer_id:
-                    favorite_writers.add(writer_id)
+                    all_favorite_writers.append(writer_id)
+            favorite_directors = [i for i, _ in Counter(all_favorite_directors).most_common(5)]
+            favorite_writers = [i for i, _ in Counter(all_favorite_writers).most_common(5)]
+            favorite_genres = [g.id for g in user.favorite_genres.all()]
+
+            favorite_directors = self.padding_to_5(favorite_directors)
+            favorite_writers = self.padding_to_5(favorite_writers)
+            favorite_genres = self.padding_to_5(favorite_genres)
 
             users_df.append({
                 "user_id": user.id,
@@ -73,9 +85,7 @@ class DatasetBuilder:
                     sum(i.weight for i in interactions) / interaction_count
                     if interaction_count else 0
                 ),
-                "favorite_genres": [
-                    g.id for g in user.favorite_genres.all()
-                ],
+                "favorite_genres": favorite_genres,
                 "preferred_runtime": (
                     sum(m.runtime or 0 for m in favorite_movies)
                     / len(favorite_movies)
@@ -129,12 +139,11 @@ class DatasetBuilder:
 
         for movie in movies:
             director_id, writer_id, producer_id = self.get_movie_crews(movie)
+            genres = [g.id for g in movie.genres.all()]
+            genres = self.padding_to_5(genres)
             movies_df.append({
                 "movie_id": movie.id,
-                "genres": [
-                    g.id
-                    for g in movie.genres.all()
-                ],
+                "genres": genres,
                 "rate": float(movie.rate),
                 "release_year": (
                     movie.release_date.year
@@ -168,7 +177,6 @@ class DatasetBuilder:
         ]]
 
     def build_interactions_df(self):
-        interactions_df = []
 
         interactions = (
             Interaction.objects
