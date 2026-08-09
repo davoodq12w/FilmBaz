@@ -7,8 +7,6 @@ from pathlib import Path
 np.random.seed(42)
 random.seed(42)
 
-n_records = 10000
-
 genres_list = [i for i in range(0, 20)]
 
 countries = ['USA', 'UK', 'Canada', 'Germany', 'France', 'Italy', 'Spain', 'Australia', 'Japan', 'South Korea', 'India']

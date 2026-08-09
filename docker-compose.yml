@@ -165,7 +165,7 @@ services:
 #    expose:
 #      - "8002"
 #    depends_on:
-#      - postgres
+#      - db
 #    networks:
 #      - main
 
