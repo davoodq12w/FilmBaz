@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from django_resized import ResizedImageField
 from account.models import FilmBazUser
 from people.models import MovieCrew
-from .utils import get_video_duration
 
 
 class Genre(models.Model):
@@ -110,7 +109,7 @@ class MovieEpisode(models.Model):
     season = models.PositiveSmallIntegerField(default=1)
     file = models.FileField(upload_to=f"movies/movies/", )
     movie = models.ForeignKey(Movie, related_name="episodes", on_delete=models.CASCADE)
-    duration = models.PositiveIntegerField(default=0)
+    duration = models.PositiveIntegerField(default=0) # second
     intro_start = models.PositiveIntegerField(default=0)  # second
     intro_end = models.PositiveIntegerField(default=0)  # second
     credits_start = models.PositiveIntegerField(default=0)  # second
@@ -140,26 +139,6 @@ class MovieEpisode(models.Model):
             else:
                 obj = self.movie.episodes.filter(season=1, episode=1).first()
                 return obj
-
-    def save(self, *args, **kwargs):
-        old_file = None
-
-        if self.pk:
-            old_file = (
-                MovieEpisode.objects
-                .filter(pk=self.pk)
-                .values_list("file", flat=True)
-                .first()
-            )
-
-        super().save(*args, **kwargs)
-
-        if self.file and (not self.duration or old_file != self.file.name):
-            duration = get_video_duration(self.file.path)
-
-            if duration != self.duration:
-                self.duration = duration
-                super().save(update_fields=["duration"])
 
 
 class MovieTrailer(models.Model):
