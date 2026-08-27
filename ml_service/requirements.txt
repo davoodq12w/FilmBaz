@@ -1,9 +1,10 @@
-fastapi
+fastapi[standard]
 uvicorn[standard]
 tensorflow
 tensorflow-recommenders
 pandas
 numpy
+SQLAlchemy
 scikit-learn
 pyarrow
 python-dotenv

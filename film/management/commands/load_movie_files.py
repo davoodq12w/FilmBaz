@@ -21,6 +21,7 @@ class Command(BaseCommand):
                     obj, file_created = MovieEpisode.objects.update_or_create(
                         file=movie_file_path,
                         movie=movie,
+                        duration=300,
                         intro_start=random.randint(20,30),
                         intro_end=random.randint(40,60),
                         credits_start=random.randint(260,290),

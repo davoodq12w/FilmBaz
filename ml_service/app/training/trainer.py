@@ -1,5 +1,12 @@
 from sklearn.model_selection import train_test_split
-from utils import get_latest_processed_dataset
+from utils import (
+    get_latest_processed_dataset,
+    create_model_metadata,
+    get_current_best_metadata,
+    is_better,
+    save_training_log,
+    save_best_model
+)
 import pandas as pd
 from ast import literal_eval
 from tensorflow.keras import layers
@@ -115,6 +122,25 @@ def train_model():
         verbose=1,
     )
 
-    print(results)
+    metadata = create_model_metadata(
+        history,
+        results,
+    )
 
-    return model, history
+    old_metadata, _ = get_current_best_metadata()
+
+    better = is_better(
+        metadata,
+        old_metadata,
+    )
+
+    save_training_log({
+        **metadata,
+        "saved": better,
+    })
+
+    if better:
+        save_best_model(
+            model,
+            metadata,
+        )
