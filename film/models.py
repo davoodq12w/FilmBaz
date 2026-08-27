@@ -1,5 +1,4 @@
 from django.db import models
-from django.shortcuts import get_object_or_404
 from django_resized import ResizedImageField
 from account.models import FilmBazUser
 from people.models import MovieCrew
