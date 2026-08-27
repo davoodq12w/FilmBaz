@@ -1,7 +1,7 @@
 import pandas as pd
 from django.utils import timezone
 from .models import Interaction
-from film.models import Movie, WatchProgress
+from film.models import Movie
 from account.models import FilmBazUser
 from people.models import MovieCrew
 from collections import Counter
