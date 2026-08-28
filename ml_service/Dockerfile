@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # لاگ‌ها مستقیم داخل ترمینال
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
+WORKDIR /ML
 
 # نصب dependency ها
 COPY requirements.txt .

@@ -159,11 +159,11 @@ services:
     restart: always
     command: uvicorn app.main:app --host 0.0.0.0 --port 8002
     volumes:
-      - ./ml_service:/app
-      - ./ml_service/datasets:/app/datasets
-      - ./ml_service/saved_models:/app/saved_models
-      - ./ml_service/logs:/app/logs
-    expose:
+      - ./ml_service:/ML
+      - ./ml_service/datasets:/ML/datasets
+      - ./ml_service/saved_models:/ML/saved_models
+      - ./ml_service/logs:/ML/logs
+    ports:
       - "8002"
     depends_on:
       - db
