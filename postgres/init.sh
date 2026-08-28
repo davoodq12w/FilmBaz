@@ -6,27 +6,26 @@ psql \
     --username "$POSTGRES_USER" \
     --dbname "$POSTGRES_DB" <<EOF
 
-DO
-$$
+DO \$\$
 BEGIN
     IF NOT EXISTS (
-        SELECT
+        SELECT 1
         FROM pg_roles
         WHERE rolname = '${ML_DB_USER}'
     ) THEN
 
-        CREATE ROLE ${ML_DB_USER}
+        CREATE ROLE "${ML_DB_USER}"
         LOGIN
         PASSWORD '${ML_DB_PASSWORD}';
 
     ELSE
 
-        ALTER ROLE ${ML_DB_USER}
+        ALTER ROLE "${ML_DB_USER}"
         WITH PASSWORD '${ML_DB_PASSWORD}';
 
     END IF;
 END
-$$;
+\$\$;
 
 GRANT CONNECT ON DATABASE ${POSTGRES_DB} TO ${ML_DB_USER};
 

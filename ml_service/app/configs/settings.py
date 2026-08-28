@@ -1,9 +1,10 @@
 from pydantic_settings import BaseSettings
-from decouple import config
+
+DATABASE_URL = "postgresql+asyncpg://ml_service:MlServicePassword@db:5432/filmbaz_db"
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = config("DATABASE_URL")
+    DATABASE_URL: str = DATABASE_URL
 
 
 settings = Settings()
