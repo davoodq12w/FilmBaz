@@ -1,10 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..repositories.user import get_user_repository, UserRepository
+from app.services.raw_data import row_data, RowData
+from pydantic import BaseModel
 
 router = APIRouter()
 
 
-@router.get("/recomendation/get_movies/{user_id}")
-async def get_recommendation(user_id: int, repo: UserRepository = Depends(get_user_repository), ):
-    user = await repo.get_user_basic(user_id)
-    return user
+class DataInput(BaseModel):
+    user_id: int
+    movie_ids: list[int]
+
+
+@router.post("/recomendation/get_movies/")
+async def get_recommendation(data: DataInput, service: RowData = Depends(row_data)):
+    result = await service.get_raw_data(user_id=data.user_id, movie_ids=data.movie_ids)
+    return result

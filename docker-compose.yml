@@ -164,7 +164,7 @@ services:
       - ./ml_service/saved_models:/ML/saved_models
       - ./ml_service/logs:/ML/logs
     ports:
-      - "8002"
+      - "6985:8002"
     depends_on:
       - db
     networks:

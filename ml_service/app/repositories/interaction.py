@@ -2,11 +2,12 @@ from sqlalchemy import text
 from typing import List
 from ..database.session import get_session
 from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class InteractionRepository:
-    def __init__(self):
-        self.session = Depends(get_session)
+    def __init__(self, session: AsyncSession):
+        self.session = session
 
     async def get_user_interactions(self, user_id: int) -> List[dict]:
         """
@@ -16,7 +17,7 @@ class InteractionRepository:
                      SELECT movie_id,
                             interaction_type,
                             weight, timestamp
-                     FROM film_interaction
+                     FROM analytics_interaction
                      WHERE user_id = :user_id
                      ORDER BY timestamp DESC
                      """)
@@ -25,3 +26,7 @@ class InteractionRepository:
         rows = result.mappings().all()
 
         return [dict(row) for row in rows]
+
+
+def get_intraction_repository(session: AsyncSession = Depends(get_session)):
+    return InteractionRepository(session)
