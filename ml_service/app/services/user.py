@@ -8,9 +8,13 @@ class UserService:
     def __init__(self, repo: UserRepository):
         self.repo = repo
 
+    def padding_to_5(self, lst: list):
+        return lst[:5] + [0] * max(0, 5 - len(lst))
+
     async def build_user_features(self, user_id: int):
         user = await self.repo.get_user_basic(user_id)
         favorite_genres = await self.repo.get_user_favorite_genres(user_id)
+        favorite_genres = self.padding_to_5(favorite_genres)
         now = datetime.now(tz=ZoneInfo("Asia/Tehran"))
         created = user["created"]
 

@@ -19,11 +19,16 @@ class RowData:
         user_fetures = await self.user_service.build_user_features(user_id=user_id)
         interactions = await self.interaction_service.get_interactions(user_id=user_id)
         movies = await self.movie_service.get_movies(movie_ids=movie_ids)
-        data = {
-            "user_fetures": user_fetures,
-            "interactions": interactions,
-            "movies": movies
-        }
+
+        data = []
+        for movie in movies:
+            row = {
+                **user_fetures,
+                **interactions,
+                **movie,
+            }
+            data.append(row)
+            
         return data
 
 
