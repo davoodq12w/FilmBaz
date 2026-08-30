@@ -2,11 +2,12 @@ from sqlalchemy import text
 from typing import List, Dict, Optional
 from ..database.session import get_session
 from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class MovieRepository:
-    def __init__(self):
-        self.session = Depends(get_session)
+    def __init__(self, session: AsyncSession):
+        self.session = session
 
     async def get_movie_basic(self, movie_id: int) -> Optional[dict]:
         """
@@ -56,24 +57,22 @@ class MovieRepository:
 
 
 class MovieRelationRepository:
-    def __init__(self):
-        self.session = Depends(get_session)
+    def __init__(self, session: AsyncSession):
+        self.session = session
 
     async def get_movie_genres(self, movie_id: int) -> List[dict]:
         """
         ژانرهای یک فیلم را برمی‌گرداند
         """
         query = text("""
-                     SELECT g.id AS genre_id,
+                     SELECT g.id AS genre_id
                      FROM film_movie_genres mg
                               JOIN film_genre g ON g.id = mg.genre_id
                      WHERE mg.movie_id = :movie_id
                      """)
 
         result = await self.session.execute(query, {"movie_id": movie_id})
-        rows = result.mappings().all()
-
-        return [dict(row) for row in rows]
+        return list(result.scalars().all())
 
     async def get_movies_genres(self, movie_ids: List[int]) -> Dict[int, List[dict]]:
         """
@@ -85,10 +84,7 @@ class MovieRelationRepository:
 
         query = text("""
                      SELECT mg.movie_id,
-                            g.id AS genre_id,
-                            g.en_name,
-                            g.fa_name,
-                            g.slug
+                            g.id AS genre_id
                      FROM film_movie_genres mg
                               JOIN film_genre g ON g.id = mg.genre_id
                      WHERE mg.movie_id = ANY (:movie_ids)
@@ -101,9 +97,6 @@ class MovieRelationRepository:
         for row in rows:
             genres_map[row["movie_id"]].append({
                 "genre_id": row["genre_id"],
-                "en_name": row["en_name"],
-                "fa_name": row["fa_name"],
-                "slug": row["slug"],
             })
 
         return genres_map
@@ -114,10 +107,7 @@ class MovieRelationRepository:
         """
         query = text("""
                      SELECT mc.role,
-                            c.id AS crew_id,
-                            c.en_name,
-                            c.fa_name,
-                            c.slug
+                            c.id AS crew_id
                      FROM people_moviecrew mc
                               JOIN people_crewmember c ON c.id = mc.crew_id
                      WHERE mc.movie_id = :movie_id
@@ -140,10 +130,7 @@ class MovieRelationRepository:
         query = text("""
                      SELECT mc.movie_id,
                             mc.role,
-                            c.id AS crew_id,
-                            c.en_name,
-                            c.fa_name,
-                            c.slug
+                            c.id AS crew_id
                      FROM people_moviecrew mc
                               JOIN people_crewmember c ON c.id = mc.crew_id
                      WHERE mc.movie_id = ANY (:movie_ids)
@@ -158,9 +145,6 @@ class MovieRelationRepository:
             crews_map[row["movie_id"]].append({
                 "role": row["role"],
                 "crew_id": row["crew_id"],
-                "en_name": row["en_name"],
-                "fa_name": row["fa_name"],
-                "slug": row["slug"],
             })
 
         return crews_map
@@ -188,3 +172,11 @@ class MovieRelationRepository:
                 result["producer_id"] = crew["crew_id"]
 
         return result
+
+
+def get_movie_repository(session: AsyncSession = Depends(get_session)):
+    return MovieRepository(session)
+
+
+def get_movie_relation_repository(session: AsyncSession = Depends(get_session)):
+    return MovieRelationRepository(session)

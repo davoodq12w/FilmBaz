@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import datetime
 import pandas as pd
-from utils import get_latest_raw_dataset
+from app.utils import get_latest_raw_dataset
 from .clean import cleaned_data
 from .validation import validate_dataset
 
@@ -26,3 +26,4 @@ def get_processed_dataset() -> Path:
     df.to_csv(output_path, index=False)
 
     return output_path
+
