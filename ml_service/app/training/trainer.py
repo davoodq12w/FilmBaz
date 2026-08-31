@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-from utils import (
+from ..utils import (
     get_latest_processed_dataset,
     create_model_metadata,
     get_current_best_metadata,
@@ -10,7 +10,7 @@ from utils import (
 import pandas as pd
 from ast import literal_eval
 from tensorflow.keras import layers
-from models.recommender import NUMERIC_COLUMNS, build_model
+from ..models.recommender import NUMERIC_COLUMNS, build_model
 import numpy as np
 import tensorflow as tf
 
@@ -34,7 +34,10 @@ def get_df():
 def dataframe_to_inputs(df):
     inputs = {
         "numeric_features": df[NUMERIC_COLUMNS].astype("float32").values,
-        "country": df["country"].astype(str).values,
+        "country": tf.constant(
+            df["country"].astype(str).values,
+            dtype=tf.string
+        ),
         "director_id": df["director_id"].astype("int32").values,
         "writer_id": df["writer_id"].astype("int32").values,
         "producer_id": df["producer_id"].astype("int32").values,
@@ -59,7 +62,7 @@ def train_model():
     normalizer = layers.Normalization()
 
     normalizer.adapt(
-        x_train[NUMERIC_COLUMNS].astype("float32")
+        x_train[NUMERIC_COLUMNS].to_numpy(dtype="float32")
     )
 
     vocabularies = {
@@ -68,10 +71,10 @@ def train_model():
         "director_id": x_train["director_id"].unique(),
         "writer_id": x_train["writer_id"].unique(),
         "producer_id": x_train["producer_id"].unique(),
-        "country": x_train["country"].unique(),
-        "favorite_directors": x_train["favorite_directors"].explode().unique(),
-        "favorite_writers": x_train["favorite_writers"].explode().unique(),
-        "genres": x_train["genres"].explode().unique(),
+        "country": x_train["country"].astype(str).unique().tolist(),
+        "favorite_directors": x_train["favorite_directors"].explode().unique().astype("int32"),
+        "favorite_writers": x_train["favorite_writers"].explode().unique().astype("int32"),
+        "genres": x_train["genres"].explode().unique().astype("int32"),
     }
 
     model = build_model(normalizer, vocabularies)
@@ -89,6 +92,9 @@ def train_model():
 
     train_inputs = dataframe_to_inputs(x_train)
     test_inputs = dataframe_to_inputs(x_test)
+
+    for key, value in train_inputs.items():
+        print(key, value.dtype, value.shape)
 
     early_stopping = tf.keras.callbacks.EarlyStopping(
         monitor="val_loss",

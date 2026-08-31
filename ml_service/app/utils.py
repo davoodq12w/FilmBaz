@@ -4,9 +4,10 @@ import os
 from datetime import date
 import glob
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 def get_latest_raw_dataset():
-    dataset_dir = Path("../../datasets/raw/")
+    dataset_dir = BASE_DIR / "datasets" / "raw"
     files = sorted(dataset_dir.glob("dataset_*.csv"))
 
     if not files:
@@ -16,7 +17,7 @@ def get_latest_raw_dataset():
 
 
 def get_latest_processed_dataset():
-    dataset_dir = Path("../../datasets/processed/")
+    dataset_dir = BASE_DIR / "datasets" / "processed"
     files = sorted(dataset_dir.glob("dataset_*.csv"))
 
     if not files:
@@ -26,7 +27,7 @@ def get_latest_processed_dataset():
 
 
 def save_training_log(log_data: dict):
-    log_file = Path("../../logs/training_logs.json")
+    log_file = BASE_DIR / "logs" / "training_logs.json"
     os.makedirs("logs", exist_ok=True)
     if os.path.exists(log_file):
         with open(log_file, "r", encoding="utf-8") as f:
