@@ -2,7 +2,7 @@ from ..repositories.interaction import InteractionRepository, get_intraction_rep
 from fastapi import Depends
 from collections import Counter
 
-from app.repositories.movie import (
+from ..repositories.movie import (
     get_movie_repository,
     get_movie_relation_repository,
     MovieRelationRepository,
@@ -28,6 +28,7 @@ class InteractionService:
         user_interaction_count = len(interactions)
         avg_interaction_weight = sum([i["weight"] for i in interactions]) / user_interaction_count
         active_days = (interactions[-1]["timestamp"] - interactions[0]["timestamp"]).days
+        active_days = 0 if active_days < 0 else active_days
 
         interactions_for_fov_movies = [i for i in interactions
                                        if i["interaction_type"] in [

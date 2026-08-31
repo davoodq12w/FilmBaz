@@ -1,5 +1,5 @@
-from app.repositories.interaction import InteractionRepository, get_intraction_repository
-from app.repositories.movie import (
+from ..repositories.interaction import InteractionRepository, get_intraction_repository
+from ..repositories.movie import (
     get_movie_repository,
     get_movie_relation_repository,
     MovieRelationRepository,
