@@ -3,9 +3,9 @@
   <component name="PySourceRootDetectionService">
     <option name="sourcePathsSet">
       <set>
+        <option value="$PROJECT_DIR$/ml_service/app" />
         <option value="$PROJECT_DIR$" />
         <option value="$PROJECT_DIR$/ml_service" />
-        <option value="$PROJECT_DIR$/ml_service/app" />
       </set>
     </option>
   </component>

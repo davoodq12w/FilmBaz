@@ -100,7 +100,6 @@ def generate_dataset(n):
         data.append({
             "user_id": user_id,
             "movie_id": movie_id,
-            "target_score": target_score,
             "account_age_days": account_age_days,
             "total_views": total_views,
             "total_likes": total_likes,
@@ -129,6 +128,7 @@ def generate_dataset(n):
             "writer_id": writer_id,
             "producer_id": producer_id,
             "popularity": popularity,
+            "target_score": target_score,
         })
     print(".")
     return pd.DataFrame(data)
