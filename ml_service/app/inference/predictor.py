@@ -1,17 +1,17 @@
 import asyncio
-from ..main import app
 from ..preprocessing.pipeline import get_processed_dataset
 from ..services.raw_data import raw_data, RawData
-from fastapi import Depends
+from fastapi import Depends, Request
 import pandas as pd
 from ..training.trainer import dataframe_to_inputs
 
 
+
 class RecommenderMovies:
-    def __init__(self):
-        self.model = app.state.recommender_model
+    def __init__(self, request: Request, service: RawData):
+        self.model = request.app.state.recommender_model
         self.pipeline = get_processed_dataset
-        self.service: RawData = Depends(raw_data)
+        self.service = service
 
     async def predict(self, user_id: int, movie_ids: list[int]):
         data = await self.service.get_raw_data(user_id, movie_ids)
@@ -27,8 +27,8 @@ class RecommenderMovies:
             inputs
         )
 
-        return scores
+        return scores.tolist()
 
 
-def get_recommender():
-    return RecommenderMovies()
+def get_recommender(request: Request, service: RawData = Depends(raw_data)):
+    return RecommenderMovies(request, service)
