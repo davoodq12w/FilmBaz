@@ -1,4 +1,5 @@
 asyncpg
+asyncio
 fastapi[standard]
 uvicorn[standard]
 tensorflow
@@ -11,6 +12,7 @@ pyarrow
 python-dotenv
 pydantic
 pydantic-settings
+python-decouple
 loguru
 tqdm
 httpx

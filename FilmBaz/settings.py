@@ -225,8 +225,14 @@ CELERY_BEAT_SCHEDULE = {
         "task": "support.tasks.close_support_session_daily",
         "schedule": crontab(hour=0, minute=0),
         "options": {"queue": "default"},
+    },
+    "build_new_recommendation_model": {
+        "task": "analytics.tasks.build_model",
+        "schedule": crontab(hour=0, minute=1),
+        "options": {"queue": "default"},
     }
 }
+
 CELERY_TIMEZONE = config("CELERY_TIMEZONE", default="UTC")
 CELERY_ENABLE_UTC = config("CELERY_ENABLE_UTC", cast=bool, default=True)
 
