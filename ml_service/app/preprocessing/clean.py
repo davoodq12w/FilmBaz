@@ -69,7 +69,6 @@ def cleaned_data(df):
     df[int_columns] = df[int_columns].astype("int32")
 
     float_columns = [
-        "target_score",
         "avg_interaction_weight",
         "rate",
     ]

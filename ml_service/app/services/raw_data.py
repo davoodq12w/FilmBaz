@@ -4,7 +4,7 @@ from ..services.interaction import InteractionService, get_interaction_service
 from fastapi import Depends
 
 
-class RowData:
+class RawData:
     def __init__(
             self,
             user_service: UserService,
@@ -15,7 +15,7 @@ class RowData:
         self.interaction_service = interaction_service
         self.movie_service = movie_service
 
-    async def get_raw_data(self, user_id: int, movie_ids: list[int]):
+    async def get_raw_data(self, user_id: int, movie_ids: list[int]) -> list[dict]:
         user = await self.user_service.build_user_features(user_id=user_id)
         interaction = await self.interaction_service.get_interactions(user_id=user_id)
         movies = await self.movie_service.get_movies(movie_ids=movie_ids)
@@ -59,9 +59,9 @@ class RowData:
         return data
 
 
-def row_data(
+def raw_data(
         user_service: UserService = Depends(get_user_service),
         interaction_service: InteractionService = Depends(get_interaction_service),
         movie_service: MovieService = Depends(get_movie_service),
 ):
-    return RowData(user_service, interaction_service, movie_service)
+    return RawData(user_service, interaction_service, movie_service)

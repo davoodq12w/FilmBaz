@@ -53,7 +53,7 @@ def create_model_metadata(history, results):
 
 
 def get_current_best_metadata():
-    json_files = glob.glob("../saved_models/*.json")
+    json_files = glob.glob("../models/*.json")
     if not json_files:
         return None, None
     json_path = json_files[0]
@@ -72,7 +72,7 @@ def is_better(new_meta, old_meta):
 
 
 def delete_old_model():
-    for file in glob.glob("../saved_models/*"):
+    for file in glob.glob("../models/*"):
         os.remove(file)
 
 
@@ -80,11 +80,12 @@ def save_best_model(model, metadata):
     os.makedirs("models", exist_ok=True)
     delete_old_model()
 
-    today = str(date.today())
-    model_path = f"models/recommender_{today}.keras"
-    json_path = f"models/recommender_{today}.json"
+    model_path = f"models/recommender.keras"
+    json_path = f"models/recommender.json"
 
     model.save(model_path)
 
     with open(json_path, "w", encoding="utf8") as f:
         json.dump(metadata, f, indent=4)
+
+    print("recommender model saved.")
