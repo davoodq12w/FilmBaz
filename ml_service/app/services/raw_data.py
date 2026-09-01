@@ -4,7 +4,7 @@ from ..services.interaction import InteractionService, get_interaction_service
 from fastapi import Depends
 
 
-class RowData:
+class RawData:
     def __init__(
             self,
             user_service: UserService,
@@ -15,7 +15,7 @@ class RowData:
         self.interaction_service = interaction_service
         self.movie_service = movie_service
 
-    async def get_raw_data(self, user_id: int, movie_ids: list[int]):
+    async def get_raw_data(self, user_id: int, movie_ids: list[int]) -> list[dict]:
         user = await self.user_service.build_user_features(user_id=user_id)
         interaction = await self.interaction_service.get_interactions(user_id=user_id)
         movies = await self.movie_service.get_movies(movie_ids=movie_ids)
@@ -35,14 +35,14 @@ class RowData:
                 "total_watches": interaction["total_watches"],
                 "total_completes": interaction["total_completes"],
                 "avg_interaction_weight": interaction["avg_interaction_weight"],
-                "favorite_genres": user["favorite_genres"],
+                "favorite_genres": f"{user['favorite_genres']}",
                 "preferred_runtime": interaction["preferred_runtime"],
                 "preferred_release_year": interaction["preferred_release_year"],
-                "favorite_directors": interaction["favorite_directors"],
-                "favorite_writers": interaction["favorite_writers"],
+                "favorite_directors": f"{interaction['favorite_directors']}",
+                "favorite_writers": f"{interaction['favorite_writers']}",
                 "user_interaction_count": interaction["user_interaction_count"],
                 "active_days": interaction["active_days"],
-                "genres": movie["genres"],
+                "genres": f"{movie['genres']}",
                 "rate": movie["rate"],
                 "release_year": movie["release_date"].year,
                 "runtime": movie["runtime"],
@@ -59,9 +59,9 @@ class RowData:
         return data
 
 
-def row_data(
+def raw_data(
         user_service: UserService = Depends(get_user_service),
         interaction_service: InteractionService = Depends(get_interaction_service),
         movie_service: MovieService = Depends(get_movie_service),
 ):
-    return RowData(user_service, interaction_service, movie_service)
+    return RawData(user_service, interaction_service, movie_service)

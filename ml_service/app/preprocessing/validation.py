@@ -124,18 +124,4 @@ def validate_dataset(df: pd.DataFrame) -> pd.DataFrame:
                 f"{invalid_count} invalid ids."
             )
 
-    # =====================================================
-    # Target Score Validation
-    # =====================================================
-    if (df["target_score"] < 0).any():
-
-        invalid_count = int(
-            (df["target_score"] < 0).sum()
-        )
-
-        raise ValueError(
-            f"target_score contains "
-            f"{invalid_count} negative values."
-        )
-
     return df

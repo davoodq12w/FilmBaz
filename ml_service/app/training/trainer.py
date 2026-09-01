@@ -93,20 +93,10 @@ def train_model():
     train_inputs = dataframe_to_inputs(x_train)
     test_inputs = dataframe_to_inputs(x_test)
 
-    for key, value in train_inputs.items():
-        print(key, value.dtype, value.shape)
-
     early_stopping = tf.keras.callbacks.EarlyStopping(
         monitor="val_loss",
         patience=5,
         restore_best_weights=True,
-    )
-
-    checkpoint = tf.keras.callbacks.ModelCheckpoint(
-        filepath="models/best_recommender.keras",
-        monitor="val_loss",
-        save_best_only=True,
-        mode="min",
     )
 
     history = model.fit(
@@ -119,7 +109,7 @@ def train_model():
         epochs=20,
         batch_size=256,
         verbose=1,
-        callbacks=[early_stopping, checkpoint],
+        callbacks=[early_stopping],
     )
 
     results = model.evaluate(
