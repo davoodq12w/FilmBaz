@@ -37,6 +37,12 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
         related_name='fans',
         blank=True
     )
+    recommended_movies = models.ManyToManyField(
+        "film.Movie",
+        related_name='recommended_to_users',
+        blank=True
+    )
+    last_recommend = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

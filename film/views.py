@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from datetime import timedelta
 from django.utils import timezone
+from account.tasks import get_recommendation_movie
 
 
 class HomePageView(View):
@@ -23,8 +24,15 @@ class HomePageView(View):
                 return redirect("account:choose_favorite_genres")
             else:
                 by_chosen_genres = Movie.objects.filter(genres__in=favorite_genres).distinct().order_by('-rate')[:7]
+
+            recommended = request.user.recommended_movies.all()
+            if recommended.count() < 1:
+                get_recommendation_movie.delay(request.user.id)
+                recommended = []
+
         else:
             by_chosen_genres = []
+            recommended = []
 
         new_movies = Movie.objects.order_by('-release_date')[:7]
         top_movies = Movie.objects.order_by('-rate')[:7]
@@ -33,6 +41,7 @@ class HomePageView(View):
             "new_movies": new_movies,
             "top_movies": top_movies,
             "by_chosen_genres": by_chosen_genres,
+            "recommended": recommended,
         }
         return render(request, "film/home_page.html", context)
 

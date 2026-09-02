@@ -6,7 +6,7 @@ from celery import shared_task
 from decouple import config
 
 BUILD_MODEL_PASSWORD = config("BUILD_MODEL_PASSWORD")
-BUILD_MODEL_URL = "http://localhost:6985/build_model/"
+BUILD_MODEL_URL = "http://ml_service:8002/build_model/"
 
 
 @shared_task()

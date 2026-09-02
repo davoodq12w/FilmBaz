@@ -113,11 +113,11 @@ services:
       timeout: 5s
       retries: 5
 
-  celery_support_worker:
+  celery_worker:
     build: .
-    container_name: celery_support_worker
+    container_name: celery_worker
     restart: always
-    command: celery -A FilmBaz worker --loglevel=info --events -Q default,support -n support_worker
+    command: celery -A FilmBaz worker --loglevel=info --events -Q default,support,recommendation -n worker
     volumes:
       - .:/app
       - media_volume:/app/media
@@ -162,8 +162,8 @@ services:
       - ./ml_service:/ML
       - ./ml_service/datasets:/ML/datasets
       - ./ml_service/logs:/ML/logs
-    ports:
-      - "6985:8002"
+    expose:
+      - "8002"
     depends_on:
       - db
     networks:

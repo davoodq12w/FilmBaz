@@ -6,7 +6,6 @@ import pandas as pd
 from ..training.trainer import dataframe_to_inputs
 
 
-
 class RecommenderMovies:
     def __init__(self, request: Request, service: RawData):
         self.model = request.app.state.recommender_model
@@ -27,7 +26,10 @@ class RecommenderMovies:
             inputs
         )
 
-        return scores.tolist()
+        return [
+            (int(movie_id), float(format(float(score[0]), ".2f")))
+            for movie_id, score in zip(movie_ids, scores)
+        ]
 
 
 def get_recommender(request: Request, service: RawData = Depends(raw_data)):
