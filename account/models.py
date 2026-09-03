@@ -37,12 +37,6 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
         related_name='fans',
         blank=True
     )
-    recommended_movies = models.ManyToManyField(
-        "film.Movie",
-        related_name='recommended_to_users',
-        blank=True
-    )
-    last_recommend = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -59,6 +53,16 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class UserRecommendation(models.Model):
+    user = models.OneToOneField(
+        FilmBazUser,
+        on_delete=models.CASCADE,
+        related_name="recommendations"
+    )
+    recommendations = models.JSONField(default=list)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Ticket(models.Model):

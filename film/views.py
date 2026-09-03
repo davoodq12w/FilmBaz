@@ -12,7 +12,8 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from datetime import timedelta
 from django.utils import timezone
-from account.tasks import get_recommendation_movie
+from account.models import UserRecommendation
+from django.db.models import Case, When, FloatField, Value
 
 
 class HomePageView(View):
@@ -25,14 +26,35 @@ class HomePageView(View):
             else:
                 by_chosen_genres = Movie.objects.filter(genres__in=favorite_genres).distinct().order_by('-rate')[:7]
 
-            recommended = request.user.recommended_movies.all()
-            if recommended.count() < 1:
-                get_recommendation_movie.delay(request.user.id)
-                recommended = []
+            rec_obj = UserRecommendation.objects.filter(user_id=request.user.id).first()
+            if not rec_obj:
+                recommendations = []
+
+            else:
+                recommendations_data = rec_obj.recommendations
+                rec_movie_ids = [item["movie_id"] for item in recommendations_data]
+
+                score_case = Case(
+                    *[
+                        When(
+                            id=item["movie_id"],
+                            then=Value(item["score"])
+                        )
+                        for item in recommendations_data
+                    ],
+                    output_field=FloatField()
+                )
+
+                recommendations = (
+                    Movie.objects
+                    .filter(id__in=rec_movie_ids)
+                    .annotate(score=score_case)
+                    .order_by("-score")
+                )[:7]
 
         else:
             by_chosen_genres = []
-            recommended = []
+            recommendations = []
 
         new_movies = Movie.objects.order_by('-release_date')[:7]
         top_movies = Movie.objects.order_by('-rate')[:7]
@@ -41,7 +63,7 @@ class HomePageView(View):
             "new_movies": new_movies,
             "top_movies": top_movies,
             "by_chosen_genres": by_chosen_genres,
-            "recommended": recommended,
+            "recommendations": recommendations,
         }
         return render(request, "film/home_page.html", context)
 

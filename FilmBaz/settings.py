@@ -230,6 +230,11 @@ CELERY_BEAT_SCHEDULE = {
         "task": "analytics.tasks.build_model",
         "schedule": crontab(hour=0, minute=1),
         "options": {"queue": "default"},
+    },
+    "recommendations": {
+        "task": "account.tasks.get_recommendation_movies",
+        "schedule": crontab(hour=1, minute=0),
+        "options": {"queue": "recommendation"},
     }
 }
 
