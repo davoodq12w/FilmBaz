@@ -25,7 +25,7 @@ def get_recommendation_movies():
 
     url = f"http://ml_service:8002/recomendation/get_movies/"
     for user in FilmBazUser.objects.all():
-        if user.interactions.count() > 1:
+        if user.interactions.count() < 1:
             continue
 
         data = {

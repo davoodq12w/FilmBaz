@@ -13,7 +13,7 @@ BUILD_MODEL_URL = "http://ml_service:8002/build_model/"
 def build_model():
     timestamp = str(int(time.time()))
 
-    message = f"POST\n/build_model\n{timestamp}"
+    message = f"POST\n/build_model/\n{timestamp}"
 
     signature = hmac.new(
         BUILD_MODEL_PASSWORD.encode(),
