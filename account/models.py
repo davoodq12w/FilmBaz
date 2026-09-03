@@ -55,6 +55,16 @@ class FilmBazUser(AbstractBaseUser, PermissionsMixin):
         return self.username
 
 
+class UserRecommendation(models.Model):
+    user = models.OneToOneField(
+        FilmBazUser,
+        on_delete=models.CASCADE,
+        related_name="recommendations"
+    )
+    recommendations = models.JSONField(default=list)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 class Ticket(models.Model):
     class Subject(models.TextChoices):
         CRITICISM = 'Criticism', 'انتقاد'

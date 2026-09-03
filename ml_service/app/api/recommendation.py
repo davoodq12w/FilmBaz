@@ -27,56 +27,46 @@ async def get_recommendation(data: DataInput, recommender: RecommenderMovies = D
     return result
 
 
-@router.get("/build_model/")
-def build_model(requset: Request):
+@router.post("/build_model/")
+def build_model(
+        requset: Request,
+        x_timestamp: str = Header(...),
+        x_signature: str = Header(...),
+):
+    try:
+        timestamp = int(x_timestamp)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid timestamp",
+        )
+
+    if abs(int(time.time()) - timestamp) > MAX_TIME_DIFF:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Expired request",
+        )
+
+    message = f"POST\n/build_model/\n{x_timestamp}"
+
+    expected_signature = hmac.new(
+        BUILD_MODEL_PASSWORD.encode(),
+        message.encode(),
+        hashlib.sha256,
+    ).hexdigest()
+
+    if not hmac.compare_digest(x_signature, expected_signature):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid signature",
+        )
+
     get_processed_dataset()
     train_model()
     requset.app.state.recommender_model = load_model(
         f"{BASE_DIR}/models/recommender.keras"
     )
 
-#
-# @router.post("/build_model/")
-# def build_model(
-#         x_timestamp: str = Header(...),
-#         x_signature: str = Header(...),
-# ):
-#     # بررسی معتبر بودن Timestamp
-#     try:
-#         timestamp = int(x_timestamp)
-#     except ValueError:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid timestamp",
-#         )
-#
-#     if abs(int(time.time()) - timestamp) > MAX_TIME_DIFF:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Expired request",
-#         )
-#
-#     # ساخت امضای مورد انتظار
-#     message = f"POST\n/build_model/\n{x_timestamp}"
-#
-#     expected_signature = hmac.new(
-#         BUILD_MODEL_PASSWORD.encode(),
-#         message.encode(),
-#         hashlib.sha256,
-#     ).hexdigest()
-#
-#     # مقایسه امضا
-#     if not hmac.compare_digest(x_signature, expected_signature):
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid signature",
-#         )
-#
-#     # درخواست معتبر است
-#     get_processed_dataset()
-#     train_model()
-#     load_recommendation_model()
-#
-#     return {
-#         "message": "Model built successfully"
-#     }
+    return {
+        "message": "Model built successfully"
+    }

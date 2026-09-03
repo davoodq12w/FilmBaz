@@ -31,3 +31,9 @@ class FilmBazUserAdmin(UserAdmin):
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
     list_display = ["subject", "text", "phone"]
+
+
+@admin.register(UserRecommendation)
+class UserRecommendationAdmin(admin.ModelAdmin):
+    list_display = ["user__username", "updated_at"]
+    readonly_fields = ["recommendations"]
