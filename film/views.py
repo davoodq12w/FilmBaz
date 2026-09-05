@@ -614,3 +614,7 @@ class WatchProgressView(View):
     def http_method_not_allowed(self, request, *args, **kwargs):
         super().http_method_not_allowed(request, *args, **kwargs)
         return render(request, "partials/not_allowed.html")
+
+
+def page_not_found(request, exception):
+    return render(request, "partials/not_allowed.html", status=404)

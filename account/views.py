@@ -18,7 +18,7 @@ class UserLogin(LoginView):
 
 
 class UserLogout(LogoutView):
-    next_page = reverse_lazy("film:movies_list")
+    next_page = reverse_lazy("film:home_page")
 
 
 class CreateUser(FormView):
