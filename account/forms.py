@@ -37,8 +37,8 @@ class LoginForm(AuthenticationForm):
 
 
 class CreateUserForm(forms.ModelForm):
-    password = forms.CharField(label="رمز")
-    password2 = forms.CharField(label=" تکرار رمز")
+    password = forms.CharField(label="رمز", min_length=8)
+    password2 = forms.CharField(label=" تکرار رمز", min_length=8)
 
     class Meta:
         model = FilmBazUser
