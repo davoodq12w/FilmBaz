@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "storages",
     "rest_framework",
     "channels",
+    "drf_spectacular"
 ]
 
 MIDDLEWARE = [
@@ -281,4 +282,15 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     },
     "actions_sticky_top": False
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "FilmBaz APIs",
+    "DESCRIPTION": "FilmBaz APIs for mobile apps or web aplications.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
