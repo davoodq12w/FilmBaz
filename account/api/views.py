@@ -10,6 +10,7 @@ from account.api.serializers import (
     TokenResponseSerializer
 )
 from drf_spectacular.utils import extend_schema
+from rest_framework_simplejwt.views import TokenRefreshView
 
 
 class UserLoginAPI(APIView):
@@ -60,3 +61,9 @@ class UserLogoutAPI(APIView):
                 "detail": "Logged out"
             }
         )
+
+@extend_schema(
+    tags=["Authentication"]
+)
+class CustomTokenRefreshView(TokenRefreshView):
+    pass
