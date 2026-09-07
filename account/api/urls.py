@@ -8,4 +8,6 @@ urlpatterns = [
     path("logout/", views.UserLogoutAPI.as_view(), name="logout"),
     path("token/refresh/", views.CustomTokenRefreshView.as_view(), name="token_refresh"),
     path("create_user/", views.CreateUserApi.as_view(), name="create_user"),
+    path("user/", views.UserDetailApi.as_view(), name="user_detail"),
+    path("user/genres/", views.UserGenresApi.as_view(), name="user_favorite_genres"),
 ]

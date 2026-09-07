@@ -4,6 +4,7 @@ import re
 from django.contrib.auth import authenticate
 from account.models import FilmBazUser
 from film.api.serializers import GenreSerializer
+from film.models import Genre
 
 
 class LoginSerializer(serializers.Serializer):
@@ -110,7 +111,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "favorite_genres", "is_active", "is_staff", "is_superuser", "created"]
 
-    @extend_schema_field(GenreSerializer())
+    @extend_schema_field(GenreSerializer(many=True))
     def get_favorite_genres(self, user_obj):
         genres = user_obj.favorite_genres.all()
         if genres:
@@ -166,3 +167,23 @@ class UserDetailSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("ایمیل از قبل وجود دارد")
 
         return email
+
+
+class UserGenresSerializer(serializers.Serializer):
+    genre_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Genre.objects.all(),
+        many=True,
+    )
+
+    def validate_genre_ids(self, value):
+
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError(
+                "ژانر تکراری ارسال شده است."
+            )
+
+        if not 3 <= len(set(value)) <= 5:
+            raise serializers.ValidationError(
+                "باید بین ۳ تا ۵ ژانر انتخاب کنید."
+            )
+        return value
