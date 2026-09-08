@@ -1,9 +1,12 @@
 from rest_framework.views import APIView, Response, Request
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated
 
 
 class FilmBazAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
     @extend_schema(exclude=True)
     def get(self, request: Request, *args, **kwargs):
         return Response(data={"Error": "the GET method not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
