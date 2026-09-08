@@ -1,9 +1,7 @@
-from django.db.models import QuerySet
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from account.api.serializers import (
@@ -12,7 +10,7 @@ from account.api.serializers import (
     TokenResponseSerializer,
     CreateUserSerializer,
     UserDetailSerializer,
-    UserGenresSerializer,
+    UserGenresSerializer, TicketSerializer,
 )
 from drf_spectacular.utils import extend_schema, OpenApiExample
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -20,7 +18,7 @@ from api_template import FilmBazAPI
 from film.api.serializers import GenreSerializer
 
 
-class UserLoginAPI(APIView):
+class UserLoginApi(APIView):
     permission_classes = []
 
     @extend_schema(
@@ -44,7 +42,7 @@ class UserLoginAPI(APIView):
         )
 
 
-class UserLogoutAPI(APIView):
+class UserLogoutApi(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
@@ -75,7 +73,7 @@ class UserLogoutAPI(APIView):
 @extend_schema(
     tags=["authentication"]
 )
-class CustomTokenRefreshView(TokenRefreshView):
+class CustomTokenRefreshApi(TokenRefreshView):
     pass
 
 
@@ -173,3 +171,25 @@ class UserGenresApi(FilmBazAPI):
 
         genre_serializer = GenreSerializer(genres, many=True)
         return Response(genre_serializer.data, status=status.HTTP_200_OK)
+
+
+class TicketApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        description="ارسال تیکت",
+        request=TicketSerializer,
+        responses={200: {"Success": "ticket created."}},
+        examples=[OpenApiExample(
+            name="موضوع و متن تیکت",
+            value={
+                "subject": "Criticism",
+                "text": "سایتتون زیادی خوبه."
+            }
+        )]
+    )
+    def post(self, request: Request, *args, **kwargs):
+        serializer = TicketSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(request.user)
+        return Response({"Success": "ticket created."}, status=status.HTTP_201_CREATED)

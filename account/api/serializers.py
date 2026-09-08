@@ -2,9 +2,10 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 import re
 from django.contrib.auth import authenticate
-from account.models import FilmBazUser
+from account.models import FilmBazUser, Ticket
 from film.api.serializers import GenreSerializer
 from film.models import Genre
+from account.tasks import send_confirm_email
 
 
 class LoginSerializer(serializers.Serializer):
@@ -187,3 +188,30 @@ class UserGenresSerializer(serializers.Serializer):
                 "باید بین ۳ تا ۵ ژانر انتخاب کنید."
             )
         return value
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ['subject', 'text']
+
+    def validate_subject(self, subject):
+        subjects = [
+            "Criticism",
+            "Proposal",
+            "Report",
+        ]
+        if subject not in subjects:
+            raise serializers.ValidationError("subject must be one of 'Criticism', 'Proposal', 'Report'")
+        return subject
+
+    def save(self, user: FilmBazUser):
+        data = {
+            "subject": self.validated_data["subject"],
+            "text": self.validated_data["text"],
+            "phone": user.phone,
+            "email": user.email,
+        }
+        Ticket.objects.create(**data)
+        send_confirm_email.delay(user.username, user.email)
+        return None

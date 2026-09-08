@@ -4,10 +4,11 @@ from . import views
 app_name = "account_api"
 
 urlpatterns = [
-    path("login/", views.UserLoginAPI.as_view(), name="login"),
-    path("logout/", views.UserLogoutAPI.as_view(), name="logout"),
-    path("token/refresh/", views.CustomTokenRefreshView.as_view(), name="token_refresh"),
+    path("login/", views.UserLoginApi.as_view(), name="login"),
+    path("logout/", views.UserLogoutApi.as_view(), name="logout"),
+    path("token/refresh/", views.CustomTokenRefreshApi.as_view(), name="token_refresh"),
     path("create_user/", views.CreateUserApi.as_view(), name="create_user"),
     path("user/", views.UserDetailApi.as_view(), name="user_detail"),
     path("user/genres/", views.UserGenresApi.as_view(), name="user_favorite_genres"),
+    path("ticket/", views.TicketApi.as_view(), name="ticket"),
 ]
