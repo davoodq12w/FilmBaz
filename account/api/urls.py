@@ -11,4 +11,6 @@ urlpatterns = [
     path("user/", views.UserDetailApi.as_view(), name="user_detail"),
     path("user/genres/", views.UserGenresApi.as_view(), name="user_favorite_genres"),
     path("ticket/", views.TicketApi.as_view(), name="ticket"),
+    path("user/saves/", views.UserSavesApi.as_view(), name="user_saves"),
+    path("user/likes/", views.UserLikesApi.as_view(), name="user_likes"),
 ]

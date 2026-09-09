@@ -215,3 +215,28 @@ class TicketSerializer(serializers.ModelSerializer):
         Ticket.objects.create(**data)
         send_confirm_email.delay(user.username, user.email)
         return None
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.CharField(required=True)
+
+    def validate_email(self, email):
+        is_valid = re.fullmatch(r'^(?:[a-zA-Z0-9_.]+@)(?:[a-zA-Z0-9_]+)\.(?:[a-zA-Z]{2,3})$', email)
+
+        if not is_valid:
+            raise serializers.ValidationError("ایمیل درست نوشته نشده است")
+
+        return email
+
+
+class ConfirmResetPasswordSerializer(serializers.Serializer):
+    uid = serializers.CharField(required=True)
+    token = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if attrs["password"] != attrs["password2"]:
+            raise serializers.ValidationError({
+                "password2": "Passwords do not match."
+            })
+        return attrs

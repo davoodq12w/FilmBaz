@@ -1,5 +1,7 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from film.models import Genre
+from film.models import Genre, Movie
+from people.api.serializers import CastSerializer, MovieCrewSerializer
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -7,3 +9,39 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = ["id", "en_name", "fa_name", "slug"]
         read_only_fields = ["id", "en_name", "fa_name", "slug"]
+
+
+class MovieSerializer(serializers.ModelSerializer):
+    genres = serializers.SerializerMethodField()
+    movie_crews = serializers.SerializerMethodField()
+    casts = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Movie
+        fields = [
+            "poster", "backdrop", "fa_title", "orj_title", "slug",
+            "description", "rate", "release_date", "country",
+            "runtime", "is_serie", "adult", "genres", "created",
+            "movie_crews", "casts"
+        ]
+
+    @extend_schema_field(GenreSerializer(many=True))
+    def get_genres(self, obj: Movie):
+        genres = obj.genres.all()
+        if genres:
+            return GenreSerializer(genres, many=True).data
+        return []
+
+    @extend_schema_field(MovieCrewSerializer(many=True))
+    def get_movie_crews(self, obj: Movie):
+        crews = obj.movie_crews.all()
+        if crews:
+            return MovieCrewSerializer(crews, many=True).data
+        return []
+
+    @extend_schema_field(CastSerializer(many=True))
+    def get_casts(self, obj: Movie):
+        casts = obj.casts.all()
+        if casts:
+            return CastSerializer(casts, many=True).data
+        return []
