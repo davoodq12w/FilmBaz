@@ -4,5 +4,5 @@ from . import views
 app_name = "analytics_api"
 
 urlpatterns = [
-    path("share/", v),
+    path("share/", views.ShareIntractionApi.as_view(), name="share_intraction"),
 ]
