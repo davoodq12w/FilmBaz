@@ -1,9 +1,7 @@
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
 from account.api.serializers import (
     LoginSerializer,
     LogoutSerializer,
@@ -30,7 +28,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from account.tasks import send_reset_password_email
 
 
-class UserLoginApi(APIView):
+class UserLoginApi(FilmBazAPI):
     permission_classes = []
 
     @extend_schema(
@@ -54,8 +52,7 @@ class UserLoginApi(APIView):
         )
 
 
-class UserLogoutApi(APIView):
-    permission_classes = [IsAuthenticated]
+class UserLogoutApi(FilmBazAPI):
 
     @extend_schema(
         request=LogoutSerializer,
@@ -189,7 +186,6 @@ class UserGenresApi(FilmBazAPI):
 
 
 class TicketApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="ارسال تیکت",
@@ -212,7 +208,6 @@ class TicketApi(FilmBazAPI):
 
 
 class UserSavesApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن فیلم های ذخیره شده توسط کاربر",
@@ -225,7 +220,6 @@ class UserSavesApi(FilmBazAPI):
 
 
 class UserLikesApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن فیلم های لایک شده توسط کاربر",
@@ -327,7 +321,6 @@ class ConfirmResetPasswordApi(FilmBazAPI):
 
 
 class ChangePasswordApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="عوض کردن پسوورد کاربر",
