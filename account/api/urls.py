@@ -13,4 +13,8 @@ urlpatterns = [
     path("ticket/", views.TicketApi.as_view(), name="ticket"),
     path("user/saves/", views.UserSavesApi.as_view(), name="user_saves"),
     path("user/likes/", views.UserLikesApi.as_view(), name="user_likes"),
+    path("reset_password/", views.ResetPasswordApi.as_view(), name="reset_password"),
+    path("reset_password/confirm/", views.ConfirmResetPasswordApi.as_view(), name="confirm_reset_password"),
+    path("change_password/", views.ChangePasswordApi.as_view(), name="change_password"),
+
 ]
