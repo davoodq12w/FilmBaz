@@ -10,12 +10,24 @@ from account.api.serializers import (
     TokenResponseSerializer,
     CreateUserSerializer,
     UserDetailSerializer,
-    UserGenresSerializer, TicketSerializer,
+    UserGenresSerializer,
+    TicketSerializer,
+    ResetPasswordSerializer,
+    ConfirmResetPasswordSerializer,
+    ChangePasswordSerializer,
 )
+from account.models import FilmBazUser
 from drf_spectacular.utils import extend_schema, OpenApiExample
 from rest_framework_simplejwt.views import TokenRefreshView
 from api_template import FilmBazAPI
-from film.api.serializers import GenreSerializer
+from film.api.serializers import (
+    GenreSerializer,
+    MovieSerializer,
+)
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from account.tasks import send_reset_password_email
 
 
 class UserLoginApi(APIView):
@@ -94,6 +106,7 @@ class CreateUserApi(FilmBazAPI):
                     "email": "davod.q12w@gmail.com",
                     "image": "optional",
                 },
+                request_only=True,
             ),
         ]
     )
@@ -129,6 +142,7 @@ class UserDetailApi(FilmBazAPI):
                     "email": "davod.q12w@gmail.com",
                     "image": "optional",
                 },
+                request_only=True,
             ),
         ]
     )
@@ -159,7 +173,8 @@ class UserGenresApi(FilmBazAPI):
             name="لیستی از آیدی های ژانر ها",
             value={
                 "genre_ids": [1, 2, 3, 4, 5]
-            }
+            },
+            request_only=True,
         )]
     )
     def put(self, request: Request, *args, **kwargs):
@@ -185,7 +200,8 @@ class TicketApi(FilmBazAPI):
             value={
                 "subject": "Criticism",
                 "text": "سایتتون زیادی خوبه."
-            }
+            },
+            request_only=True,
         )]
     )
     def post(self, request: Request, *args, **kwargs):
@@ -193,3 +209,149 @@ class TicketApi(FilmBazAPI):
         serializer.is_valid(raise_exception=True)
         serializer.save(request.user)
         return Response({"Success": "ticket created."}, status=status.HTTP_201_CREATED)
+
+
+class UserSavesApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        description="گرفتن فیلم های ذخیره شده توسط کاربر",
+        responses={200: MovieSerializer(many=True)},
+    )
+    def get(self, request: Request, *args, **kwargs):
+        movies = request.user.saves.all()
+        serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserLikesApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        description="گرفتن فیلم های لایک شده توسط کاربر",
+        responses={200: MovieSerializer(many=True)},
+    )
+    def get(self, request: Request, *args, **kwargs):
+        movies = request.user.likes.all()
+        serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ResetPasswordApi(FilmBazAPI):
+    permission_classes = []
+
+    @extend_schema(
+        description="درخواست ریست کردن پسوورد کاربر",
+        request=ResetPasswordSerializer,
+        responses={200: {"detail": "If an account with this email exists, a password reset email has been sent."}},
+        examples=[OpenApiExample(
+            name="ارسال ایمیل کاربر",
+            value={
+                "email": "davod.q12w@gmail.com",
+            },
+            request_only=True,
+        )],
+        tags=["password"]
+    )
+    def post(self, request: Request, *args, **kwargs):
+
+        serializer = ResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
+
+        try:
+            user = FilmBazUser.objects.get(email=email)
+
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+
+            send_reset_password_email.delay(email=email, token=token, uid=uid)
+
+        except FilmBazUser.DoesNotExist:
+            pass
+
+        return Response({
+            "detail": "If an account with this email exists, a password reset email has been sent."
+        }, status=status.HTTP_200_OK)
+
+
+class ConfirmResetPasswordApi(FilmBazAPI):
+    permission_classes = []
+
+    @extend_schema(
+        description="ریست کردن پسوورد کاربر",
+        request=ConfirmResetPasswordSerializer,
+        responses={200: {"Success": "password changed."}},
+        examples=[OpenApiExample(
+            name="دیتای لازم برای ریست پسوورد",
+            value={
+                "uid": "EXM",
+                "token": "adfljuqwehasdgh235hohsdf8y23qgh",
+                "password": "Str0ngP@ssw0rd",
+                "confirm_password": "Str0ngP@ssw0rd"
+            },
+            request_only=True,
+        )],
+        tags=["password"]
+    )
+    def post(self, request: Request, *args, **kwargs):
+
+        serializer = ConfirmResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        uid = serializer.validated_data["uid"]
+        token = serializer.validated_data["token"]
+        password = serializer.validated_data["password"]
+
+        user_id = force_str(urlsafe_base64_decode(uid))
+
+        try:
+            user = FilmBazUser.objects.get(id=user_id)
+            if not default_token_generator.check_token(user, token):
+                return Response({
+                    "Error": "sended data is incorrect."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            user.set_password(password)
+            user.save()
+
+            return Response({
+                "Success": "password changed."
+            }, status=status.HTTP_200_OK)
+
+        except (TypeError, ValueError, OverflowError, FilmBazUser.DoesNotExist):
+            return Response({
+                "Error": "sended data is incorrect."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        description="عوض کردن پسوورد کاربر",
+        request=ChangePasswordSerializer,
+        responses={200: {"Success": "password changed."}},
+        examples=[OpenApiExample(
+            name="دیتای لازم برای عوض کردن پسوورد",
+            value={
+                "old_password": "0ldP@assw0rd",
+                "new_password": "Str0ngP@ssw0rd",
+                "confirm_password": "Str0ngP@ssw0rd"
+            },
+            request_only=True,
+        )],
+        tags=["password"],
+
+    )
+    def post(self, request: Request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        old_password = serializer.validated_data["old_password"]
+        if not request.user.check_password(old_password):
+            return Response({"Error": "current password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.set_password(serializer.validated_data["new_password"])
+        return Response({"Success": "password changed."}, status=status.HTTP_200_OK)

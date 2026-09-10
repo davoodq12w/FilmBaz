@@ -4,6 +4,9 @@ from django.core.mail import send_mail
 from film.models import Movie
 from django.db.models import Count
 from account.models import UserRecommendation, FilmBazUser
+from decouple import config
+
+filmbaz_email = config("FILMBAZ_EMAIL")
 
 
 @shared_task(queue="default")
@@ -12,7 +15,19 @@ def send_confirm_email(username, email):
     send_mail(
         subject="ارسال تیکت موفقیت آمیز بود",
         message=message,
-        from_email="davodrashiworking@gmail.com",
+        from_email=filmbaz_email,
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+
+@shared_task(queue="default")
+def send_reset_password_email(email, token, uid):
+    message = f"\ntoken = {token}\n\nuid = {uid}\n"
+    send_mail(
+        subject="reset password",
+        message=message,
+        from_email=filmbaz_email,
         recipient_list=[email],
         fail_silently=False,
     )
