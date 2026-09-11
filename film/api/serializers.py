@@ -45,3 +45,9 @@ class MovieSerializer(serializers.ModelSerializer):
         if casts:
             return CastSerializer(casts, many=True).data
         return []
+
+class HomePageSerializer(serializers.Serializer):
+    new_movies = MovieSerializer(many=True)
+    top_movies = MovieSerializer(many=True)
+    by_chosen_genres = MovieSerializer(many=True)
+    recommendations = MovieSerializer(many=True)

@@ -107,7 +107,7 @@
         {% endfor %}
     </div>
 
-    {% if request.user.is_authenticated %}
+    {% if request.user.is_authenticated and by_chosen_genres %}
 
         <div class="list-titles">
             <h2 class="list-title">
@@ -164,7 +164,7 @@
     {% endif %}
 
 
-    {% if request.user.is_authenticated %}
+    {% if request.user.is_authenticated and recommendations %}
 
         <div class="list-titles">
             <h2 class="list-title">
