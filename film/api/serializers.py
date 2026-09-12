@@ -65,3 +65,7 @@ class MovieListSerializer(serializers.Serializer):
     num_pages = serializers.IntegerField()
     count = serializers.IntegerField()
     page_size = serializers.IntegerField()
+
+
+class YearSerializer(serializers.Serializer):
+    year = serializers.IntegerField()

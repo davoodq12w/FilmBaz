@@ -13,7 +13,7 @@ from film.models import (
 from film.api.serializers import (
     MovieSerializer,
     OutPutHomePageSerializer,
-    MovieListSerializer,
+    MovieListSerializer, GenreSerializer, YearSerializer,
 )
 from django.db.models import Case, When, FloatField, Value
 from django.core.cache import cache
@@ -294,9 +294,32 @@ class MovieListApi(FilmBazAPI):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class GenresListApi(FilmBazAPI):
-    ...
+class GenreListApi(FilmBazAPI):
+    permission_classes = []
+
+    @extend_schema(
+        description="گرفتن تمامی ژانرها",
+        responses={200: GenreSerializer(many=True)},
+    )
+    def get(self, request: Request, *args, **kwargs):
+        genres = Genre.objects.all()
+        serializer = GenreSerializer(genres, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class YearsListApi(FilmBazAPI):
-    ...
+class YearListApi(FilmBazAPI):
+    permission_classes = []
+
+    @extend_schema(
+        description="گرفتن تمامی سال های ساخت فیلم ها",
+        responses={200: YearSerializer(many=True)},
+    )
+    def get(self, request: Request, *args, **kwargs):
+        years = [
+            date_obj.year
+            for date_obj in Movie.objects.filter(release_date__isnull=False).dates('release_date', 'year')
+        ]
+
+        serializer = YearSerializer(years, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
