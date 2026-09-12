@@ -46,8 +46,22 @@ class MovieSerializer(serializers.ModelSerializer):
             return CastSerializer(casts, many=True).data
         return []
 
-class HomePageSerializer(serializers.Serializer):
+
+class OutPutHomePageSerializer(serializers.Serializer):
     new_movies = MovieSerializer(many=True)
     top_movies = MovieSerializer(many=True)
     by_chosen_genres = MovieSerializer(many=True)
     recommendations = MovieSerializer(many=True)
+
+
+class MovieListSerializer(serializers.Serializer):
+    selected_genre = GenreSerializer()
+    selected_adult = serializers.BooleanField()
+    selected_release_date = serializers.IntegerField()
+    selected_ordering = serializers.CharField()
+    page_size_param = serializers.IntegerField()
+    movies = MovieSerializer(many=True)
+    page = serializers.IntegerField()
+    num_pages = serializers.IntegerField()
+    count = serializers.IntegerField()
+    page_size = serializers.IntegerField()
