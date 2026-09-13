@@ -1,6 +1,6 @@
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from film.models import Genre, Movie
+from film.models import Genre, Movie, Comment, WatchProgress, MovieEpisode, MovieTrailer
 from people.api.serializers import CastSerializer, MovieCrewSerializer
 
 
@@ -69,3 +69,36 @@ class MovieListSerializer(serializers.Serializer):
 
 class YearSerializer(serializers.Serializer):
     year = serializers.IntegerField()
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["text", "created"]
+
+
+class WatchProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WatchProgress
+        fields = ["episode", "position", "completed", "updated_at"]
+
+
+class MovieTrailerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MovieTrailer
+        fields = ["file", "created_at"]
+
+
+class MovieEpisodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MovieEpisode
+        fields = ["episode", "season", "file", "duration", "intro_start", "intro_end", "credits_start", "created_at"]
+
+
+class MovieDetailSerializer(serializers.Serializer):
+    movie = MovieSerializer()
+    trailer = MovieTrailerSerializer()
+    episodes = MovieEpisodeSerializer(many=True)
+    comments = CommentSerializer(many=True)
+    unwatched_episode = MovieEpisodeSerializer()
+    last_watch = WatchProgressSerializer()

@@ -19,12 +19,16 @@ class Command(BaseCommand):
 
                 for movie in Movie.objects.all():
                     obj, file_created = MovieEpisode.objects.update_or_create(
-                        file=movie_file_path,
                         movie=movie,
-                        duration=300,
-                        intro_start=random.randint(20,30),
-                        intro_end=random.randint(40,60),
-                        credits_start=random.randint(260,290),
+                        season=1,
+                        episode=1,
+                        defaults={
+                            "file": movie_file_path,
+                            "duration": 300,
+                            "intro_start": random.randint(20, 30),
+                            "intro_end": random.randint(40, 60),
+                            "credits_start": random.randint(260, 290),
+                        }
                     )
                     if file_created:
                         file_created_count += 1
