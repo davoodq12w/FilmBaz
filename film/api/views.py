@@ -9,14 +9,21 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExampl
 from film.models import (
     Movie,
     Genre,
+    Comment,
+    MovieEpisode,
+    WatchProgress
 )
 from film.api.serializers import (
     MovieSerializer,
     OutPutHomePageSerializer,
-    MovieListSerializer, GenreSerializer, YearSerializer,
+    MovieListSerializer,
+    GenreSerializer,
+    YearSerializer,
+    MovieDetailSerializer,
 )
 from django.db.models import Case, When, FloatField, Value
 from django.core.cache import cache
+from analytics.models import Interaction
 
 
 class HomePageApi(FilmBazAPI):
@@ -323,3 +330,75 @@ class YearListApi(FilmBazAPI):
         serializer = YearSerializer(years, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class MovieDetail(FilmBazAPI):
+    permission_classes = []
+
+    @extend_schema(
+        description="گرفتن اطلاعات کامل یک فیلم",
+        responses={200: MovieDetailSerializer},
+    )
+    def get(self, request: Request, pk=None, slug=None, *args, **kwargs):
+        if pk is None or slug is None:
+            return Response({"Error": "pk and slug most be given."}, status=status.HTTP_400_BAD_REQUEST)
+
+        comments_cache_key = f"movie_comments_{pk}_{slug}"
+        episodes_cache_key = f"movie_episodes_{pk}_{slug}"
+        context = {}
+
+        try:
+            cached_comments = cache.get(comments_cache_key)
+            movie = Movie.objects.filter(id=pk, slug=slug).first()
+            if movie is None:
+                return Response({"Error": "movie with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
+            context["movie"] = movie
+            if cached_comments:
+                context["comments"] = cached_comments
+            else:
+                comments = Comment.objects.filter(movie__id=pk, movie__slug=slug)
+                context["comments"] = comments
+                cache.set(comments_cache_key, comments)
+
+            cached_episodes = cache.get(episodes_cache_key)
+            if cached_episodes:
+                context["episodes"] = cached_episodes
+            else:
+                episodes = MovieEpisode.objects.filter(movie__id=pk, movie__slug=slug).order_by("season", "episode")
+                context["episodes"] = episodes
+                cache.set(episodes_cache_key, episodes)
+
+            if movie.trailer is not None:
+                context["trailer"] = movie.trailer
+            else:
+                context["trailer"] = None
+
+            if request.user.is_authenticated:
+                Interaction.objects.create(
+                    user=request.user,
+                    movie=context["movie"],
+                    interaction_type=Interaction.Type.VIEW,
+                    weight=0.2,
+                )
+
+                last_watch = WatchProgress.objects.filter(
+                    episode__movie__slug=slug,
+                    episode__movie__id=pk,
+                    user=request.user,
+                    completed=True,
+                ).order_by("-episode__season", "-episode__episode").first()
+
+                if last_watch is not None:
+                    unwatched_episode = last_watch.episode.get_next_episode()
+                else:
+                    unwatched_episode = movie.episodes.filter(season=1, episode=1).first()
+            else:
+                unwatched_episode = movie.episodes.filter(season=1, episode=1).first()
+                last_watch = None
+
+            context["unwatched_episode"] = unwatched_episode
+            context["last_watch"] = last_watch
+        except Exception as e:
+            return Response({"Error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = MovieDetailSerializer(context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
