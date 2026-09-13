@@ -332,7 +332,6 @@ class YearListApi(FilmBazAPI):
 
 
 class MovieDetail(FilmBazAPI):
-    permission_classes = []
 
     @extend_schema(
         description="گرفتن اطلاعات کامل یک فیلم",
@@ -372,28 +371,18 @@ class MovieDetail(FilmBazAPI):
             else:
                 context["trailer"] = None
 
-            if request.user.is_authenticated:
-                Interaction.objects.create(
-                    user=request.user,
-                    movie=context["movie"],
-                    interaction_type=Interaction.Type.VIEW,
-                    weight=0.2,
-                )
+            last_watch = WatchProgress.objects.filter(
+                episode__movie__slug=slug,
+                episode__movie__id=pk,
+                user=request.user,
+                completed=True,
+            ).order_by("-episode__season", "-episode__episode").first()
 
-                last_watch = WatchProgress.objects.filter(
-                    episode__movie__slug=slug,
-                    episode__movie__id=pk,
-                    user=request.user,
-                    completed=True,
-                ).order_by("-episode__season", "-episode__episode").first()
-
-                if last_watch is not None:
-                    unwatched_episode = last_watch.episode.get_next_episode()
-                else:
-                    unwatched_episode = movie.episodes.filter(season=1, episode=1).first()
+            if last_watch is not None:
+                unwatched_episode = last_watch.episode.get_next_episode()
             else:
                 unwatched_episode = movie.episodes.filter(season=1, episode=1).first()
-                last_watch = None
+
 
             context["unwatched_episode"] = unwatched_episode
             context["last_watch"] = last_watch
