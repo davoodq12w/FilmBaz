@@ -20,10 +20,11 @@ from film.api.serializers import (
     GenreSerializer,
     YearSerializer,
     MovieDetailSerializer,
+    AddCommentSerializer, SearchSerializer,
 )
 from django.db.models import Case, When, FloatField, Value
 from django.core.cache import cache
-from analytics.models import Interaction
+from django.contrib.postgres.search import TrigramSimilarity
 
 
 class HomePageApi(FilmBazAPI):
@@ -331,7 +332,7 @@ class YearListApi(FilmBazAPI):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class MovieDetail(FilmBazAPI):
+class MovieDetailApi(FilmBazAPI):
 
     @extend_schema(
         description="گرفتن اطلاعات کامل یک فیلم",
@@ -383,7 +384,6 @@ class MovieDetail(FilmBazAPI):
             else:
                 unwatched_episode = movie.episodes.filter(season=1, episode=1).first()
 
-
             context["unwatched_episode"] = unwatched_episode
             context["last_watch"] = last_watch
         except Exception as e:
@@ -391,3 +391,85 @@ class MovieDetail(FilmBazAPI):
 
         serializer = MovieDetailSerializer(context)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AddCommentApi(FilmBazAPI):
+
+    @extend_schema(
+        description="اضافه کردن نظر برای یک فیلم توسط کاربر",
+        request=AddCommentSerializer,
+        responses={201: AddCommentSerializer},
+        examples=[
+            OpenApiExample(
+                name="دیتای لازم",
+                value={
+                    "movie_id": 2745,
+                    "text": "در بین فیلم های این ژانر این بهترین فیلم هستش."
+                },
+                request_only=True,
+            )
+
+        ]
+    )
+    def post(self, request: Request, *args, **kwargs):
+        serializer = AddCommentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        movie_id = serializer.validated_data["movie_id"]
+        movie = Movie.objects.filter(id=movie_id).first()
+        if movie is None:
+            return Response({"Error": "movie with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            "movie": movie,
+            "text": serializer.validated_data["text"],
+            "user": request.user,
+        }
+        comment = Comment.objects.create(**data)
+        result = AddCommentSerializer(comment).data
+        return Response(result, status=status.HTTP_201_CREATED)
+
+
+class SearchApi(FilmBazAPI):
+
+    def _get_results(self, query):
+        try:
+            result1 = Movie.objects.annotate(
+                similarity=TrigramSimilarity("fa_title", query)).filter(similarity__gt=0.1)
+            result2 = Movie.objects.annotate(
+                similarity=TrigramSimilarity("orj_title", query)).filter(similarity__gt=0.1)
+
+            movie_result = (result1 | result2).order_by("-similarity")
+        except Exception as e:
+            raise ValueError(f"error: {e}")
+        return movie_result
+
+    @extend_schema(
+        description="گرفتن لیستی از فیلم ها بر اساس متن ارسالی",
+        request=SearchSerializer,
+        responses={200: MovieSerializer(many=True)},
+        examples=[
+            OpenApiExample(
+                name="متن سرچ شده انگلیسی",
+                value={
+                    "query": "The Shawshank Redemption"
+                },
+                request_only=True,
+            ),
+            OpenApiExample(
+                name="متن سرچ شده فارسی",
+                value={
+                    "query": "رستگاری در شاوشنگ"
+                },
+                request_only=True,
+            )
+        ]
+    )
+    def post(self, request: Request, *args, **kwargs):
+        serializer = SearchSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        query = serializer.validated_data["query"]
+        movies = self._get_results(query)
+
+        movie_serializer = MovieSerializer(movies, many=True)
+        return Response(movie_serializer.data, status=status.HTTP_200_OK)

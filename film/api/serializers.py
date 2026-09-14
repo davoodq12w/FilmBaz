@@ -102,3 +102,12 @@ class MovieDetailSerializer(serializers.Serializer):
     comments = CommentSerializer(many=True)
     unwatched_episode = MovieEpisodeSerializer()
     last_watch = WatchProgressSerializer()
+
+
+class AddCommentSerializer(serializers.Serializer):
+    movie_id = serializers.IntegerField(required=True)
+    text = serializers.CharField(required=True)
+
+
+class SearchSerializer(serializers.Serializer):
+    query = serializers.CharField()
