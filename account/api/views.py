@@ -26,10 +26,11 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from account.tasks import send_reset_password_email
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class UserLoginApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     @extend_schema(
         request=LoginSerializer,
@@ -53,6 +54,7 @@ class UserLoginApi(FilmBazAPI):
 
 
 class UserLogoutApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=LogoutSerializer,
@@ -87,7 +89,7 @@ class CustomTokenRefreshApi(TokenRefreshView):
 
 
 class CreateUserApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     @extend_schema(
         description="ساخت کاربر جدید",
@@ -117,6 +119,7 @@ class CreateUserApi(FilmBazAPI):
 
 
 class UserDetailApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن اطلاعات کاربر",
@@ -152,6 +155,7 @@ class UserDetailApi(FilmBazAPI):
 
 
 class UserGenresApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن ژانر های مورد علاقه کاربر",
@@ -186,6 +190,7 @@ class UserGenresApi(FilmBazAPI):
 
 
 class TicketApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="ارسال تیکت",
@@ -208,6 +213,7 @@ class TicketApi(FilmBazAPI):
 
 
 class UserSavesApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن فیلم های ذخیره شده توسط کاربر",
@@ -220,6 +226,7 @@ class UserSavesApi(FilmBazAPI):
 
 
 class UserLikesApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن فیلم های لایک شده توسط کاربر",
@@ -232,7 +239,7 @@ class UserLikesApi(FilmBazAPI):
 
 
 class ResetPasswordApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     @extend_schema(
         description="درخواست ریست کردن پسوورد کاربر",
@@ -271,7 +278,7 @@ class ResetPasswordApi(FilmBazAPI):
 
 
 class ConfirmResetPasswordApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     @extend_schema(
         description="ریست کردن پسوورد کاربر",
@@ -321,6 +328,7 @@ class ConfirmResetPasswordApi(FilmBazAPI):
 
 
 class ChangePasswordApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="عوض کردن پسوورد کاربر",

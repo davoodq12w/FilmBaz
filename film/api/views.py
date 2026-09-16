@@ -11,28 +11,35 @@ from film.models import (
     Genre,
     Comment,
     MovieEpisode,
-    WatchProgress
+    WatchProgress,
 )
 from film.api.serializers import (
     MovieSerializer,
-    OutPutHomePageSerializer,
+    HomePageOutputSerializer,
     MovieListSerializer,
     GenreSerializer,
     YearSerializer,
     MovieDetailSerializer,
-    AddCommentSerializer, SearchSerializer,
+    AddCommentSerializer,
+    SearchSerializer,
+    SaveLikeSerializer,
+    SaveOutputSerializer,
+    LikeOutputSerializer,
+    WatchMovieSerializer,
+    WatchProgressInputSerializer,
 )
 from django.db.models import Case, When, FloatField, Value
 from django.core.cache import cache
 from django.contrib.postgres.search import TrigramSimilarity
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class HomePageApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     @extend_schema(
         description="گرفتن دیتاهای صفحه خانه",
-        responses={200: OutPutHomePageSerializer}
+        responses={200: HomePageOutputSerializer},
     )
     def get(self, request: Request, *args, **kwargs):
 
@@ -88,7 +95,7 @@ class HomePageApi(FilmBazAPI):
 
 
 class MovieListApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
     filter_fields = ['genre_id', 'adult', 'release_date']
     ordering_fields = ['release_date', 'rate']
     cache_timeout = 60 * 15  # 15 minutes
@@ -303,7 +310,7 @@ class MovieListApi(FilmBazAPI):
 
 
 class GenreListApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     @extend_schema(
         description="گرفتن تمامی ژانرها",
@@ -316,7 +323,7 @@ class GenreListApi(FilmBazAPI):
 
 
 class YearListApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     @extend_schema(
         description="گرفتن تمامی سال های ساخت فیلم ها",
@@ -333,6 +340,7 @@ class YearListApi(FilmBazAPI):
 
 
 class MovieDetailApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن اطلاعات کامل یک فیلم",
@@ -394,6 +402,7 @@ class MovieDetailApi(FilmBazAPI):
 
 
 class AddCommentApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="اضافه کردن نظر برای یک فیلم توسط کاربر",
@@ -430,6 +439,7 @@ class AddCommentApi(FilmBazAPI):
 
 
 class SearchApi(FilmBazAPI):
+    permission_classes = [AllowAny]
 
     def _get_results(self, query):
         try:
@@ -473,3 +483,171 @@ class SearchApi(FilmBazAPI):
 
         movie_serializer = MovieSerializer(movies, many=True)
         return Response(movie_serializer.data, status=status.HTTP_200_OK)
+
+
+class SaveMovieApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        description="ذخیره کردن فیلم ها برای تماشای بعدا",
+        request=SaveLikeSerializer,
+        responses={200: SaveOutputSerializer},
+        examples=[
+            OpenApiExample(
+                name="داده های لازم",
+                value={
+                    "pk": 2345,
+                    "slug": "persion_lessense"
+                },
+                request_only=True,
+            )
+        ]
+    )
+    def post(self, request: Request, *args, **kwargs):
+        serializer = SaveLikeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        pk = serializer.validated_data["pk"]
+        slug = serializer.validated_data["slug"]
+
+        movie = Movie.objects.filter(id=pk, slug=slug).first()
+        if movie is None:
+            return Response({"Error": "movie with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+
+        if movie in user.saves.all():
+            user.saves.remove(movie)
+            is_save = False
+
+        else:
+            user.saves.add(movie)
+            is_save = True
+
+        data = {"is_save": is_save}
+        out_seriazier = SaveOutputSerializer(data)
+
+        return Response(out_seriazier.data, status=status.HTTP_200_OK)
+
+
+class LikeMovieApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        description="لایک کردن فیلم ها",
+        request=SaveLikeSerializer,
+        responses={200: LikeOutputSerializer},
+        examples=[
+            OpenApiExample(
+                name="داده های لازم",
+                value={
+                    "pk": 2345,
+                    "slug": "persion_lessense"
+                },
+                request_only=True,
+            )
+        ]
+    )
+    def post(self, request: Request, *args, **kwargs):
+        serializer = SaveLikeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        pk = serializer.validated_data["pk"]
+        slug = serializer.validated_data["slug"]
+
+        movie = Movie.objects.filter(id=pk, slug=slug).first()
+        if movie is None:
+            return Response({"Error": "movie with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+
+        if movie in user.likes.all():
+            user.saves.remove(movie)
+            is_like = False
+
+        else:
+            user.likes.add(movie)
+            is_like = True
+
+        data = {"is_like": is_like}
+        out_seriazier = LikeOutputSerializer(data)
+
+        return Response(out_seriazier.data, status=status.HTTP_200_OK)
+
+
+class WatchMovieApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        description="گرفتن اطلاعات مربوط به یک اپیزود از فیلم و سریال ها",
+        responses={200: WatchMovieSerializer}
+    )
+    def get(self, request: Request, pk=None, *args, **kwargs):
+        if not pk:
+            return Response({"Error": "movie episode id most be given"}, status=status.HTTP_400_BAD_REQUEST)
+
+        episode = MovieEpisode.objects.filter(id=pk).first()
+
+        if episode is None:
+            return Response({"Error": "episode with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
+
+        watch_progress = episode.watch_progress.filter(user=request.user).first()
+        if watch_progress is not None:
+            watch_position = watch_progress.position
+        else:
+            watch_position = 0
+
+        if episode.movie.is_serie:
+            next_episode = episode.get_next_episode()
+        else:
+            next_episode = None
+
+        data = {
+            "episode": episode,
+            "watch_progress": watch_progress,
+            "next_episode": next_episode,
+        }
+        serializer = WatchMovieSerializer(data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class WatchProgressApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        description="اپدیت کردن مقدار پراگرس یوزر برای یک اپیزود",
+        request=WatchProgressInputSerializer,
+        responses={200: {"Success": "watchprogress updated."}},
+        examples=[
+            OpenApiExample(
+                name="دادهای لازم",
+                value={
+                    "episode_id": 235,
+                    "position": 780,
+                    "completed": False,
+                },
+                request_only=True,
+            )
+        ]
+    )
+    def post(self, request: Request, *args, **kwargs):
+        input_serializer = WatchProgressInputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+
+        pk = input_serializer.validated_data["episode_id"]
+        position = input_serializer.validated_data["position"]
+        completed = input_serializer.validated_data["completed"]
+
+        episode = MovieEpisode.objects.filter(id=pk).first()
+        if episode is None:
+            return Response({"Error": "episode with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
+
+        WatchProgress.objects.get_or_create(
+            user=request.user,
+            episode=episode,
+            defaults={
+                "position": position,
+                "completed": completed,
+            }
+        )
+        return Response({"Success": "watchprogress updated."}, status=status.HTTP_200_OK)

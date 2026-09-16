@@ -6,9 +6,10 @@ from analytics.api.serializers import InteractionSerializer
 from api_template import FilmBazAPI
 from film.models import Movie
 from analytics.models import Interaction
-
+from rest_framework.permissions import IsAuthenticated
 
 class IntractionApi(FilmBazAPI):
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="ساختن اینترکشن برای کاربر",

@@ -47,7 +47,7 @@ class MovieSerializer(serializers.ModelSerializer):
         return []
 
 
-class OutPutHomePageSerializer(serializers.Serializer):
+class HomePageOutputSerializer(serializers.Serializer):
     new_movies = MovieSerializer(many=True)
     top_movies = MovieSerializer(many=True)
     by_chosen_genres = MovieSerializer(many=True)
@@ -111,3 +111,28 @@ class AddCommentSerializer(serializers.Serializer):
 
 class SearchSerializer(serializers.Serializer):
     query = serializers.CharField()
+
+
+class SaveLikeSerializer(serializers.Serializer):
+    slug = serializers.SlugField(required=True)
+    pk = serializers.IntegerField(required=True)
+
+
+class SaveOutputSerializer(serializers.Serializer):
+    is_save = serializers.BooleanField()
+
+
+class LikeOutputSerializer(serializers.Serializer):
+    is_like = serializers.BooleanField()
+
+
+class WatchMovieSerializer(serializers.Serializer):
+    episode = MovieEpisodeSerializer()
+    watch_progress = WatchProgressSerializer()
+    next_episode = MovieEpisodeSerializer()
+
+
+class WatchProgressInputSerializer(serializers.Serializer):
+    episode_id = serializers.IntegerField(required=True)
+    position = serializers.IntegerField(required=True, help_text="second")
+    completed = serializers.BooleanField(required=True)
