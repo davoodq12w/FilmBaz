@@ -7,7 +7,6 @@ from api_template import FilmBazAPI
 from film.models import Movie
 from analytics.models import Interaction
 
-
 class IntractionApi(FilmBazAPI):
 
     @extend_schema(

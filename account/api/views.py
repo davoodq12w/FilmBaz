@@ -26,10 +26,12 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from account.tasks import send_reset_password_email
+from rest_framework.permissions import AllowAny
 
 
 class UserLoginApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     @extend_schema(
         request=LoginSerializer,
@@ -87,7 +89,8 @@ class CustomTokenRefreshApi(TokenRefreshView):
 
 
 class CreateUserApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     @extend_schema(
         description="ساخت کاربر جدید",
@@ -232,7 +235,8 @@ class UserLikesApi(FilmBazAPI):
 
 
 class ResetPasswordApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     @extend_schema(
         description="درخواست ریست کردن پسوورد کاربر",
@@ -271,7 +275,8 @@ class ResetPasswordApi(FilmBazAPI):
 
 
 class ConfirmResetPasswordApi(FilmBazAPI):
-    permission_classes = []
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     @extend_schema(
         description="ریست کردن پسوورد کاربر",

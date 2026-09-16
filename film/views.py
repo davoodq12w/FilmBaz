@@ -584,7 +584,7 @@ class WatchProgressView(View):
         watchprogress, created = WatchProgress.objects.get_or_create(user=request.user, episode_id=pk)
         position = request.POST.get("current_time")
         completed = request.POST.get("completed")
-        if position and completed is not None:
+        if position and completed:
             watchprogress.position = position
             Interaction.objects.get_or_create(
                 user=request.user,
