@@ -31,11 +31,12 @@ from film.api.serializers import (
 from django.db.models import Case, When, FloatField, Value
 from django.core.cache import cache
 from django.contrib.postgres.search import TrigramSimilarity
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 
 
 class HomePageApi(FilmBazAPI):
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     @extend_schema(
         description="گرفتن دیتاهای صفحه خانه",
@@ -96,6 +97,7 @@ class HomePageApi(FilmBazAPI):
 
 class MovieListApi(FilmBazAPI):
     permission_classes = [AllowAny]
+    authentication_classes = []
     filter_fields = ['genre_id', 'adult', 'release_date']
     ordering_fields = ['release_date', 'rate']
     cache_timeout = 60 * 15  # 15 minutes
@@ -311,6 +313,7 @@ class MovieListApi(FilmBazAPI):
 
 class GenreListApi(FilmBazAPI):
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     @extend_schema(
         description="گرفتن تمامی ژانرها",
@@ -324,6 +327,7 @@ class GenreListApi(FilmBazAPI):
 
 class YearListApi(FilmBazAPI):
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     @extend_schema(
         description="گرفتن تمامی سال های ساخت فیلم ها",
@@ -340,7 +344,6 @@ class YearListApi(FilmBazAPI):
 
 
 class MovieDetailApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن اطلاعات کامل یک فیلم",
@@ -402,7 +405,6 @@ class MovieDetailApi(FilmBazAPI):
 
 
 class AddCommentApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="اضافه کردن نظر برای یک فیلم توسط کاربر",
@@ -440,6 +442,7 @@ class AddCommentApi(FilmBazAPI):
 
 class SearchApi(FilmBazAPI):
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def _get_results(self, query):
         try:
@@ -486,7 +489,6 @@ class SearchApi(FilmBazAPI):
 
 
 class SaveMovieApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="ذخیره کردن فیلم ها برای تماشای بعدا",
@@ -531,7 +533,6 @@ class SaveMovieApi(FilmBazAPI):
 
 
 class LikeMovieApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="لایک کردن فیلم ها",
@@ -576,7 +577,6 @@ class LikeMovieApi(FilmBazAPI):
 
 
 class WatchMovieApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="گرفتن اطلاعات مربوط به یک اپیزود از فیلم و سریال ها",
@@ -612,7 +612,6 @@ class WatchMovieApi(FilmBazAPI):
 
 
 class WatchProgressApi(FilmBazAPI):
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         description="اپدیت کردن مقدار پراگرس یوزر برای یک اپیزود",

@@ -2,10 +2,12 @@ from rest_framework.views import APIView, Response, Request
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class FilmBazAPI(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     @extend_schema(exclude=True)
     def get(self, request: Request, *args, **kwargs):
