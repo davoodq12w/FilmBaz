@@ -10,6 +10,7 @@ urlpatterns = [
     path('account/', include('account.urls', namespace="account")),
     path("api/account/", include("account.api.urls", namespace="account_api")),
     path('support/', include('support.urls', namespace="support")),
+    path('api/support/', include('support.api.urls', namespace="support_api")),
     path('people/', include('people.urls', namespace="people")),
     path('analytics/', include('analytics.urls', namespace="analytics")),
     path('api/analytics/', include('analytics.api.urls', namespace="analytics_api")),
