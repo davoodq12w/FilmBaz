@@ -54,6 +54,16 @@ class HomePageOutputSerializer(serializers.Serializer):
     recommendations = MovieSerializer(many=True)
 
 
+class CostomListMovieSerializer(serializers.Serializer):
+    selected_ordering = serializers.CharField()
+    page_size_param = serializers.IntegerField()
+    movies = MovieSerializer(many=True)
+    page = serializers.IntegerField()
+    num_pages = serializers.IntegerField()
+    count = serializers.IntegerField()
+    page_size = serializers.IntegerField()
+
+
 class MovieListSerializer(serializers.Serializer):
     selected_genre = GenreSerializer()
     selected_adult = serializers.BooleanField()

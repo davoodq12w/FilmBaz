@@ -27,6 +27,7 @@ from film.api.serializers import (
     LikeOutputSerializer,
     WatchMovieSerializer,
     WatchProgressInputSerializer,
+    CostomListMovieSerializer,
 )
 from django.db.models import Case, When, FloatField, Value
 from django.core.cache import cache
@@ -93,6 +94,211 @@ class HomePageApi(FilmBazAPI):
             "recommendations": recommendations,
         }
         return Response(data=context, status=status.HTTP_200_OK)
+
+
+class ByUserGenresMoviesApi(FilmBazAPI):
+    ordering_fields = ['release_date', 'rate']
+    paginate_by = 21
+    min_paginate_by = 7
+    max_paginate_by = 21
+
+    def _get_ordering(self, request: Request):
+        ordering = request.query_params.get("ordering")
+
+        if ordering and ordering.lstrip("-") in self.ordering_fields:
+            return ordering
+
+        return None
+
+    def _get_page_size(self, request: Request):
+        try:
+            page_size = int(request.query_params.get("page_size", self.max_paginate_by))
+        except ValueError:
+            page_size = self.paginate_by
+
+        return max(self.min_paginate_by, min(page_size, self.max_paginate_by))
+
+    def _paginated_movies(self, request: Request, movies: list[Movie]):
+        page_size = self._get_page_size(request)
+        page_number = request.query_params.get("page", 1)
+
+        paginator = Paginator(movies, page_size)
+        try:
+            page_obj = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+
+        return page_obj, paginator, page_size
+
+    @extend_schema(
+        description="گرفتن لیست فیلم ها طبق ژانر ها منتخب کاربر",
+        responses={200: CostomListMovieSerializer},
+        parameters=[
+            OpenApiParameter(
+                name="ordering",
+                type=str,
+                enum=['release_date', 'rate', '-release_date', '-rate'],
+                allow_blank=True,
+                examples=[
+                    OpenApiExample(
+                        name="مثال برای مرتب سازی",
+                        value="-release_date"
+                    ),
+                ]
+            ),
+            OpenApiParameter(
+                name="page_size",
+                type=int,
+                enum=[i for i in range(7, 22)],
+                default=7,
+                required=False,
+                examples=[
+                    OpenApiExample(
+                        name="مثال برای صفحه بندی",
+                        value=10
+                    ),
+                ]
+            ),
+        ]
+    )
+    def get(self, request: Request, *args, **kwargs):
+        favorite_genres = request.user.favorite_genres.all()
+        if not favorite_genres.exists():
+            return Response({"Warning": "User not choose there favorite genres."}, status=status.HTTP_204_NO_CONTENT)
+
+        movies = Movie.objects.filter(genre__in=favorite_genres).distinct()
+        ordering = self._get_ordering(request)
+        if ordering:
+            movies = movies.order_by(ordering)
+
+        page_obj, paginator, page_size = self._paginated_movies(request, list(movies))
+        ordering = request.query_params.get("ordering", None)
+
+        context = {
+            "movies": page_obj.object_list,
+            "page": page_obj.number,
+            "num_pages": paginator.num_pages,
+            "count": paginator.count,
+            "page_size": page_size,
+            "selected_ordering": ordering,
+            "page_size_param": request.query_params.get("page_size", self.paginate_by),
+        }
+        serializer = CostomListMovieSerializer(context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RecommendationsMoviesApi(FilmBazAPI):
+    ordering_fields = ['release_date', 'rate']
+    paginate_by = 21
+    min_paginate_by = 7
+    max_paginate_by = 21
+
+    def _get_ordering(self, request: Request):
+        ordering = request.query_params.get("ordering")
+
+        if ordering and ordering.lstrip("-") in self.ordering_fields:
+            return ordering
+
+        return None
+
+    def _get_page_size(self, request: Request):
+        try:
+            page_size = int(request.query_params.get("page_size", self.max_paginate_by))
+        except ValueError:
+            page_size = self.paginate_by
+
+        return max(self.min_paginate_by, min(page_size, self.max_paginate_by))
+
+    def _paginated_movies(self, request: Request, movies: list[Movie]):
+        page_size = self._get_page_size(request)
+        page_number = request.query_params.get("page", 1)
+
+        paginator = Paginator(movies, page_size)
+        try:
+            page_obj = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+
+        return page_obj, paginator, page_size
+
+    @extend_schema(
+        description="گرفتن لیست فیلم های پیشنهاد شده به کاربر",
+        responses={200: CostomListMovieSerializer},
+        parameters=[
+            OpenApiParameter(
+                name="ordering",
+                type=str,
+                enum=['release_date', 'rate', '-release_date', '-rate'],
+                allow_blank=True,
+                examples=[
+                    OpenApiExample(
+                        name="مثال برای مرتب سازی",
+                        value="-release_date"
+                    ),
+                ]
+            ),
+            OpenApiParameter(
+                name="page_size",
+                type=int,
+                enum=[i for i in range(7, 22)],
+                default=7,
+                required=False,
+                examples=[
+                    OpenApiExample(
+                        name="مثال برای صفحه بندی",
+                        value=10
+                    ),
+                ]
+            ),
+        ]
+    )
+    def get(self, request: Request, *args, **kwargs):
+        rec_obj = UserRecommendation.objects.filter(user_id=request.user.id).first()
+        if not rec_obj:
+            return Response({"Warning": "User not any recommendations yet."}, status=status.HTTP_204_NO_CONTENT)
+
+        recommendations_data = rec_obj.recommendations
+        rec_movie_ids = [item["movie_id"] for item in recommendations_data]
+
+        score_case = Case(
+            *[
+                When(
+                    id=item["movie_id"],
+                    then=Value(item["score"])
+                )
+                for item in recommendations_data
+            ],
+            output_field=FloatField()
+        )
+        movies = (
+            Movie.objects
+            .filter(id__in=rec_movie_ids)
+            .annotate(score=score_case)
+            .order_by("-score")
+        )
+
+        ordering = self._get_ordering(request)
+        if ordering:
+            movies = movies.order_by(ordering)
+
+        page_obj, paginator, page_size = self._paginated_movies(request, list(movies))
+        ordering = request.query_params.get("ordering", None)
+
+        context = {
+            "movies": page_obj.object_list,
+            "page": page_obj.number,
+            "num_pages": paginator.num_pages,
+            "count": paginator.count,
+            "page_size": page_size,
+            "selected_ordering": ordering,
+            "page_size_param": request.query_params.get("page_size", self.paginate_by),
+        }
+        serializer = CostomListMovieSerializer(context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MovieListApi(FilmBazAPI):
