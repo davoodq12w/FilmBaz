@@ -14,12 +14,15 @@ class FilmBazUserAdmin(UserAdmin):
     form = FilmBazUserChangeForm
     model = FilmBazUser
     list_display = ['username', 'phone', 'email', 'created', 'is_active']
+
+    # fileds for see and change detial of user
     fieldsets = (
         (None, {"fields": ("username", "password", "image")}),
         ("Personal Info", {"fields": ("phone", "email")}),
         ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),
         ("Date Datas", {"fields": ("last_login",)}),
     )
+    # fileds for create new user
     add_fieldsets = (
         (None, {"fields": ("username", "password1", "password2", "image")}),
         ("Personal Info", {"fields": ("phone", "email")}),
