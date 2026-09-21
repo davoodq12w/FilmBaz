@@ -1,4 +1,5 @@
 {% load static %}
+{# dont useing BaseTemplate becouse header #}
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -11,18 +12,23 @@
     <title>Film Baz | Login User</title>
 </head>
 <body>
-    <div class="login-container">
-        <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
-        <div class="bg-cover"></div>
-        <h1 style="color: #F5F7F8; text-align: center; margin-top:80px; ">ورود به حساب کاربری</h1>
-        <form method="post" class="login-form">
-            <a href="{% url 'film:home_page' %}" class="form-logo-FilmBaz"><img src="{% static 'image/FilmBaz.png' %}" alt="FilmBaz"></a>
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="ورود" class="login-submit">
-            <p class="login-create-account">حساب کاربری نداری؟ <a href="{% url 'account:create_user' %}" class="login-create-account">ساخت یوزر</a></p>
-            <p class="login-create-account">رمز خود را فراموش کرده اید؟<a href="{% url 'account:password_reset' %}" class="login-create-account">بازیابی رمز</a></p>
-        </form>
-    </div>
+<div class="login-container">
+    <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
+    <div class="bg-cover"></div>
+    <h1 style="color: #F5F7F8; text-align: center; margin-top:80px; ">ورود به حساب کاربری</h1>
+    <form method="post" class="login-form">
+
+        {# a tag for access to home page again #}
+        <a href="{% url 'film:home_page' %}" class="form-logo-FilmBaz"><img src="{% static 'image/FilmBaz.png' %}"
+                                                                            alt="FilmBaz"></a>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="ورود" class="login-submit">
+        <p class="login-create-account">حساب کاربری نداری؟ <a href="{% url 'account:create_user' %}"
+                                                              class="login-create-account">ساخت یوزر</a></p>
+        <p class="login-create-account">رمز خود را فراموش کرده اید؟<a href="{% url 'account:password_reset' %}"
+                                                                      class="login-create-account">بازیابی رمز</a></p>
+    </form>
+</div>
 </body>
 </html>

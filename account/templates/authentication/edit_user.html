@@ -1,11 +1,11 @@
-{% extends "parents/base.html"%}
+{% extends "parents/base.html" %}
 {% load static %}
 {% block title %}Edit User{% endblock %}
 {% block body %}
     <h1 style="color:#F5F7F8; text-align: center">Edit Profile</h1>
     <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
     <div class="bg-cover"></div>
-	<form method="post" style="color:#F5F7F8;" class="edit-user-form" enctype="multipart/form-data">
+    <form method="post" style="color:#F5F7F8;" class="edit-user-form" enctype="multipart/form-data">
         {% csrf_token %}
         {% if user.image %}
             <img src="{{ user.image.url }}" alt="{{ user.username }} image" class="edit-user-image-file">
@@ -22,14 +22,17 @@
             integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
+
+            {# this tag created by form #}
             let imageInput = $('.edit-user-image');
 
             imageInput.change(function (event) {
+                {# function for showing the selected image befor submit #}
                 let files = event.target.files
                 let reader = new FileReader();
-                reader.onload = function(e){
-                   $('.edit-user-image-file').attr("src", e.target.result)
+                reader.onload = function (e) {
+                    $('.edit-user-image-file').attr("src", e.target.result)
                 }
                 reader.readAsDataURL(files[0]);
             });

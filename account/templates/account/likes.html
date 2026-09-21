@@ -1,18 +1,25 @@
 {% extends "parents/base.html" %}
 {% block title %}Likes{% endblock %}
 {% block body %}
+
+    {# using saves movies classes becouse its the same style. #}
     <h1 class="saves-page-title">لایک شده ها</h1>
     <div class="saves-body">
         {% for movie in movies %}
             <div style="color:#F5F7F8;" class="saves-movie">
 
+                {# a tag for access to de detial page of movie #}
                 <a href="{% url 'film:movies_detail' movie.id movie.slug %}">
                     <img src="{{ movie.poster_url }}" alt="{{ movie.orj_title }}" class="saves-thumbnail">
                 </a>
 
                 <div class="saves-title-remove">
+                    {# a tag for access to de detial page of movie #}
                     <a class="saves-title"
-                       href="{% url 'film:movies_detail' movie.id movie.slug %}">{{ movie.fa_title }}</a>
+                       href="{% url 'film:movies_detail' movie.id movie.slug %}">{{ movie.fa_title }}
+                    </a>
+
+                    {# saving data of movie in tag for actions #}
                     <p class="saves-remove" id="remove-{{ movie.id }}" data-movie-pk="{{ movie.id }}"
                        data-movie-slug="{{ movie.slug }}">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,14 +31,17 @@
                 </div>
             </div>
         {% empty %}
-            <h3 style="color: #98620f; text-align: center; width: 100%;">هنوز هیچی لایک نکردید!</h3>
+            <h3 style="color: #98620f; text-align: center; width: 100%;">هیچ فیلمی لایک نشده است.</h3>
         {% endfor %}
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
             integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
+
         $(document).ready(function () {
+            {# getting data from P tag and call function #}
+
             $(".saves-remove").click(function () {
                 let slug = $(this).data("movie-slug");
                 let pk = $(this).data("movie-pk");
@@ -39,7 +49,10 @@
             });
         });
 
+
         function remove(slug, pk) {
+            {# function for toggeling the add or remove from likes list #}
+
             let box = $("#remove-" + pk);
             $.ajax({
                 url: "{% url 'film:like_movie' %}",
@@ -47,8 +60,10 @@
                 data: {"csrfmiddlewaretoken": "{{ csrf_token }}", 'slug': slug, 'pk': pk},
                 success: function (data) {
                     if (data.is_like) {
+                        {# if response is true its added to likes list. #}
                         box.html('<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M12 21s-6.716-4.35-9.192-8.103C1.213 10.48 1 9.364 1 8.25C1 5.35 3.239 3 6 3c1.74 0 3.41.81 4.5 2.09C11.59 3.81 13.26 3 15 3c2.761 0 5 2.35 5 5.25c0 1.114-.213 2.23-1.808 4.647C18.716 16.65 12 21 12 21Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4L20 20" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
                     } else {
+                        {# if response is false its removed from likes list. #}
                         box.html('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
                     }
                 }
