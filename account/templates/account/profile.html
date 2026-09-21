@@ -48,6 +48,8 @@
             </div>
         </div>
     </div>
+
+    {# hidden form for create a new ticket #}
     <div class="profile-ticket-form-hidden" id="ticket-form">
         <form method="post" class="ticket-form" action="{% url 'account:ticket' %}">
             {% csrf_token %}
@@ -69,6 +71,7 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function () {
+            {# function for toggeling the display of ticket form #}
             let form = $("#ticket-form");
             $("#ticket").click(function () {
                 form.addClass("profile-ticket-form");

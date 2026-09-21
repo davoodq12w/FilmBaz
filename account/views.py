@@ -143,10 +143,27 @@ class UserFavoriteGenres(View):
         initial_data = {
             "genres": user.favorite_genres.all()
         }
+
+        # giving base data to form
         form = FavoriteGenresForm(initial=initial_data)
 
+        # getting queryset of gernres from form
         genres_qs = form.fields["genres"].queryset
+
+        # get list of BoundWidget objects of genres like this bllow
+        # [
+        #   < BoundWidget(Action) >,
+        #   < BoundWidget(Comedy) >,
+        #   < BoundWidget(Drama) >,
+        # ]
         chechboxes = list(form["genres"])
+
+        # merging checkboxes and gernes with zip method then we got a data like this bllow
+        # (
+        #     (Genre(Action), Checkbox(Action)),
+        #     (Genre(Comedy), Checkbox(Comedy)),
+        #     (Genre(Drama), Checkbox(Drama)),
+        # )
         genres_with_cb = zip(genres_qs, chechboxes)
 
         context = {
@@ -157,6 +174,8 @@ class UserFavoriteGenres(View):
 
     def post(self, request):
         user = request.user
+
+        # fill the form with requested data
         form = FavoriteGenresForm(request.POST)
 
         genres_qs = form.fields["genres"].queryset
@@ -165,9 +184,13 @@ class UserFavoriteGenres(View):
 
         if form.is_valid():
             genres = form.cleaned_data["genres"]
+
+            # use set method for replace data
             user.favorite_genres.set(genres)
             user.save()
             return redirect("film:home_page")
+
+        # if data not valid we return the old data
         form.initial["genres"] = user.favorite_genres.all()
         context = {
             "form": form,

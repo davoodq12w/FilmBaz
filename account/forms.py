@@ -172,19 +172,27 @@ class TicketForm(forms.ModelForm):
 
 
 class FavoriteGenresForm(forms.Form):
+    """
+    Form for choosing favorite genres
+    Performs validations for chosen genres.
+    """
+
+    # ModelMultipleChoiceField for selecting multiple genres
+    # and validation of existing chosen genres.
     genres = forms.ModelMultipleChoiceField(
         queryset=Genre.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple,  # provide to see multiple choice input in template
         label="ژانرهای مورد علاقه",
         required=True,
     )
 
     def clean_genres(self):
+        """
+        validation to make sure the chosen genres lenght are between 3 and 5
+        """
         genres = self.cleaned_data.get("genres")
         if genres.count() < 3:
             raise forms.ValidationError("لطفاً حداقل سه ژانر انتخاب کنید.")
         elif genres.count() > 5:
             raise forms.ValidationError("حداکثر پنج ژانر مورد علاقه مجاز است.")
         return genres
-
-
