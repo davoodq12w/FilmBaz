@@ -1,7 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from .models import SupportSession, SupportMessage
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .serializers import SupportSessionSerializer, SupportMessageSerializer

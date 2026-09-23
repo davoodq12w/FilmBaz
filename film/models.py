@@ -116,6 +116,12 @@ class MovieEpisode(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie", "season", "episode"],
+                name="unique_movie_episode"
+            )
+        ]
 
     def __str__(self):
         if self.movie.is_serie:

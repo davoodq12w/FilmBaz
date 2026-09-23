@@ -24,8 +24,8 @@ static_root/
 celerybeat-schedule
 celerybeat-schedule.*
 celerybeat.pid
-
-*.log
+celerybeat-schedule-shm
+celerybeat-schedule-wal
 
 *.pid
 
@@ -38,11 +38,6 @@ nosetests.xml
 coverage.xml
 *.cover
 .pytest_cache/
-
-ml_service/**/*.pkl
-ml_service/**/*.h5
-ml_service/**/*.pt
-ml_service/**/*.onnx
 
 .vscode/
 .idea/

@@ -57,7 +57,7 @@ User = get_user_model();
 
 if not User.objects.filter(username='root').exists():
     user = User.objects.create_superuser(username='root', phone='09001112233')
-    user.set_password('root')
+    user.set_password('rootpassword')
     user.save()
     print('✅ Superuser created successfully.')
 else:

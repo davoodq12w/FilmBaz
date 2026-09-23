@@ -7,25 +7,46 @@ from film.models import Genre
 
 
 class FilmBazUserCreationForm(UserCreationForm):
+    """
+    Form used for creating film baz users in Admin panel
+    """
+
     class Meta(UserCreationForm.Meta):
         model = FilmBazUser
         fields = "__all__"
 
 
 class FilmBazUserChangeForm(UserChangeForm):
+    """
+    Form used for see and changing film baz users in Admin panel
+    """
+
     class Meta(UserChangeForm.Meta):
         model = FilmBazUser
         fields = "__all__"
 
 
 class LoginForm(AuthenticationForm):
+    """
+    Form used for Loging in
+    Performs validations for login needed datas.
+    """
+
     def __init__(self, *args, **kwargs):
+        """
+        changing label of inputs
+        """
         super().__init__(*args, **kwargs)
         self.fields["username"].label = "نام کاربری"
         self.fields["password"].label = "رمز"
 
     def clean_username(self):
+        """
+        validations for username by regex check existing user.
+        """
         username = self.cleaned_data.get("username")
+
+        # useing regex for simplfy string validations
         is_valid = re.findall(r"^[a-zA-Z0-9_]+$", username)
 
         if not is_valid:
@@ -37,8 +58,12 @@ class LoginForm(AuthenticationForm):
 
 
 class CreateUserForm(forms.ModelForm):
-    password = forms.CharField(label="رمز")
-    password2 = forms.CharField(label=" تکرار رمز")
+    """
+    Form user for creating new User
+    Performs validations for create user needed datas.
+    """
+    password = forms.CharField(label="رمز", min_length=8)
+    password2 = forms.CharField(label=" تکرار رمز", min_length=8)
 
     class Meta:
         model = FilmBazUser
@@ -50,6 +75,9 @@ class CreateUserForm(forms.ModelForm):
         }
 
     def clean_username(self):
+        """
+        validations for username by regex check existing user.
+        """
         username = self.cleaned_data.get("username")
         is_valid = re.findall(r"^[a-zA-Z0-9_]+$", username)
 
@@ -62,6 +90,9 @@ class CreateUserForm(forms.ModelForm):
         return username
 
     def clean_password2(self):
+        """
+        checking if passwords matches or not.
+        """
         password = self.cleaned_data.get('password')
         password2 = self.cleaned_data.get('password2')
         if not password == password2:
@@ -69,6 +100,9 @@ class CreateUserForm(forms.ModelForm):
         return password2
 
     def clean_phone(self):
+        """
+        validations for phone number
+        """
         phone = self.cleaned_data.get('phone')
 
         if FilmBazUser.objects.filter(phone=phone).exists():
@@ -86,6 +120,9 @@ class CreateUserForm(forms.ModelForm):
         return phone
 
     def clean_email(self):
+        """
+        validations for email address
+        """
 
         email = self.cleaned_data.get("email")
         is_valid = re.findall(r'^(?:[a-zA-Z0-9_.]+@)(?:[a-zA-Z0-9_]+)\.(?:[a-zA-Z]{2,3})$', email)
@@ -100,6 +137,10 @@ class CreateUserForm(forms.ModelForm):
 
 
 class EditUserForm(forms.ModelForm):
+    """
+    Form used for changing the user details.
+    Performs validations for edit user needed datas.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -119,6 +160,9 @@ class EditUserForm(forms.ModelForm):
         }
 
     def clean_username(self):
+        """
+        validations for username
+        """
         username = self.cleaned_data.get("username")
         is_valid = re.findall(r"^[a-zA-Z0-9_]+$", username)
 
@@ -131,6 +175,9 @@ class EditUserForm(forms.ModelForm):
         return username
 
     def clean_phone(self):
+        """
+        validations for phone number
+        """
         phone = self.cleaned_data.get('phone')
 
         if self.instance.pk:
@@ -152,7 +199,9 @@ class EditUserForm(forms.ModelForm):
         return phone
 
     def clean_email(self):
-
+        """
+        validations for email address
+        """
         email = self.cleaned_data.get("email")
         is_valid = re.findall(r'^(?:[a-zA-Z0-9_.]+@)(?:[a-zA-Z0-9_]+)\.(?:[a-zA-Z]{2,3})$', email)
 
@@ -166,25 +215,37 @@ class EditUserForm(forms.ModelForm):
 
 
 class TicketForm(forms.ModelForm):
+    """
+    Form used for creating tickets.
+    """
+
     class Meta:
         model = Ticket
         fields = ["subject", "text", ]
 
 
 class FavoriteGenresForm(forms.Form):
+    """
+    Form for choosing favorite genres
+    Performs validations for chosen genres.
+    """
+
+    # ModelMultipleChoiceField for selecting multiple genres
+    # and validation of existing chosen genres.
     genres = forms.ModelMultipleChoiceField(
         queryset=Genre.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple,  # provide to see multiple choice input in template
         label="ژانرهای مورد علاقه",
         required=True,
     )
 
     def clean_genres(self):
+        """
+        validation to make sure the chosen genres lenght are between 3 and 5
+        """
         genres = self.cleaned_data.get("genres")
         if genres.count() < 3:
             raise forms.ValidationError("لطفاً حداقل سه ژانر انتخاب کنید.")
         elif genres.count() > 5:
             raise forms.ValidationError("حداکثر پنج ژانر مورد علاقه مجاز است.")
         return genres
-
-

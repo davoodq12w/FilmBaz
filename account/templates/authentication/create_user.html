@@ -1,4 +1,5 @@
 {% load static %}
+{# dont useing BaseTemplate becouse header #}
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -11,17 +12,20 @@
     <title>Film Baz | Create User</title>
 </head>
 <body>
-    <div class="create-user-container">
-        <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
-        <div class="bg-cover"></div>
-        <h1 style="color: #F5F7F8; text-align: center;">ساخت کاربر</h1>
-        <form method="post" class="create-user-form">
-            <a href="{% url 'film:home_page' %}" class="form-logo-FilmBaz"><img src="{% static 'image/FilmBaz.png' %}" alt="FilmBaz"></a>
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="ساخت" class="create-user-submit">
-            <p class="login-create-account">حساب کاربری داری؟ <a href="{% url 'account:login' %}">ورود به حساب</a></p>
-        </form>
-    </div>
+<div class="create-user-container">
+    <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
+    <div class="bg-cover"></div>
+    <h1 style="color: #F5F7F8; text-align: center;">ساخت کاربر</h1>
+    <form method="post" class="create-user-form">
+
+        {# a tag for access to home page again #}
+        <a href="{% url 'film:home_page' %}" class="form-logo-FilmBaz"><img src="{% static 'image/FilmBaz.png' %}"
+                                                                            alt="FilmBaz"></a>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="ساخت" class="create-user-submit">
+        <p class="login-create-account">حساب کاربری داری؟ <a href="{% url 'account:login' %}">ورود به حساب</a></p>
+    </form>
+</div>
 </body>
 </html>

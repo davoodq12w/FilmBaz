@@ -312,7 +312,7 @@ class MovieDetail(View):
 
         # create cache key
         comments_cache_key = f"movie_comments_{pk}_{slug}"
-        epoisodes_cache_key = f"movie_episodes_{pk}_{slug}"
+        episodes_cache_key = f"movie_episodes_{pk}_{slug}"
         context = {}
         # try to get cached data
         try:
@@ -329,15 +329,13 @@ class MovieDetail(View):
                 context["comments"] = comments
                 cache.set(comments_cache_key, comments)
             if movie.is_serie:
-                cached_episodes = cache.get(epoisodes_cache_key)
+                cached_episodes = cache.get(episodes_cache_key)
                 if cached_episodes:
                     context["episodes"] = cached_episodes
                 else:
-                    episodes = MovieEpisode.objects.filter(movie__slug=slug, movie__id=pk).order_by(
-                        "season").order_by("episode")
+                    episodes = MovieEpisode.objects.filter(movie__slug=slug, movie__id=pk).order_by("season", "episode")
                     context["episodes"] = episodes
-                    cache.set(epoisodes_cache_key, episodes)
-
+                    cache.set(episodes_cache_key, episodes)
             if request.user.is_authenticated:
                 Interaction.objects.create(
                     user=request.user,
@@ -351,7 +349,7 @@ class MovieDetail(View):
                     episode__movie__id=pk,
                     user=request.user,
                     completed=True,
-                ).order_by("-episode__season").order_by("-episode__episode").first()
+                ).order_by("-episode__season", "-episode__episode").first()
                 if last_watch is not None:
                     unwatched_episode = last_watch.episode.get_next_episode()
                 else:
@@ -586,7 +584,7 @@ class WatchProgressView(View):
         watchprogress, created = WatchProgress.objects.get_or_create(user=request.user, episode_id=pk)
         position = request.POST.get("current_time")
         completed = request.POST.get("completed")
-        if position and completed is not None:
+        if position and completed:
             watchprogress.position = position
             Interaction.objects.get_or_create(
                 user=request.user,

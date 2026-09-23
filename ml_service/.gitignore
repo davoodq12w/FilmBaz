@@ -1,0 +1,4 @@
+datasets/processed/*
+models/*.json
+logs/*
+*.keras

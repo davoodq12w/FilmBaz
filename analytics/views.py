@@ -1,7 +1,6 @@
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import View
-from film.models import Movie, MovieEpisode
+from film.models import Movie
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .models import Interaction

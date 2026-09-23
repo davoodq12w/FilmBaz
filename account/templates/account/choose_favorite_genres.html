@@ -5,6 +5,7 @@
     <h2 style="color: #ff9f29; text-align: center; margin: 20px auto">لطفا ژانر های مورد علاقه خود را انتخاب کنید</h2>
     <form method="post" class="choose-genres-form">
         {% csrf_token %}
+        {# return error when user is not choosen any genres. #}
         {{ form.non_field_errors }}
 
         {% for err in form.genres.errors %}
@@ -12,8 +13,13 @@
         {% endfor %}
 
         <div class="choose-genres-container">
+
+            {# genres_with_cb is a zip object of genres and checkbox for them. #}
             {% for genre, checkbox in genres_with_cb %}
                 <label class="choose-genres-genre-card">
+
+                    {# checkbox.tag return somthing like that bllow #}0000
+                    {# <input type="checkbox" name="genres" value="1" id="id_genres_0"> #}
                     {{ checkbox.tag }}
 
                     <div class="choose-genres-genre-content">

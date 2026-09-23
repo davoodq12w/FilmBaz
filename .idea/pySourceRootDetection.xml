@@ -4,8 +4,11 @@
     <option name="sourcePathsSet">
       <set>
         <option value="$PROJECT_DIR$/ml_service/app" />
+        <option value="$PROJECT_DIR$/analytics" />
         <option value="$PROJECT_DIR$" />
         <option value="$PROJECT_DIR$/ml_service" />
+        <option value="$PROJECT_DIR$/account" />
+        <option value="$PROJECT_DIR$/support" />
       </set>
     </option>
   </component>
