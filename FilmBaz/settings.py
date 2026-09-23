@@ -209,9 +209,14 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour=0, minute=0),
         "options": {"queue": "default"},
     },
+    "buidl_new_dataset_for_recommendation_model": {
+        "task": "analytics.tasks.build_row_dataset",
+        "schedule": crontab(hour=0, minute=1),
+        "options": {"queue": "default"},
+    },
     "build_new_recommendation_model": {
         "task": "analytics.tasks.build_model",
-        "schedule": crontab(hour=0, minute=1),
+        "schedule": crontab(hour=0, minute=30),
         "options": {"queue": "default"},
     },
     "recommendations": {
