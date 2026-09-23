@@ -4,6 +4,11 @@ from film.models import Movie, MovieEpisode
 
 
 class Interaction(models.Model):
+    """
+    Model used for Interaction between Movies and Users
+    data of the model used for recommendation ml model
+    """
+
     class Type(models.TextChoices):
         VIEW = 'view', 'View'  # 0.2
         LIKE = 'like', 'Like'  # 1.0

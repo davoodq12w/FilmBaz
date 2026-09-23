@@ -8,11 +8,23 @@ from collections import Counter
 
 
 class DatasetBuilder:
+    """
+    Util Class used for building datasets of extracting data of interactions
+    """
 
     def padding_to_5(self, lst: list):
+        """
+        method used for making sure are list lenght are 5.
+        """
+
+        # max(0, 5 - len(lst)) -> lenght of zeroes that most be added to list.
         return lst[:5] + [0] * max(0, 5 - len(lst))
 
     def get_movie_crews(self, movie):
+        """
+        method used for get movie crews.
+        take movie object and giving the director_id, writer_id, producer_id.
+        """
         director_id = None
         writer_id = None
         producer_id = None
@@ -28,7 +40,13 @@ class DatasetBuilder:
         return director_id, writer_id, producer_id
 
     def build_users_df(self):
+        """
+        method used for building user's dataset.
+        giving all user's interactions and extra data of them.
+        """
         users_df = []
+
+        # using prefetch_related for lesser Pressure to DataBase
         users = FilmBazUser.objects.prefetch_related(
             "favorite_genres",
             "interactions__movie",
@@ -43,6 +61,7 @@ class DatasetBuilder:
             last_interaction = user.interactions.all().order_by('-timestamp').first()
             first_interaction = user.interactions.all().order_by('timestamp').first()
 
+            # favorite_movies are the movies that user save, like, share or watched completly.
             favorite_movies = {
                 i.movie
                 for i in interactions
@@ -53,6 +72,8 @@ class DatasetBuilder:
                     Interaction.Type.COMPLETE,
                 }
             }
+
+            # pop the None value of release_date
             movies_with_release = [m for m in favorite_movies if m.release_date]
             all_favorite_directors = []
             all_favorite_writers = []
@@ -62,10 +83,14 @@ class DatasetBuilder:
                     all_favorite_directors.append(director_id)
                 if writer_id:
                     all_favorite_writers.append(writer_id)
+
+            # get most 5 common of directors and writers
             favorite_directors = [i for i, _ in Counter(all_favorite_directors).most_common(5)]
             favorite_writers = [i for i, _ in Counter(all_favorite_writers).most_common(5)]
+
             favorite_genres = [g.id for g in user.favorite_genres.all()]
 
+            # padding all lists to 5
             favorite_directors = self.padding_to_5(favorite_directors)
             favorite_writers = self.padding_to_5(favorite_writers)
             favorite_genres = self.padding_to_5(favorite_genres)
@@ -130,6 +155,10 @@ class DatasetBuilder:
         ]]
 
     def build_movies_df(self):
+        """
+        method used for get all movie's dataset.
+        giving all movie datas that is useful for ml model.
+        """
         movies_df = []
         movies = Movie.objects.prefetch_related(
             "genres",
@@ -140,6 +169,8 @@ class DatasetBuilder:
         for movie in movies:
             director_id, writer_id, producer_id = self.get_movie_crews(movie)
             genres = [g.id for g in movie.genres.all()]
+
+            # padding the genres list to 5
             genres = self.padding_to_5(genres)
             movies_df.append({
                 "movie_id": movie.id,
@@ -149,7 +180,7 @@ class DatasetBuilder:
                     movie.release_date.year
                     if movie.release_date
                     else None
-                ),
+                ),  # only year is useful
                 "runtime": movie.runtime,
                 "country": movie.country,
                 "is_series": movie.is_serie,
@@ -157,7 +188,7 @@ class DatasetBuilder:
                 "director_id": director_id,
                 "writer_id": writer_id,
                 "producer_id": producer_id,
-                "popularity": len(movie.interactions.all()),
+                "popularity": len(movie.interactions.all()),  # showes how motch popular this movie.
             })
         df = pd.DataFrame(movies_df)
         df = df.convert_dtypes()
@@ -177,18 +208,22 @@ class DatasetBuilder:
         ]]
 
     def build_interactions_df(self):
-
+        """
+        method used for get all interaction's dataset.
+        giving a score of relations between users and movies.
+        """
         interactions = (
             Interaction.objects
             .select_related("user", "movie")
             .order_by("user_id", "movie_id")
         )
 
-        grouped = {}
+        grouped = {}  # dictionary for all Movie and user duos
 
         for interaction in interactions:
             key = (interaction.user_id, interaction.movie_id)
 
+            # if duo not exists in dict then created.
             if key not in grouped:
                 grouped[key] = {
                     "user_id": interaction.user_id,
@@ -196,9 +231,9 @@ class DatasetBuilder:
                     "target_score": 0,
                 }
 
-            row = grouped[key]
+            row = grouped[key]  # extracting ditc type of value of duo
 
-            row["target_score"] += interaction.weight
+            row["target_score"] += interaction.weight  # at the end we have the sum of all the weights.
 
         df = pd.DataFrame(grouped.values())
         df = df.convert_dtypes()
@@ -209,11 +244,16 @@ class DatasetBuilder:
             "target_score",
         ]]
 
-    def build(self):
+    def build(self) -> pd.DataFrame:
+        """
+        method used for merging all dataset togther.
+        giving a merged DataFrame of all three dataset datas
+        """
         users = self.build_users_df()
         movies = self.build_movies_df()
         interactions = self.build_interactions_df()
 
+        # merging done with user_id and movi_id.
         return (
             interactions
             .merge(users, on="user_id")
