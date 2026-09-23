@@ -134,13 +134,14 @@ def generate_dataset(n):
     return pd.DataFrame(data)
 
 
-df = generate_dataset(10000)
+if __name__ == '__main__':
+    df = generate_dataset(10000)
 
-output_dir = Path("raw")
-output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = Path("raw")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-output_file = output_dir / f"dataset_{timestamp}.csv"
-print(".")
-df.to_csv(output_file, index=False)
-print("dataset created.")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_file = output_dir / f"dataset_{timestamp}.csv"
+    print(".")
+    df.to_csv(output_file, index=False)
+    print("dataset created.")
