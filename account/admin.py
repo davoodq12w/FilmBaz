@@ -39,4 +39,4 @@ class TicketAdmin(admin.ModelAdmin):
 @admin.register(UserRecommendation)
 class UserRecommendationAdmin(admin.ModelAdmin):
     list_display = ["user__username", "updated_at"]
-    readonly_fields = ["recommendations"]
+    readonly_fields = ["recommendations"]  # change only by celery task.
