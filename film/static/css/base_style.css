@@ -1,3 +1,5 @@
+/* style for all frontend, except movie player */
+
 @font-face {
     font-family: "vazir-medium";
     src: url('../fonts/vazir-font-v16.1.0/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff') format("woff");
