@@ -5,6 +5,11 @@ from people.models import Cast, CrewMember
 
 
 class Command(BaseCommand):
+    """
+    load posters and backdrops of movies from media directory and set to the movies.
+    load images of crews and casts from media directory and set to the peoples.
+    The Sixth command that is executed when starting the backend.
+    """
     help = "Set image paths for crews, casts, and movie posters/backdrops."
 
     def handle(self, *args, **options):

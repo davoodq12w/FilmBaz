@@ -3,7 +3,12 @@ from film.models import Movie, MovieEpisode, MovieTrailer
 from logs.logging_state import disable_logging
 import random
 
+
 class Command(BaseCommand):
+    """
+    load movie files from Media directory and adding to movie details.
+    The Last command that is executed when starting the backend.
+    """
     help = "Load movie files"
 
     def handle(self, *args, **options):

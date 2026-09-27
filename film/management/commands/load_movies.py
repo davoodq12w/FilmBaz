@@ -6,6 +6,10 @@ from logs.logging_state import disable_logging
 
 
 class Command(BaseCommand):
+    """
+    load movies from JSON file and adding into DataBase.
+    The Fourth command that is executed when starting the backend.
+    """
     help = "Import movies from json file"
 
     @transaction.atomic
@@ -38,6 +42,7 @@ class Command(BaseCommand):
                         }
                     )
 
+                    # get the genre objects of movie and set to the movie.
                     genres = Genre.objects.filter(
                         slug__in=data["genres"]
                     )

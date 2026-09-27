@@ -3,7 +3,12 @@ from django.core.management.base import BaseCommand
 from film.models import Genre
 from logs.logging_state import disable_logging
 
+
 class Command(BaseCommand):
+    """
+    load genres from JSON file and adding into DataBase.
+    The first command that is executed when starting the backend.
+    """
     help = "Load genres from json file"
 
     def handle(self, *args, **options):

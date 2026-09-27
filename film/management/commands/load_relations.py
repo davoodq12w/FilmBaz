@@ -7,6 +7,10 @@ from logs.logging_state import disable_logging
 
 
 class Command(BaseCommand):
+    """
+    load relations from JSON file and set all crews and casts to movie.
+    The Fifth command that is executed when starting the backend.
+    """
     help = 'ایجاد روابط بین فیلم‌ها، بازیگران و عوامل تولید از فایل movie_relations.json'
 
     @transaction.atomic
