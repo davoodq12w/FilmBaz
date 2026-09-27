@@ -7,6 +7,7 @@ tensorflow-recommenders
 pandas
 numpy
 SQLAlchemy
+sqlalchemy[asyncio]
 scikit-learn
 pyarrow
 python-dotenv
