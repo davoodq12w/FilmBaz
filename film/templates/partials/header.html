@@ -57,6 +57,7 @@
         let debounceTimer = null;
 
         $("#search-input").keyup(function () {
+            {# every 1 sec we request not in all keydowns #}
             let search_value = $(this).val();
             let search_results = $("#search-results");
 
