@@ -507,10 +507,6 @@ class SaveMovieView(View):
         return render(request, "partials/not_allowed.html")
 
 
-def page_not_found(request, exception):
-    return render(request, "partials/not_allowed.html", status=404)
-
-
 @method_decorator(login_required(), name="dispatch")
 class LikeMovieView(View):
     http_method_names = ['post']
