@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{% static 'player/plugins/markers/videojs-markers.css' %}">
     <link rel="stylesheet" href="{% static 'player/themes/filmbaz-dark.css' %}">
     <link rel="shortcut icon" href="{% static 'image/icon.png' %}" type="image/x-icon">
+    <title>FilmBaz | Watch Movie</title>
 </head>
 
 <body class="watch-page">
@@ -76,7 +77,7 @@
         player.ready(function () {
 
             player.on("loadedmetadata", function () {
-
+                {# play on last position. #}
                 const watchPosition = {{ watch_position }};
 
                 if (
@@ -113,7 +114,7 @@
             let isSendingRequest = false;
 
             player.on("keydown", function (e) {
-
+                {# seek #}
                 if (e.which === 37) {
                     e.preventDefault();
                     seek(-10);

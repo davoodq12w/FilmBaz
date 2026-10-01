@@ -112,10 +112,11 @@
 
             let nextPage = {% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}null{% endif %};
             let hasNext = {{ page_obj.has_next|yesno:"true,false" }};
-            let isLoading = false;
+            let isLoading = false; // Prevent duplicate requests
             let currentPageSize = "{{ page_size }}";
 
             function loadMoreMovies() {
+                {# request to get more movie. #}
                 if (!hasNext || isLoading || !nextPage) return;
 
                 isLoading = true;
@@ -148,6 +149,7 @@
             }
 
             function onScroll() {
+                {# request to get more movie befor reach the bottom of page. #}
                 if (!hasNext || isLoading || !nextPage) return;
 
                 const scrollTop = $(window).scrollTop();
@@ -161,9 +163,10 @@
 
             $(window).on("scroll", onScroll);
             $(window).on("resize", onScroll);
-            onScroll();
+            onScroll(); //request for first time to load some movie.
 
             dropdowns.each(function () {
+                {# show dropdowns. #}
                 const dropdown = $(this);
                 const button = dropdown.find(".filter-btn");
                 const menu = dropdown.find(".dropdown-menu");
@@ -176,6 +179,7 @@
                 });
 
                 if (menu.length) {
+                    {# hide dropdowns #}
                     menu.on("mouseleave", function () {
                         dropdown.removeClass("open");
                     });
@@ -187,6 +191,7 @@
             });
 
             $(document).on("click", function () {
+                {# hide dropdowns #}
                 dropdowns.removeClass("open");
             });
         });

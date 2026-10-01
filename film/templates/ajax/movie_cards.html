@@ -1,3 +1,4 @@
+{# template for one movie in list #}
 {% for movie in movies %}
     <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
         <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster"

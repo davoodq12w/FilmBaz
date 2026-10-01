@@ -7,6 +7,9 @@ from .models import Movie, Comment, MovieEpisode
 @receiver(post_save, sender=Movie)
 @receiver(post_delete, sender=Movie)
 def clear_movie_cache_after_change(sender, instance, **kwargs):
+    """
+    clear movie cache after changing data
+    """
     try:
         cache.delete_pattern("movies_list_*")
     except Exception as e:
@@ -16,6 +19,9 @@ def clear_movie_cache_after_change(sender, instance, **kwargs):
 @receiver(post_save, sender=Comment)
 @receiver(post_delete, sender=Comment)
 def clear_comments_cache_after_change(sender, instance, **kwargs):
+    """
+    clear comments cache after changing data
+    """
     try:
         movie = instance.movie
         cache.delete_pattern(f"movie_comments_{movie.id}_{movie.slug}")
@@ -26,6 +32,9 @@ def clear_comments_cache_after_change(sender, instance, **kwargs):
 @receiver(post_save, sender=MovieEpisode)
 @receiver(post_delete, sender=MovieEpisode)
 def clear_movie_cache_after_change(sender, instance, **kwargs):
+    """
+    clear movie episodes cache after changing data
+    """
     try:
         cache.delete_pattern("movie_episodes_*")
     except Exception as e:

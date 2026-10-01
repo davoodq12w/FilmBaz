@@ -3,9 +3,10 @@
         <li class="search-choice">{{ item }}</li>
     {% endfor %}
 </ul>
+
+{# when user click on any of the titles, search box filled with that. #}
 <script>
-    $(".search-choice").click(function (){
-        console.log(1)
+    $(".search-choice").click(function () {
         let text = $(this).text()
         $("#search-input").val(text);
         $(".search").submit();

@@ -36,16 +36,25 @@ from rest_framework.permissions import AllowAny
 
 
 class HomePageApi(FilmBazAPI):
+    """
+    Api used for giving some movies that have a high chance of being watched.
+    all users access to the aview
+    """
     permission_classes = [AllowAny]
     authentication_classes = []
 
     @extend_schema(
-        description="گرفتن دیتاهای صفحه خانه",
+        description="گرفتن دیتاهای صفحه خانه . "
+                    "اگر لیست ژانر های مورد علاقه خالی بود بهتر است یوزر ابتدا ژانرهای مورد علاقه اش را انتخال کند",
         responses={200: HomePageOutputSerializer},
     )
     def get(self, request: Request, *args, **kwargs):
-
+        """
+        method giving 4 list of different topic. every topic contain 7 movie.
+        if user not authenticated lists are 2.
+        """
         if request.user.is_authenticated:
+            # getting movies by user favorite genres and orders by rating of movies.
             favorite_genres = request.user.favorite_genres.all()
             if not favorite_genres.exists():
                 by_chosen_genres = []
@@ -53,6 +62,7 @@ class HomePageApi(FilmBazAPI):
                 by_chosen_genres_objs = Movie.objects.filter(genre__in=favorite_genres).distinct().order_by('-rate')[:7]
                 by_chosen_genres = MovieSerializer(by_chosen_genres_objs, many=True).data
 
+            # getting recommended movies to user and order by which is most relevant to the user interests.
             rec_obj = UserRecommendation.objects.filter(user_id=request.user.id).first()
             if not rec_obj:
                 recommendations = []
@@ -61,6 +71,7 @@ class HomePageApi(FilmBazAPI):
                 recommendations_data = rec_obj.recommendations
                 rec_movie_ids = [item["movie_id"] for item in recommendations_data]
 
+                # create a custom field for ordering movies by score.
                 score_case = Case(
                     *[
                         When(
@@ -70,12 +81,12 @@ class HomePageApi(FilmBazAPI):
                         for item in recommendations_data
                     ],
                     output_field=FloatField()
-                )
+                )  # giving every id a score in django models field then used the score for ordering.
                 recommendation_movies_data = (
                     Movie.objects
                     .filter(id__in=rec_movie_ids)
-                    .annotate(score=score_case)
-                    .order_by("-score")
+                    .annotate(score=score_case)  # set the field to objects.
+                    .order_by("-score")  # sort by score.
                 )[:7]
                 recommendations = MovieSerializer(recommendation_movies_data).data
 
@@ -87,6 +98,8 @@ class HomePageApi(FilmBazAPI):
         top_movie_objs = Movie.objects.order_by('-rate')[:7]
         top_movies = MovieSerializer(top_movie_objs, many=True).data
         new_movies = MovieSerializer(new_movie_dats, many=True).data
+
+        # all lists are serialized so we do not need to use HomePageOutputSerializer for respose.
         context = {
             "new_movies": new_movies,
             "top_movies": top_movies,
@@ -97,12 +110,19 @@ class HomePageApi(FilmBazAPI):
 
 
 class ByUserGenresMoviesApi(FilmBazAPI):
+    """
+    Api used for givig paginated movies that filters by user favorite genres.
+    only authenticated users access to the view.
+    """
     ordering_fields = ['release_date', 'rate']
     paginate_by = 21
     min_paginate_by = 7
     max_paginate_by = 21
 
     def _get_ordering(self, request: Request):
+        """
+        inner method giving orderings for queryset if there was valid ordering fields in request.
+        """
         ordering = request.query_params.get("ordering")
 
         if ordering and ordering.lstrip("-") in self.ordering_fields:
@@ -111,6 +131,9 @@ class ByUserGenresMoviesApi(FilmBazAPI):
         return None
 
     def _get_page_size(self, request: Request):
+        """
+        inner method giving custom page size if its in valid range else returned default value.
+        """
         try:
             page_size = int(request.query_params.get("page_size", self.max_paginate_by))
         except ValueError:
@@ -119,6 +142,11 @@ class ByUserGenresMoviesApi(FilmBazAPI):
         return max(self.min_paginate_by, min(page_size, self.max_paginate_by))
 
     def _paginated_movies(self, request: Request, movies: list[Movie]):
+        """
+        inner method giving query set of movies in requested page & paginator object & page size.
+        if page number value is not valid its returned page 1.
+        if page number out of range its returned last page.
+        """
         page_size = self._get_page_size(request)
         page_number = request.query_params.get("page", 1)
 
@@ -164,11 +192,16 @@ class ByUserGenresMoviesApi(FilmBazAPI):
         ]
     )
     def get(self, request: Request, *args, **kwargs):
+        """
+        method giving paginated data of movies that filters by user favorite genres.
+        """
         favorite_genres = request.user.favorite_genres.all()
         if not favorite_genres.exists():
             return Response({"Warning": "User not choose there favorite genres."}, status=status.HTTP_204_NO_CONTENT)
 
         movies = Movie.objects.filter(genre__in=favorite_genres).distinct()
+
+        # if there was any valid ordering its applied
         ordering = self._get_ordering(request)
         if ordering:
             movies = movies.order_by(ordering)
@@ -185,17 +218,25 @@ class ByUserGenresMoviesApi(FilmBazAPI):
             "selected_ordering": ordering,
             "page_size_param": request.query_params.get("page_size", self.paginate_by),
         }
+        # useing serializer for serializing the data and better data returning.
         serializer = CostomListMovieSerializer(context)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RecommendationsMoviesApi(FilmBazAPI):
+    """
+    Api used for givig paginated movies that recommended to used by ml model.
+    only authenticated users access to the view.
+    """
     ordering_fields = ['release_date', 'rate']
     paginate_by = 21
     min_paginate_by = 7
     max_paginate_by = 21
 
     def _get_ordering(self, request: Request):
+        """
+        inner method giving orderings for queryset if there was valid ordering fields in request.
+        """
         ordering = request.query_params.get("ordering")
 
         if ordering and ordering.lstrip("-") in self.ordering_fields:
@@ -204,6 +245,9 @@ class RecommendationsMoviesApi(FilmBazAPI):
         return None
 
     def _get_page_size(self, request: Request):
+        """
+        inner method giving custom page size if its in valid range else returned default value.
+        """
         try:
             page_size = int(request.query_params.get("page_size", self.max_paginate_by))
         except ValueError:
@@ -212,6 +256,11 @@ class RecommendationsMoviesApi(FilmBazAPI):
         return max(self.min_paginate_by, min(page_size, self.max_paginate_by))
 
     def _paginated_movies(self, request: Request, movies: list[Movie]):
+        """
+        inner method giving query set of movies in requested page & paginator object & page size.
+        if page number value is not valid its returned page 1.
+        if page number out of range its returned last page.
+        """
         page_size = self._get_page_size(request)
         page_number = request.query_params.get("page", 1)
 
@@ -257,6 +306,9 @@ class RecommendationsMoviesApi(FilmBazAPI):
         ]
     )
     def get(self, request: Request, *args, **kwargs):
+        """
+        method giving paginated data of movies that recommended to used by ml model.
+        """
         rec_obj = UserRecommendation.objects.filter(user_id=request.user.id).first()
         if not rec_obj:
             return Response({"Warning": "User not any recommendations yet."}, status=status.HTTP_204_NO_CONTENT)
@@ -264,6 +316,7 @@ class RecommendationsMoviesApi(FilmBazAPI):
         recommendations_data = rec_obj.recommendations
         rec_movie_ids = [item["movie_id"] for item in recommendations_data]
 
+        # create a custom field for ordering movies by score.
         score_case = Case(
             *[
                 When(
@@ -274,13 +327,15 @@ class RecommendationsMoviesApi(FilmBazAPI):
             ],
             output_field=FloatField()
         )
+        # giving every id a score in django models field then used the score for ordering.
         movies = (
             Movie.objects
             .filter(id__in=rec_movie_ids)
-            .annotate(score=score_case)
-            .order_by("-score")
+            .annotate(score=score_case)  # set the field to objects.
+            .order_by("-score")  # sort by score.
         )
 
+        # if there was any valid ordering its applied
         ordering = self._get_ordering(request)
         if ordering:
             movies = movies.order_by(ordering)
@@ -297,11 +352,17 @@ class RecommendationsMoviesApi(FilmBazAPI):
             "selected_ordering": ordering,
             "page_size_param": request.query_params.get("page_size", self.paginate_by),
         }
+        # useing serializer for serializing the data and better data returning.
         serializer = CostomListMovieSerializer(context)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MovieListApi(FilmBazAPI):
+    """
+    Api used for givig paginated movies.
+    Performs filtering and ordering and caching data.
+    all users access to the view.
+    """
     permission_classes = [AllowAny]
     authentication_classes = []
     filter_fields = ['genre_id', 'adult', 'release_date']
@@ -312,6 +373,10 @@ class MovieListApi(FilmBazAPI):
     max_paginate_by = 21
 
     def _get_cache_key(self, request: Request):
+        """
+        inner method used for creating cache key with data of request.
+        performs cache data for same filtering and ordering and pagination.
+        """
 
         params = []
 
@@ -319,6 +384,7 @@ class MovieListApi(FilmBazAPI):
             for value in values:
                 params.append((key, value))
 
+        # sorting valus allow us to leser cashing data if parameters in request are givin not in same order.
         params = sorted(params)
 
         raw_key = str(params).encode("utf-8")
@@ -327,6 +393,9 @@ class MovieListApi(FilmBazAPI):
         return f"movies_list_{hashed_key}"
 
     def _get_filters(self, request: Request):
+        """
+        inner method giving filters for queryset if there were valid filters.
+        """
         filters = {}
 
         for field in self.filter_fields:
@@ -358,6 +427,9 @@ class MovieListApi(FilmBazAPI):
         return filters
 
     def _get_ordering(self, request: Request):
+        """
+        inner method giving orderings for queryset if there was valid ordering fields in request.
+        """
         ordering = request.query_params.get("ordering")
 
         if ordering and ordering.lstrip("-") in self.ordering_fields:
@@ -366,6 +438,9 @@ class MovieListApi(FilmBazAPI):
         return None
 
     def _get_extra_context(self, request: Request):
+        """
+        inner method giving data about applied filters or orderings or paginations.
+        """
         adult = request.query_params.get("adult", None)
         genre_id = request.query_params.get("genre_id", None)
         release_date = request.query_params.get("release_date", None)
@@ -384,6 +459,9 @@ class MovieListApi(FilmBazAPI):
         }
 
     def _get_page_size(self, request: Request):
+        """
+        inner method giving custom page size if its in valid range else returned default value.
+        """
         try:
             page_size = int(request.query_params.get("page_size", self.max_paginate_by))
         except ValueError:
@@ -392,6 +470,11 @@ class MovieListApi(FilmBazAPI):
         return max(self.min_paginate_by, min(page_size, self.max_paginate_by))
 
     def _paginated_movies(self, request: Request, movies: list[Movie]):
+        """
+        inner method giving query set of movies in requested page & paginator object & page size.
+        if page number value is not valid its returned page 1.
+        if page number out of range its returned last page.
+        """
         page_size = self._get_page_size(request)
         page_number = request.query_params.get("page", 1)
 
@@ -472,7 +555,14 @@ class MovieListApi(FilmBazAPI):
         ]
     )
     def get(self, request: Request, *args, **kwargs):
+        """
+        method giving a cached or uncached queryset of movies that applied orderings, filterings and pagintions on them.
+        """
         cache_key = self._get_cache_key(request)
+
+        # if ther was no cache for the key cache.get return object becuose we set it for get method.
+        # so we use object function for that is response of get cache is an empty object or
+        # is an empty queryset value for the combonations of request parameters.
         cache_marker = object()
         cached_movies = cache.get(cache_key, cache_marker)
 
@@ -492,16 +582,19 @@ class MovieListApi(FilmBazAPI):
 
         movies = Movie.objects.all()
 
+        # if there were valid filters then applied.
         filters = self._get_filters(request)
         if filters:
             movies = movies.filter(**filters)
 
+        # if there was valid ordering then applied.
         ordering = self._get_ordering(request)
         if ordering:
             movies = movies.order_by(ordering)
 
         page_obj, paginator, page_size = self._paginated_movies(request, list(movies))
 
+        # set cache for same combonations of parameters in other requests.
         cache.set(cache_key, list(movies), timeout=self.cache_timeout)
 
         context = {
@@ -518,6 +611,10 @@ class MovieListApi(FilmBazAPI):
 
 
 class GenreListApi(FilmBazAPI):
+    """
+    Api used for giving all genres in DataBase.
+    all users access to the view.
+    """
     permission_classes = [AllowAny]
     authentication_classes = []
 
@@ -526,12 +623,19 @@ class GenreListApi(FilmBazAPI):
         responses={200: GenreSerializer(many=True)},
     )
     def get(self, request: Request, *args, **kwargs):
+        """
+        method used for giving queryset of genres
+        """
         genres = Genre.objects.all()
         serializer = GenreSerializer(genres, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class YearListApi(FilmBazAPI):
+    """
+    Api used for giving all years of when movies created in DataBase.
+    all users access to the view.
+    """
     permission_classes = [AllowAny]
     authentication_classes = []
 
@@ -540,6 +644,9 @@ class YearListApi(FilmBazAPI):
         responses={200: YearSerializer(many=True)},
     )
     def get(self, request: Request, *args, **kwargs):
+        """
+        method giving a list of years of movies.
+        """
         years = [
             date_obj.year
             for date_obj in Movie.objects.filter(release_date__isnull=False).dates('release_date', 'year')
@@ -550,45 +657,60 @@ class YearListApi(FilmBazAPI):
 
 
 class MovieDetailApi(FilmBazAPI):
+    """
+    Api used for giving the full details of movie.
+    only authenticated users can access the view.
+    """
 
     @extend_schema(
         description="گرفتن اطلاعات کامل یک فیلم",
         responses={200: MovieDetailSerializer},
     )
     def get(self, request: Request, pk=None, slug=None, *args, **kwargs):
+        """
+        method datas of movie.
+        take id & slug of one movie and giving all data of that movie.
+        """
         if pk is None or slug is None:
             return Response({"Error": "pk and slug most be given."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # creat cache keys
         comments_cache_key = f"movie_comments_{pk}_{slug}"
         episodes_cache_key = f"movie_episodes_{pk}_{slug}"
         context = {}
 
         try:
-            cached_comments = cache.get(comments_cache_key)
+            # get cached comments
+            cache_marker = object()
+            cached_comments = cache.get(comments_cache_key, cache_marker)
             movie = Movie.objects.filter(id=pk, slug=slug).first()
             if movie is None:
                 return Response({"Error": "movie with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
             context["movie"] = movie
-            if cached_comments:
+
+            if cached_comments is not cache_marker:
                 context["comments"] = cached_comments
             else:
                 comments = Comment.objects.filter(movie__id=pk, movie__slug=slug)
                 context["comments"] = comments
                 cache.set(comments_cache_key, comments)
 
-            cached_episodes = cache.get(episodes_cache_key)
-            if cached_episodes:
+            # get cached episodes
+            cached_episodes = cache.get(episodes_cache_key, cache_marker)
+            if cached_episodes is not cache_marker:
                 context["episodes"] = cached_episodes
             else:
                 episodes = MovieEpisode.objects.filter(movie__id=pk, movie__slug=slug).order_by("season", "episode")
                 context["episodes"] = episodes
                 cache.set(episodes_cache_key, episodes)
 
+            # add trailer in context
             if movie.trailer is not None:
                 context["trailer"] = movie.trailer
             else:
                 context["trailer"] = None
 
+            # get last completed episode
             last_watch = WatchProgress.objects.filter(
                 episode__movie__slug=slug,
                 episode__movie__id=pk,
@@ -596,6 +718,7 @@ class MovieDetailApi(FilmBazAPI):
                 completed=True,
             ).order_by("-episode__season", "-episode__episode").first()
 
+            # get next episode to watch.
             if last_watch is not None:
                 unwatched_episode = last_watch.episode.get_next_episode()
             else:
@@ -611,6 +734,10 @@ class MovieDetailApi(FilmBazAPI):
 
 
 class AddCommentApi(FilmBazAPI):
+    """
+    Api used for adding comments.
+    only authenticated usese access to the view.
+    """
 
     @extend_schema(
         description="اضافه کردن نظر برای یک فیلم توسط کاربر",
@@ -629,8 +756,13 @@ class AddCommentApi(FilmBazAPI):
         ]
     )
     def post(self, request: Request, *args, **kwargs):
+        """
+        method for add a comment bllow of a movie.
+        take id of movie and text of comment and creating new comment for movie.
+        """
         serializer = AddCommentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         movie_id = serializer.validated_data["movie_id"]
         movie = Movie.objects.filter(id=movie_id).first()
         if movie is None:
@@ -647,16 +779,25 @@ class AddCommentApi(FilmBazAPI):
 
 
 class SearchApi(FilmBazAPI):
+    """
+    Api used for searching movies.
+    all users access to the view.
+    """
     permission_classes = [AllowAny]
     authentication_classes = []
 
     def _get_results(self, query):
+        """
+        inner method giving all results of searching movies.
+        search by orginal and persion title of movies.
+        """
         try:
             result1 = Movie.objects.annotate(
                 similarity=TrigramSimilarity("fa_title", query)).filter(similarity__gt=0.1)
             result2 = Movie.objects.annotate(
                 similarity=TrigramSimilarity("orj_title", query)).filter(similarity__gt=0.1)
 
+            # merging all results and make sure to not existing any dublicate movie object
             movie_result = (result1 | result2).order_by("-similarity")
         except Exception as e:
             raise ValueError(f"error: {e}")
@@ -684,6 +825,9 @@ class SearchApi(FilmBazAPI):
         ]
     )
     def post(self, request: Request, *args, **kwargs):
+        """
+        method giving all matched movies with query of search.
+        """
         serializer = SearchSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -695,6 +839,10 @@ class SearchApi(FilmBazAPI):
 
 
 class SaveMovieApi(FilmBazAPI):
+    """
+    Api used for adding and removing movie to user saves list.
+    only authenticated usese access to the view.
+    """
 
     @extend_schema(
         description="ذخیره کردن فیلم ها برای تماشای بعدا",
@@ -712,6 +860,10 @@ class SaveMovieApi(FilmBazAPI):
         ]
     )
     def post(self, request: Request, *args, **kwargs):
+        """
+        method add or remove the movie to user saves list.
+        take id and slug of movie and add or remove movie of the list.
+        """
         serializer = SaveLikeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -739,6 +891,10 @@ class SaveMovieApi(FilmBazAPI):
 
 
 class LikeMovieApi(FilmBazAPI):
+    """
+    Api used for adding and removing movie to user saves list.
+    only authenticated usese access to the view.
+    """
 
     @extend_schema(
         description="لایک کردن فیلم ها",
@@ -756,6 +912,10 @@ class LikeMovieApi(FilmBazAPI):
         ]
     )
     def post(self, request: Request, *args, **kwargs):
+        """
+        method add or remove the movie to user likes list.
+        take id and slug of movie and add or remove movie of the list.
+        """
         serializer = SaveLikeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -783,12 +943,20 @@ class LikeMovieApi(FilmBazAPI):
 
 
 class WatchMovieApi(FilmBazAPI):
+    """
+    Api used for giving all data about the one episode of movies.
+    only authenticated usese access to the view.
+    """
 
     @extend_schema(
         description="گرفتن اطلاعات مربوط به یک اپیزود از فیلم و سریال ها",
         responses={200: WatchMovieSerializer}
     )
     def get(self, request: Request, pk=None, *args, **kwargs):
+        """
+        method giving all data aboute episode.
+        take id of episode object and giving full data of the episode.
+        """
         if not pk:
             return Response({"Error": "movie episode id most be given"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -797,12 +965,14 @@ class WatchMovieApi(FilmBazAPI):
         if episode is None:
             return Response({"Error": "episode with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
 
+        # get watch progress object
         watch_progress = episode.watch_progress.filter(user=request.user).first()
         if watch_progress is not None:
             watch_position = watch_progress.position
         else:
             watch_position = 0
 
+        # get next episode of selected episode
         if episode.movie.is_serie:
             next_episode = episode.get_next_episode()
         else:
@@ -810,14 +980,20 @@ class WatchMovieApi(FilmBazAPI):
 
         data = {
             "episode": episode,
-            "watch_progress": watch_progress,
+            "watch_progress": watch_position,
             "next_episode": next_episode,
         }
+
+        # using serializer for serializering response data.
         serializer = WatchMovieSerializer(data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class WatchProgressApi(FilmBazAPI):
+    """
+    Api used for updating watch progress of episode.
+    only authenticated usese access to the view.
+    """
 
     @extend_schema(
         description="اپدیت کردن مقدار پراگرس یوزر برای یک اپیزود",
@@ -836,6 +1012,10 @@ class WatchProgressApi(FilmBazAPI):
         ]
     )
     def post(self, request: Request, *args, **kwargs):
+        """
+        method update details of watch progress object of episode.
+        take episode id and progress data and update the obj.
+        """
         input_serializer = WatchProgressInputSerializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
 
@@ -847,7 +1027,8 @@ class WatchProgressApi(FilmBazAPI):
         if episode is None:
             return Response({"Error": "episode with this data is not exsits."}, status=status.HTTP_404_NOT_FOUND)
 
-        WatchProgress.objects.get_or_create(
+        # if the object was exists it will be updated, or we create new objects for user
+        WatchProgress.objects.update_or_create(
             user=request.user,
             episode=episode,
             defaults={

@@ -4,15 +4,13 @@
 {% load static %}
 {% block body %}
     <div class="detail-body">
-
         <div class="detail-backdrop-wrapper">
-
             <img
                     id="backdropImage"
                     src="{{ movie.backdrop_url }}"
                     alt="{{ movie.orj_title }} backdrop"
-                    class="detail-backdrop">
-
+                    class="detail-backdrop"
+            >
             <video
                     id="backdropVideo"
                     class="detail-backdrop"
@@ -20,10 +18,8 @@
                     autoplay
                     playsinline
                     preload="metadata">
-
                 <source src="{{ movie.trailer.file.url }}" type="video/mp4">
             </video>
-
         </div>
 
         <div class="detail-backdrop-cover"></div>
@@ -282,12 +278,14 @@
             $('#copy').click(copy);
 
             $("#share").click(function () {
+                {# show the share box #}
                 let box = $("#share-box")
                 box.addClass("detail-share-box")
                 box.children().css("display", "flex")
 
 
                 box.mouseleave(function () {
+                    {# hide the share box #}
                     box.removeClass("detail-share-box")
                     box.children().css("display", "none")
                 });
@@ -300,6 +298,7 @@
         });
 
         function save() {
+            {# save and unsave movie. #}
             let box = $("#save");
             $.ajax({
                 url: "{% url 'film:save_movie' %}",
@@ -316,6 +315,7 @@
         }
 
         function like() {
+            {# like and unlike movie. #}
             let box = $("#like");
             $.ajax({
                 url: "{% url 'film:like_movie' %}",
@@ -332,6 +332,7 @@
         }
 
         function share() {
+            {# create share interactions. #}
             $.ajax({
                 url: "{% url 'analytics:create_share_intraction' %}",
                 type: "POST",
@@ -341,6 +342,7 @@
         }
 
         function copy() {
+            {# copy the url of page. #}
             let href = String(location.href);
             if (window.navigator.clipboard) {
                 navigator.clipboard.writeText(href);
@@ -349,6 +351,7 @@
         }
 
         function addComment() {
+            {# add a comment to movie. #}
             let text = $("#add-comment-text").val();
             let noComment = $(".detail-no-comment")
             if (text === "") {
@@ -367,6 +370,7 @@
             }
         }
 
+
         const backdropImage = document.getElementById("backdropImage");
         const backdropVideo = document.getElementById("backdropVideo");
 
@@ -374,7 +378,7 @@
         backdropVideo.currentTime = 0;
 
         setTimeout(function () {
-
+            {# change backdrop to trailer after 3 sec.#}
             backdropVideo.play().then(function () {
 
                 backdropVideo.style.opacity = "1";
