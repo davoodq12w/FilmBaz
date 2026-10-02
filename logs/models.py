@@ -4,6 +4,9 @@ from account.models import FilmBazUser
 
 
 class Log(models.Model):
+    """
+    Model for loging create/update/delete actions in database.
+    """
     ACTION_CHOICES = [
         ('CREATE', 'Create'),
         ('UPDATE', 'Update'),
