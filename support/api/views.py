@@ -13,15 +13,23 @@ from django.db import transaction
 
 
 class AdminSupportSessionsApi(FilmBazAPI):
+    """
+    Api used for get all active support sessions for supporters.
+    only supporters access to the api view.
+    """
 
     @extend_schema(
         description="گرفتن لیست سشن های پشتیبانی خالی و یا مربوط به اون پشتیبان ( فقط ادمین ها)",
         responses={200: SupportSessionSerializer(many=True), 403: "Forbidden"},
     )
     def get(self, request: Request, *args, **kwargs):
+        """
+        method give a list of all active support sessions.
+        """
         if not request.user.is_superuser or not request.user.is_staff:
             return Response({"Error": "this action only for admins."}, status=status.HTTP_403_FORBIDDEN)
 
+        # only sessions with no supporter or with same supporter and only active sessions.
         support_sessions = SupportSession.objects.filter(
             Q(supporter=request.user) | Q(supporter__isnull=True),
             status__in=[
@@ -35,6 +43,10 @@ class AdminSupportSessionsApi(FilmBazAPI):
 
 
 class AdminSupportSessionDetailsApi(FilmBazAPI):
+    """
+    Api used for get a specific support session details for supporters.
+    only supporters access to the api view.
+    """
 
     @extend_schema(
         description="گرفتن جزییات کامل و پیام های سشن های پشتیبانی خالی و یا مربوط به اون پشتیبان ( فقط ادمین ها)"
@@ -42,12 +54,17 @@ class AdminSupportSessionDetailsApi(FilmBazAPI):
         responses={200: SupportSessionSerializer(many=True), 403: "Forbidden", 400: "Bad Request"},
     )
     def get(self, request: Request, pk=None, *args, **kwargs):
+        """
+        method used for see all messages of the support sessions.
+        take id of session and claim it for supporter.
+        """
         if not request.user.is_superuser or not request.user.is_staff:
             return Response({"Error": "this action only for admins."}, status=status.HTTP_403_FORBIDDEN)
 
         if not pk:
             return Response({"Error": "Support Session id most be given."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # preventing two backers from claiming the session at the same time
         with transaction.atomic():
             support_session = SupportSession.objects.filter(id=pk).first()
 
@@ -59,10 +76,11 @@ class AdminSupportSessionDetailsApi(FilmBazAPI):
                 return Response({"Error": "Supporter of this Session is someone else."},
                                 status=status.HTTP_403_FORBIDDEN)
 
+            # set supporter to session
             support_session.supporter = request.user
             support_session.status = SupportSession.Status.OPEN
             support_session.save(update_fields=["supporter", "status"])
-
+            # update unseen message to seen
             SupportMessage.objects.filter(session=support_session, is_seen=False).update(is_seen=True)
             messages = SupportMessage.objects.filter(session=support_session).order_by("created_at")
             data = {
@@ -75,15 +93,24 @@ class AdminSupportSessionDetailsApi(FilmBazAPI):
 
 
 class SupportSessionDetailsApi(FilmBazAPI):
+    """
+    Api used for give detail of user support session.
+    only authenticated usesr ( not admins) access to the api view.
+    """
 
     @extend_schema(
         description="گرفتن جزییات کامل و پیام های سشن پشتیبانی مربوط به اون یوزر ( فقط یوزرها)",
         responses={200: SupportSessionSerializer(many=True), 403: "Forbidden", 400: "Bad Request"},
     )
     def get(self, request: Request, *args, **kwargs):
+        """
+        method give the messages of the support sessions.
+        """
         if request.user.is_superuser or request.user.is_staff:
             return Response({"Error": "this action not for admins."}, status=status.HTTP_403_FORBIDDEN)
 
+        # get the active support session
+        # in end of day all support sessions were be closed.
         support_session = SupportSession.objects.filter(
             user=request.user,
             status__in=[
@@ -92,6 +119,7 @@ class SupportSessionDetailsApi(FilmBazAPI):
             ]
         ).first()
         if support_session is None:
+            # if active support session is not exist make a new one.
             data = {
                 "user": request.user,
                 "supporter": None,
@@ -110,6 +138,10 @@ class SupportSessionDetailsApi(FilmBazAPI):
 
 
 class SupportSocketDocs(FilmBazAPI):
+    """
+    Api used only for giving documents about support WebSocket in swagger.
+    not used for requests.
+    """
     authentication_classes = []
     permission_classes = []
 
@@ -146,7 +178,8 @@ class SupportSocketDocs(FilmBazAPI):
         }
         ```
         """,
-        responses=None
+        responses=None,
+        tags=["websockets"]
     )
     def get(self, request):
         pass
