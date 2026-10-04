@@ -9,9 +9,21 @@ from django.db import transaction
 
 
 class SupportSessionView(LoginRequiredMixin, View):
+    """
+    View used for get support session data.
+    only authenticated users can see the view.
+    if user is admin view returned a list of sessions.
+    else return session of user.
+    """
     model = SupportSession
 
     def get(self, request, *args, **kwargs):
+        """
+        method giving sessions data.
+        """
+
+        # if user is admin giving him a list of sessions with no supporter and sessions with tha admin supporter
+        # all sessions of list is active.
         if request.user.is_staff and request.user.is_superuser:
             support_sessions = self.model.objects.filter(
                 Q(supporter=request.user) | Q(supporter__isnull=True),
@@ -33,6 +45,8 @@ class SupportSessionView(LoginRequiredMixin, View):
                 SupportSession.Status.PENDING,
             ]).first()
 
+            # if session is not exist we create a new one for user.
+            # all sessions closed in end of day automaticly with celery
             if support_session is None:
                 data = {
                     "user": request.user,
@@ -41,6 +55,7 @@ class SupportSessionView(LoginRequiredMixin, View):
                 }
                 support_session = self.model.objects.create(**data)
 
+            # get messages of session
             messages = SupportMessage.objects.filter(session=support_session).order_by("created_at")
             message_serializer = SupportMessageSerializer(messages, many=True)
 
@@ -54,6 +69,11 @@ class SupportSessionView(LoginRequiredMixin, View):
 
 @login_required()
 def get_support_session_for_admin(request, support_session_id=None):
+    """
+    View used for get support messages for admin.
+    make all unseen messages to seen messages.
+    only admins access to the view.
+    """
     user = request.user
 
     if not (user.is_staff and user.is_superuser):
@@ -73,6 +93,7 @@ def get_support_session_for_admin(request, support_session_id=None):
             "ok": False,
         })
 
+    # preventing two backers from claiming the session at the same time
     with transaction.atomic():
         support_session = SupportSession.objects.select_for_update().filter(
             id=support_session_id,
@@ -87,10 +108,12 @@ def get_support_session_for_admin(request, support_session_id=None):
                 "ok": False,
             })
 
+        # set supporter to session
         support_session.supporter = request.user
         support_session.status = SupportSession.Status.OPEN
         support_session.save(update_fields=["supporter", "status"])
 
+        # update unseen message to seen
         SupportMessage.objects.filter(session=support_session, is_seen=False).update(is_seen=True)
         messages = SupportMessage.objects.filter(session=support_session).order_by("created_at")
 

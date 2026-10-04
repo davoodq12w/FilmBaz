@@ -5,6 +5,10 @@ LOGGING_ENABLED = True
 
 @contextmanager
 def disable_logging():
+    """
+    disable creating log objects
+    used for management commands that runs of service startapp.
+    """
     global LOGGING_ENABLED
 
     old = LOGGING_ENABLED

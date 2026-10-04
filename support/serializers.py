@@ -1,17 +1,20 @@
 from rest_framework import serializers
-
 from .models import SupportSession, SupportMessage
 
 
 class SupportMessageCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer used for creating support messages.
+    perform validations of data.
+    """
     session_id = serializers.PrimaryKeyRelatedField(
         queryset=SupportSession.objects.all(),
         source="session",
         write_only=True,
         error_messages={
-            "required": "شناسه سشن الزامی است.",
-            "does_not_exist": "سشن پشتیبانی پیدا نشد.",
-            "incorrect_type": "شناسه سشن معتبر نیست.",
+            "required": "session_id is required.",
+            "does_not_exist": "session with this id does not exist.",
+            "incorrect_type": "session id is an integer.",
         }
     )
 
@@ -20,9 +23,9 @@ class SupportMessageCreateSerializer(serializers.ModelSerializer):
         allow_blank=False,
         trim_whitespace=True,
         error_messages={
-            "required": "متن پیام الزامی است.",
-            "blank": "متن پیام نمی‌تواند خالی باشد.",
-            "max_length": "متن پیام نمی‌تواند بیشتر از ۱۰۰۰ کاراکتر باشد.",
+            "required": "text of message is required.",
+            "blank": "message can't be blank.",
+            "max_length": "text of message is over 1000 characters.",
         }
     )
 
@@ -34,24 +37,33 @@ class SupportMessageCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
+        """
+        method used for validate user.
+        """
         user = self.context.get("user")
 
         if user is None or not user.is_authenticated:
             raise serializers.ValidationError(
-                "برای ارسال پیام باید وارد حساب کاربری شده باشید."
+                "user most be authenticated."
             )
 
         return attrs
 
     def validate_session_id(self, session):
+        """
+        method used for validate session activation.
+        """
         if session.status == SupportSession.Status.CLOSED:
             raise serializers.ValidationError(
-                "این سشن بسته شده و امکان ارسال پیام وجود ندارد."
+                "support session is already closed."
             )
 
         return session
 
     def create(self, validated_data):
+        """
+        method used for create support message.
+        """
         user = self.context.get("user")
 
         return SupportMessage.objects.create(
@@ -61,6 +73,9 @@ class SupportMessageCreateSerializer(serializers.ModelSerializer):
 
 
 class SupportSessionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Sessions
+    """
     username = serializers.SerializerMethodField()
 
     class Meta:
@@ -68,10 +83,16 @@ class SupportSessionSerializer(serializers.ModelSerializer):
         fields = ["username", "id", "status"]
 
     def get_username(self, obj):
+        """
+        method used for get username.
+        """
         return obj.user.username if obj.user else None
 
 
 class SupportMessageSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Messages
+    """
     is_admin = serializers.SerializerMethodField()
 
     class Meta:
@@ -79,4 +100,7 @@ class SupportMessageSerializer(serializers.ModelSerializer):
         fields = ["session_id", "sender_id", "id", "text", "created_at", "is_seen", "is_admin"]
 
     def get_is_admin(self, obj):
+        """
+        method used for get is_admin of message sender.
+        """
         return obj.sender.is_superuser if obj.sender else None

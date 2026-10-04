@@ -3,6 +3,9 @@ from django_resized import ResizedImageField
 
 
 class Cast(models.Model):
+    """
+    Model for cast of movies.
+    """
     fa_name = models.CharField(max_length=200)
     en_name = models.CharField(max_length=200)
     slug = models.SlugField(
@@ -33,6 +36,9 @@ class Cast(models.Model):
 
 
 class CrewMember(models.Model):
+    """
+    Model for crews.
+    """
     fa_name = models.CharField(max_length=200)
     en_name = models.CharField(max_length=200)
     slug = models.SlugField(
@@ -57,6 +63,10 @@ class CrewMember(models.Model):
 
 
 class MovieCrew(models.Model):
+    """
+    Model used for relations of crews and movies.
+    """
+
     class CrewRole(models.TextChoices):
         DIRECTOR = "director", "Director"
         PRODUCER = "producer", "Producer"

@@ -9,10 +9,14 @@ django_asgi_app = get_asgi_application()
 
 
 def get_support_websocket_routes():
+    """
+    lazy ws urls
+    """
     from support import urls
     return urls.websocket_urlpatterns
 
 
+# set services for websocket and http requests.
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": AuthMiddlewareStack(

@@ -5,6 +5,10 @@ from logs.logging_state import disable_logging
 
 
 class Command(BaseCommand):
+    """
+    load casts form JSON file and adding to DataBase.
+    The Second command that is executed when starting the backend.
+    """
     help = 'وارد کردن لیست بازیگران از فایل casts.json'
 
     def handle(self, *args, **kwargs):

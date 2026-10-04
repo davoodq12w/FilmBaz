@@ -83,6 +83,7 @@ DATABASES = {
     }
 }
 
+# set sqlite for runing tests.
 if 'test' in sys.argv:
     DATABASES = {
         "default": {
@@ -149,6 +150,9 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
 USE_X_FORWARDED_HOST = True
 
+# =======================================
+#             logging settings
+# =======================================
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -169,7 +173,9 @@ LOGGING = {
         },
     },
 }
-
+# =======================================
+#             cache settings
+# =======================================
 REDIS_PASSWORD = config("REDIS_PASSWORD")
 REDIS_HOST = config("REDIS_HOST")
 REDIS_PORT = config("REDIS_PORT")
@@ -192,6 +198,9 @@ CHANNEL_LAYERS = {
     },
 }
 
+# =======================================
+#             broker settings
+# =======================================
 CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
 CELERY_ACCEPT_CONTENT = config(
@@ -200,9 +209,11 @@ CELERY_ACCEPT_CONTENT = config(
 )
 
 CELERY_TASK_SERIALIZER = config("CELERY_TASK_SERIALIZER", default="json")
-
 CELERY_TASK_EVENTS = config("CELERY_TASK_EVENTS", cast=bool, default=True)
 
+# =======================================
+#             scheduled tasks
+# =======================================
 CELERY_BEAT_SCHEDULE = {
     "close_support_session_daily": {
         "task": "support.tasks.close_support_session_daily",
@@ -229,12 +240,18 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_TIMEZONE = config("CELERY_TIMEZONE", default="UTC")
 CELERY_ENABLE_UTC = config("CELERY_ENABLE_UTC", cast=bool, default=True)
 
+# =======================================
+#             broker queues
+# =======================================
 CELERY_TASK_QUEUES = (
     Queue("support"),
     Queue("default"),
     Queue("recommendation")
 )
 
+# =======================================
+#             admin panel skin
+# =======================================
 JAZZMIN_SETTINGS = {
     "show_ui_builder": True,
 }
@@ -271,6 +288,9 @@ JAZZMIN_UI_TWEAKS = {
     "actions_sticky_top": False
 }
 
+# =======================================
+#             api settings
+# =======================================
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -278,6 +298,9 @@ REST_FRAMEWORK = {
     )
 }
 
+# =======================================
+#             api security
+# =======================================
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
@@ -288,6 +311,9 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+# =======================================
+#             swagger settings
+# =======================================
 SPECTACULAR_SETTINGS = {
     "TITLE": "FilmBaz APIs",
     "DESCRIPTION": "FilmBaz APIs for mobile apps or web aplications.",

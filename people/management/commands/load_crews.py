@@ -5,6 +5,10 @@ from logs.logging_state import disable_logging
 
 
 class Command(BaseCommand):
+    """
+    load crews form JSON file and adding to DataBase.
+    The Third command that is executed when starting the backend.
+    """
     help = 'وارد کردن لیست عوامل تولید از فایل crew_members.json'
 
     def handle(self, *args, **kwargs):

@@ -46,3 +46,5 @@ IN SCHEMA public
 GRANT SELECT ON SEQUENCES TO ${ML_DB_USER};
 
 EOF
+
+# this file create an user for ml service to only read data.
