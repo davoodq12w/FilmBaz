@@ -7,6 +7,9 @@ from asgiref.sync import async_to_sync
 
 @shared_task(queue="support")
 def send_message_to_chat(message_id):
+    """
+    Celery task for sending message to support session by consumer.
+    """
     message = SupportMessage.objects.filter(id=message_id).first()
     if not message:
         return
@@ -22,7 +25,7 @@ def send_message_to_chat(message_id):
         "message_text": message.text,
         "message_timestamp": message.created_at,
         "message_is_seen": message.is_seen,
-        "is_admin" : message.sender.is_superuser,
+        "is_admin": message.sender.is_superuser,
     }
 
     data = json.loads(json.dumps(message_data, default=str))
@@ -31,6 +34,9 @@ def send_message_to_chat(message_id):
 
 @shared_task()
 def close_support_session_daily():
+    """
+    Celery task for daily closing support sessions.
+    """
     objs = SupportSession.objects.all()
     for obj in objs:
         obj.status = SupportSession.Status.CLOSED

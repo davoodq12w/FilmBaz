@@ -5,6 +5,10 @@ from account.models import FilmBazUser
 # Create your models here.
 
 class SupportSession(models.Model):
+    """
+    Model for support sessions.
+    every session closed in last of the day by celery beat.
+    """
     user = models.ForeignKey(
         FilmBazUser,
         on_delete=models.SET_NULL,
@@ -41,12 +45,15 @@ class SupportSession(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'session_date'],
                 name='unique_user_session_per_day'
-            )
+            ) #  users allow to have one session per day.
         ]
         ordering = ['-created_at']
 
 
 class SupportMessage(models.Model):
+    """
+    Model for support messages.
+    """
     sender = models.ForeignKey(
         FilmBazUser,
         on_delete=models.SET_NULL,

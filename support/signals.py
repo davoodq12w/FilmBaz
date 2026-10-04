@@ -6,5 +6,8 @@ from .tasks import send_message_to_chat
 
 @receiver(post_save, sender=SupportMessage)
 def send_message_to_chat_signal(sender, instance, created, **kwargs):
+    """
+    signal for sending message to support session chat.
+    """
     if created:
         send_message_to_chat.delay(instance.id)
