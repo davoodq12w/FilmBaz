@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"عوامل || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
+                        f"Crews || created: {created_count} | updated: {updated_count}"
                     )
                 )
 

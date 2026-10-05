@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"بازیگران || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
+                        f"Casts || created: {created_count} | updated: {updated_count}"
                     )
                 )
             except FileNotFoundError:

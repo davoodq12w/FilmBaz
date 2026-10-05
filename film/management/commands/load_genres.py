@@ -38,7 +38,7 @@ class Command(BaseCommand):
 
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"ژانر ها || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
+                        f"Genres || created: {created_count} | updated: {updated_count}"
                     )
                 )
 
