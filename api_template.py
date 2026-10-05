@@ -6,6 +6,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class FilmBazAPI(APIView):
+    """
+    Template is used to prevent access to non-overridden methods.
+    APIs that inherit from this template require authentication for users.
+    """
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 

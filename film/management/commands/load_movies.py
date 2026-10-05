@@ -56,7 +56,7 @@ class Command(BaseCommand):
 
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"فیلم ها || ساخته شده ها: {created_count} | آپدیت شده ها: {updated_count}"
+                        f"Movies || created: {created_count} | updated: {updated_count}"
                     )
                 )
             except FileNotFoundError:

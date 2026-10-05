@@ -51,6 +51,7 @@ python manage.py load_pictures
 echo "Setting movie files..."
 python manage.py load_movie_files
 
+echo "Creating superuser..."
 python manage.py shell -c "
 from django.contrib.auth import get_user_model;
 User = get_user_model();
@@ -59,9 +60,9 @@ if not User.objects.filter(username='root').exists():
     user = User.objects.create_superuser(username='root', phone='09001112233')
     user.set_password('rootpassword')
     user.save()
-    print('✅ Superuser created successfully.')
+    print('Superuser created successfully.')
 else:
-    print('ℹ️ Superuser already exists.')
+    print('Superuser already exists.')
 "
 
 echo "Enabling pg_trgm extension..."

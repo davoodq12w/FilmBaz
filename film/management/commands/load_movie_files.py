@@ -51,12 +51,12 @@ class Command(BaseCommand):
 
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"فایل ها || ساخته شده ها: {file_created_count} | آپدیت شده ها: {file_updated_count}"
+                        f"Movie Files || created: {file_created_count} | updated: {file_updated_count}"
                     )
                 )
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"فایل ها || ساخته شده ها: {trailer_created_count} | آپدیت شده ها: {trailer_updated_count}"
+                        f"Trailers || created: {trailer_created_count} | updated: {trailer_updated_count}"
                     )
                 )
 

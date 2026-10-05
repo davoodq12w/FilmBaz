@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"crews || success: {success_saves} | failed: {failed_saves}"
+                f"Crews Pictures || success: {success_saves} | failed: {failed_saves}"
             )
         )
 
@@ -54,7 +54,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"casts || success: {success_saves} | failed: {failed_saves}"
+                f"Casts Pictures || success: {success_saves} | failed: {failed_saves}"
             )
         )
 
@@ -76,6 +76,6 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"movies || success: {success_saves} | failed: {failed_saves}"
+                f"Movies Backdrops & Posters || success: {success_saves} | failed: {failed_saves}"
             )
         )
