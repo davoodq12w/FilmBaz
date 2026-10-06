@@ -17,12 +17,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 class DataInput(BaseModel):
+    """
+    Schema used for data input of recommendation api
+    """
     user_id: int
     movie_ids: list[int]
 
 
 @router.post("/recomendation/get_movies/")
 async def get_recommendation(data: DataInput, recommender: RecommenderMovies = Depends(get_recommender)):
+    """
+    Coroutine used for give a list of recommendation movies for user.
+    take user id and list of movies id and sort them by recommendation score
+    """
     result = await recommender.predict(data.user_id, data.movie_ids)
     return result
 
@@ -33,6 +40,9 @@ def build_model(
         x_timestamp: str = Header(...),
         x_signature: str = Header(...),
 ):
+    """
+    Coroutine used for build recommendation model.
+    """
     try:
         timestamp = int(x_timestamp)
     except ValueError:
