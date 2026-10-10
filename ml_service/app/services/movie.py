@@ -9,20 +9,32 @@ from fastapi import Depends
 
 
 class MovieService:
+    """
+    Service used for giving information of movies.
+    """
     def __init__(
             self,
             movie_repo: MovieRepository,
             rels_repo: MovieRelationRepository,
             interaction_repo: InteractionRepository,
     ):
+        """
+        init method used for creating variables.
+        """
         self.movie_repo = movie_repo
         self.rels_repo = rels_repo
         self.interaction_repo = interaction_repo
 
     def padding_to_5(self, lst: list):
+        """
+        method used for making sure are list lenght are 5.
+        """
         return lst[:5] + [0] * max(0, 5 - len(lst))
 
     async def get_movies(self, movie_ids: list):
+        """
+        method used for collecting movies data.
+        """
         movies = []
         for movie_id in movie_ids:
             movie = await self.movie_repo.get_movie_basic(movie_id)
@@ -46,4 +58,7 @@ def get_movie_service(
         rels_repo: MovieRelationRepository = Depends(get_movie_relation_repository),
         interaction_repo: InteractionRepository = Depends(get_intraction_repository)
 ):
+    """
+    function used for return MovieService instance.
+    """
     return MovieService(movie_repo, rels_repo, interaction_repo)
