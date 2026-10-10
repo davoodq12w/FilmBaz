@@ -11,31 +11,44 @@ from ..repositories.movie import (
 
 
 class InteractionService:
+    """
+    Service used for giving interactions information.
+    """
+
     def __init__(
             self, repo: InteractionRepository,
             movie_repo: MovieRepository,
             movie_relation_repo: MovieRelationRepository,
     ):
+        """
+        init method used for creating variables.
+        """
         self.repo = repo
         self.movie_repo = movie_repo
         self.movie_relation_repo = movie_relation_repo
 
     def padding_to_5(self, lst: list):
+        """
+        method used for making sure are list lenght are 5.
+        """
         return lst[:5] + [0] * max(0, 5 - len(lst))
 
     async def get_interactions(self, user_id: int):
-        interactions = await self.repo.get_user_interactions(user_id)
+        """
+        method used for collecting interactions data.
+        """
+        interactions = await self.repo.get_user_interactions(user_id)  # get used interactions
         user_interaction_count = len(interactions)
         avg_interaction_weight = sum([i["weight"] for i in interactions]) / user_interaction_count
         active_days = (interactions[-1]["timestamp"] - interactions[0]["timestamp"]).days
-        active_days = 0 if active_days < 0 else active_days
+        active_days = 0 if active_days < 0 else active_days  # should not to be negtive.
 
         interactions_for_fov_movies = [i for i in interactions
                                        if i["interaction_type"] in [
                                            "save", "like", "share", "complete"
                                        ]]
         fov_movies_ids = [i["movie_id"] for i in interactions_for_fov_movies]
-        fov_movies = await self.movie_repo.get_movies_basic(fov_movies_ids)
+        fov_movies = await self.movie_repo.get_movies_basic(fov_movies_ids) # get favorite movies.
 
         fov_movie_runtimes = [m["runtime"] for m in fov_movies]
         preferred_runtime = sum(fov_movie_runtimes) / len(fov_movie_runtimes)
@@ -46,7 +59,7 @@ class InteractionService:
         all_fov_directors = []
         all_fov_writers = []
         for movie_id in fov_movies_ids:
-            result = await self.movie_relation_repo.get_movie_director_writer_producer(movie_id)
+            result = await self.movie_relation_repo.get_movie_director_writer_producer(movie_id) # get crews of movie
             all_fov_directors.append(result["director_id"])
             all_fov_writers.append(result["writer_id"])
 
@@ -110,4 +123,7 @@ def get_interaction_service(
         movie_repo: MovieRepository = Depends(get_movie_repository),
         rels_repo: MovieRelationRepository = Depends(get_movie_relation_repository),
 ):
+    """
+    function used for return InteractionService instance.
+    """
     return InteractionService(repo=repo, movie_repo=movie_repo, movie_relation_repo=rels_repo)

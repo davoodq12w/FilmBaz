@@ -5,17 +5,26 @@ from fastapi import Depends
 
 
 class RawData:
+    """
+    Service used for giving a list of raw data for recomendation model.
+    """
     def __init__(
             self,
             user_service: UserService,
             interaction_service: InteractionService,
             movie_service: MovieService
     ):
+        """
+        init method used for creating variables.
+        """
         self.user_service = user_service
         self.interaction_service = interaction_service
         self.movie_service = movie_service
 
     async def get_raw_data(self, user_id: int, movie_ids: list[int]) -> list[dict]:
+        """
+        method used for collect all data about user and movies nad interactions and create raw data.
+        """
         user = await self.user_service.build_user_features(user_id=user_id)
         interaction = await self.interaction_service.get_interactions(user_id=user_id)
         movies = await self.movie_service.get_movies(movie_ids=movie_ids)
@@ -64,4 +73,7 @@ def raw_data(
         interaction_service: InteractionService = Depends(get_interaction_service),
         movie_service: MovieService = Depends(get_movie_service),
 ):
+    """
+    function used for return RawData instance.
+    """
     return RawData(user_service, interaction_service, movie_service)

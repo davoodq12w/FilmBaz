@@ -6,12 +6,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class MovieRepository:
+    """
+    Repository used for giving data of movies.
+    """
+
     def __init__(self, session: AsyncSession):
+        """
+        init method used for creating variables.
+        """
         self.session = session
 
     async def get_movie_basic(self, movie_id: int) -> Optional[dict]:
         """
-        اطلاعات پایه یک فیلم را برمی‌گرداند
+        method used for collecting basic information about a movie from DataBase.
         """
         query = text("""
                      SELECT id AS movie_id,
@@ -23,7 +30,7 @@ class MovieRepository:
                             release_date
                      FROM film_movie
                      WHERE id = :movie_id
-                     """)
+                     """) # get movie data
 
         result = await self.session.execute(query, {"movie_id": movie_id})
         row = result.mappings().first()
@@ -32,8 +39,7 @@ class MovieRepository:
 
     async def get_movies_basic(self, movie_ids: List[int]) -> List[dict]:
         """
-        اطلاعات پایه چندین فیلم را یکجا برمی‌گرداند
-        (برای ساخت دیتاست توصیه مفید است)
+        method used for collecting basic information about movies from DataBase.
         """
         if not movie_ids:
             return []
@@ -48,7 +54,7 @@ class MovieRepository:
                             release_date
                      FROM film_movie
                      WHERE id = ANY (:movie_ids)
-                     """)
+                     """) # get movies data
 
         result = await self.session.execute(query, {"movie_ids": movie_ids})
         rows = result.mappings().all()
@@ -57,27 +63,32 @@ class MovieRepository:
 
 
 class MovieRelationRepository:
+    """
+    Repository used for giving data of movie relations.
+    """
     def __init__(self, session: AsyncSession):
+        """
+        init method used for creating variables.
+        """
         self.session = session
 
     async def get_movie_genres(self, movie_id: int) -> List[dict]:
         """
-        ژانرهای یک فیلم را برمی‌گرداند
+        method used for collecting information genres of a movie from DataBase.
         """
         query = text("""
                      SELECT g.id AS genre_id
                      FROM film_movie_genres mg
                               JOIN film_genre g ON g.id = mg.genre_id
                      WHERE mg.movie_id = :movie_id
-                     """)
+                     """) # get genres
 
         result = await self.session.execute(query, {"movie_id": movie_id})
         return list(result.scalars().all())
 
     async def get_movies_genres(self, movie_ids: List[int]) -> Dict[int, List[dict]]:
         """
-        ژانرهای چندین فیلم را یکجا برمی‌گرداند
-        خروجی: {movie_id: [genre_dicts]}
+        method used for collecting information genres of movies from DataBase.
         """
         if not movie_ids:
             return {}
@@ -88,7 +99,7 @@ class MovieRelationRepository:
                      FROM film_movie_genres mg
                               JOIN film_genre g ON g.id = mg.genre_id
                      WHERE mg.movie_id = ANY (:movie_ids)
-                     """)
+                     """) # get genres
 
         result = await self.session.execute(query, {"movie_ids": movie_ids})
         rows = result.mappings().all()
@@ -103,7 +114,7 @@ class MovieRelationRepository:
 
     async def get_movie_crews(self, movie_id: int) -> List[dict]:
         """
-        خدمه یک فیلم (کارگردان، نویسنده، تهیه‌کننده) را برمی‌گرداند
+        method used for collecting information crews of a movie from DataBase.
         """
         query = text("""
                      SELECT mc.role,
@@ -121,8 +132,7 @@ class MovieRelationRepository:
 
     async def get_movies_crews(self, movie_ids: List[int]) -> Dict[int, List[dict]]:
         """
-        خدمه چندین فیلم را یکجا برمی‌گرداند
-        خروجی: {movie_id: [crew_dicts]}
+        method used for collecting information crews of movies from DataBase.
         """
         if not movie_ids:
             return {}
@@ -151,8 +161,7 @@ class MovieRelationRepository:
 
     async def get_movie_director_writer_producer(self, movie_id: int) -> dict:
         """
-        به صورت خلاصه director_id, writer_id, producer_id را برمی‌گرداند
-        (اگر چند نفر باشند، اولین نفر را برمی‌دارد)
+        method used for collecting crew ids of movie form DataBase.
         """
         crews = await self.get_movie_crews(movie_id)
 
@@ -175,8 +184,14 @@ class MovieRelationRepository:
 
 
 def get_movie_repository(session: AsyncSession = Depends(get_session)):
+    """
+    function used for return MovieRepository instance.
+    """
     return MovieRepository(session)
 
 
 def get_movie_relation_repository(session: AsyncSession = Depends(get_session)):
+    """
+    function used for return MovieRelationRepository instance.
+    """
     return MovieRelationRepository(session)

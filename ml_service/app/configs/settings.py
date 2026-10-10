@@ -4,6 +4,9 @@ DATABASE_URL = "postgresql+asyncpg://ml_service:MlServicePassword@db:5432/filmba
 
 
 class Settings(BaseSettings):
+    """
+    Class used for more settings.
+    """
     DATABASE_URL: str = DATABASE_URL
 
 
