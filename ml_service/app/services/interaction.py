@@ -123,4 +123,7 @@ def get_interaction_service(
         movie_repo: MovieRepository = Depends(get_movie_repository),
         rels_repo: MovieRelationRepository = Depends(get_movie_relation_repository),
 ):
+    """
+    function used for return InteractionService instance.
+    """
     return InteractionService(repo=repo, movie_repo=movie_repo, movie_relation_repo=rels_repo)
