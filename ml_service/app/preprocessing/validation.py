@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-
+# type of some columns.
 EXPECTED_OBJECT_TYPES = {
     "genres": list,
     "favorite_genres": list,
@@ -12,9 +12,13 @@ EXPECTED_OBJECT_TYPES = {
 
 
 def validate_dataset(df: pd.DataFrame) -> pd.DataFrame:
-    # =====================================================
-    # Missing Values
-    # =====================================================
+    """
+    function used for validation dataframe
+    """
+
+
+    #---------- Missing Values ----------
+
     if df.isnull().values.any():
         null_columns = df.columns[df.isnull().any()].tolist()
 
@@ -22,17 +26,14 @@ def validate_dataset(df: pd.DataFrame) -> pd.DataFrame:
             f"Dataset contains missing values in columns: {null_columns}"
         )
 
-    # =====================================================
-    # Duplicate Index
-    # =====================================================
+    #---------- Duplicate Index ----------
+
     if not df.index.is_unique:
         raise ValueError(
             "Dataset index contains duplicate values."
         )
 
-    # =====================================================
-    # Validate Object Columns
-    # =====================================================
+    #---------- Validate Object Columns ----------
     object_columns = set(
         df.select_dtypes(include=["object"]).columns
     )
@@ -55,9 +56,7 @@ def validate_dataset(df: pd.DataFrame) -> pd.DataFrame:
             f"Expected object columns are missing: {sorted(missing_columns)}"
         )
 
-    # =====================================================
-    # Validate Object Types
-    # =====================================================
+    #---------- Validate Object Types ----------
     for column, expected_type in EXPECTED_OBJECT_TYPES.items():
 
         invalid = df[column].apply(
@@ -77,9 +76,7 @@ def validate_dataset(df: pd.DataFrame) -> pd.DataFrame:
                 f"of type {type(invalid_value).__name__}."
             )
 
-    # =====================================================
-    # Datetime Columns
-    # =====================================================
+    #---------- Datetime Columns ----------
     datetime_columns = df.select_dtypes(
         include=["datetime64[ns]", "datetimetz"]
     ).columns.tolist()
@@ -89,23 +86,19 @@ def validate_dataset(df: pd.DataFrame) -> pd.DataFrame:
             f"Unexpected datetime columns found: {datetime_columns}"
         )
 
-    # =====================================================
-    # Infinity Values
-    # =====================================================
+    # ---------- Infinity Values ----------
     numeric_df = df.select_dtypes(
         include=np.number
     )
 
     if np.isinf(
-        numeric_df.to_numpy()
+            numeric_df.to_numpy()
     ).any():
         raise ValueError(
             "Dataset contains infinity values."
         )
 
-    # =====================================================
-    # ID Validation
-    # =====================================================
+    # ---------- ID Validation ----------
     id_columns = [
         "user_id",
         "movie_id",
@@ -114,7 +107,6 @@ def validate_dataset(df: pd.DataFrame) -> pd.DataFrame:
     for column in id_columns:
 
         if (df[column] <= 0).any():
-
             invalid_count = int(
                 (df[column] <= 0).sum()
             )
