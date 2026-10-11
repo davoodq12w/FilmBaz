@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import datetime
 import pandas as pd
-from ..utils import get_latest_raw_dataset
+from ..utils import get_latest_raw_dataset, delete_older_processed_dataset
 from .clean import cleaned_data
 from .validation import validate_dataset
 
@@ -28,6 +28,7 @@ def get_processed_dataset(df=None) -> Path:
         PROCESSED_DATASET_DIR.mkdir(parents=True, exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_path = PROCESSED_DATASET_DIR / f"dataset_{timestamp}.csv"
+        delete_older_processed_dataset()
         print(f"Processed dataset saved to {output_path}")
         df.to_csv(output_path, index=False)
         return output_path

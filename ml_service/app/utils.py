@@ -6,7 +6,11 @@ import glob
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 def get_latest_raw_dataset():
+    """
+    function used for returning the latest raw dataset file.
+    """
     dataset_dir = BASE_DIR / "datasets" / "raw"
     files = sorted(dataset_dir.glob("dataset_*.csv"))
 
@@ -17,6 +21,9 @@ def get_latest_raw_dataset():
 
 
 def get_latest_processed_dataset():
+    """
+    function used for returning the latest processed dataset file.
+    """
     dataset_dir = BASE_DIR / "datasets" / "processed"
     files = sorted(dataset_dir.glob("dataset_*.csv"))
 
@@ -26,9 +33,28 @@ def get_latest_processed_dataset():
     return files[-1]
 
 
+def delete_older_processed_dataset():
+    """
+    function used for deleting the older processed dataset files.
+    """
+    dataset_dir = BASE_DIR / "datasets" / "processed"
+    files = dataset_dir.glob("dataset_*.csv")
+
+    if not files:
+        pass
+    else:
+        for file in files:
+            os.remove(file)
+
+
 def save_training_log(log_data: dict):
+    """
+    function used for saving training logs of recommendation model.
+    """
     log_file = BASE_DIR / "logs" / "training_logs.json"
     os.makedirs("logs", exist_ok=True)
+
+    # if file exists add log to it else create the file.
     if os.path.exists(log_file):
         with open(log_file, "r", encoding="utf-8") as f:
             logs = json.load(f)
@@ -40,6 +66,9 @@ def save_training_log(log_data: dict):
 
 
 def create_model_metadata(history, results):
+    """
+    function used for returning the model metadata.
+    """
     return {
         "date": str(date.today()),
         "loss": float(results[0]),
@@ -53,6 +82,9 @@ def create_model_metadata(history, results):
 
 
 def get_current_best_metadata():
+    """
+    function used for returning the best metadata of model for right now.
+    """
     json_files = glob.glob("../models/*.json")
     if not json_files:
         return None, None
@@ -63,6 +95,9 @@ def get_current_best_metadata():
 
 
 def is_better(new_meta, old_meta):
+    """
+    function used for Compare the recommendation models.
+    """
     if old_meta is None:
         return True
     return (
@@ -72,11 +107,17 @@ def is_better(new_meta, old_meta):
 
 
 def delete_old_model():
+    """
+    function used for deleting old recommendation model and metadata of this.
+    """
     for file in glob.glob("../models/*"):
         os.remove(file)
 
 
 def save_best_model(model, metadata):
+    """
+    function used for saving best recommendation model.
+    """
     os.makedirs("models", exist_ok=True)
     delete_old_model()
 

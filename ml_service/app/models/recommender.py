@@ -22,46 +22,64 @@ NUMERIC_COLUMNS = [
     "popularity",
 ]
 
+
 def build_model(normalizer, vocabularies):
+    """
+    Function used to build the recommendation model.
+    the model predicts the interaction score between a user and a movie based on:
+        - Numeric features
+        - Single categorical features
+        - Multi-value categorical features
+    """
+
     # ---------- Inputs ----------
 
+    # Continuous values such as view count, release year,
+    # runtime, popularity and user statistics.
+    # These features are normalized before entering the network.
     numeric_input = layers.Input(
         shape=(len(NUMERIC_COLUMNS),),
         name="numeric_features"
     )
 
-    country_input = layers.Input(
-        shape=(1,),
-        dtype=tf.string,
-        name="country"
-    )
+    # Single categorical inputs
+    # Each sample contains exactly one value.
+    # These are converted to embeddings.
 
+    country_input = layers.Input(shape=(1,), dtype=tf.string, name="country")
     director_input = layers.Input(shape=(1,), dtype=tf.int32, name="director_id")
     writer_input = layers.Input(shape=(1,), dtype=tf.int32, name="writer_id")
     producer_input = layers.Input(shape=(1,), dtype=tf.int32, name="producer_id")
     user_input = layers.Input(shape=(1,), dtype=tf.int32, name="user_id")
     movie_input = layers.Input(shape=(1,), dtype=tf.int32, name="movie_id")
 
+    # Multi-value categorical inputs
+    # Each sample may contain multiple IDs.
+    # Example:
+    # genres = [Action, Drama]
+    # favorite_directors = [12, 51, 99]
+    # Later these embeddings are averaged into a single vector.
+
     favorite_directors_input = layers.Input(
-        shape=(None,),
+        shape=(5,),
         dtype=tf.int32,
         name="favorite_directors"
     )
 
     favorite_writers_input = layers.Input(
-        shape=(None,),
+        shape=(5,),
         dtype=tf.int32,
         name="favorite_writers"
     )
 
     genres_input = layers.Input(
-        shape=(None,),
+        shape=(5,),
         dtype=tf.int32,
         name="genres"
     )
 
     favorite_genres_input = layers.Input(
-        shape=(None,),
+        shape=(5,),
         dtype=tf.int32,
         name="favorite_genres"
     )
@@ -72,10 +90,22 @@ def build_model(normalizer, vocabularies):
         name="bool_features"
     )
 
-    # ---------- Numeric ----------
+    # ---------- Normalizing ----------
+
+    # Normalize numeric features using statistics
+    # computed during preprocessing.
     numeric = normalizer(numeric_input)
 
     # ---------- Single Embeddings ----------
+
+    # Lookup layers convert raw IDs/strings into consecutive
+    # integer indices required by Embedding layers.
+    #
+    # Example:
+    # Director ID:
+    # 125 -> 1
+    # 830 -> 2
+    # 77  -> 3
     country_lookup = layers.StringLookup(
         vocabulary=vocabularies["country"],
         mask_token=None
@@ -83,25 +113,29 @@ def build_model(normalizer, vocabularies):
 
     country = country_lookup(country_input)
 
+    # Convert each index into a dense vector
+    # that the network learns during training.
     country = layers.Embedding(
         input_dim=country_lookup.vocabulary_size(),
         output_dim=16
     )(country)
 
+    # Remove the extra dimension produced by Embedding.
     country = layers.Flatten()(country)
 
     director_lookup = layers.IntegerLookup(
         vocabulary=vocabularies["director_id"],
-        mask_token=None
+        mask_token=None  # don't create a token for mask ( tokens not a value of list).
     )
 
     director = director_lookup(director_input)
 
     director = layers.Embedding(
         input_dim=director_lookup.vocabulary_size(),
-        output_dim=32
+        output_dim=32 # number of vectors to be created for this column of data.
     )(director)
 
+    # Remove the extra dimension produced by Embedding.
     director = layers.Flatten()(director)
 
     writer_lookup = layers.IntegerLookup(
@@ -162,6 +196,16 @@ def build_model(normalizer, vocabularies):
 
     # ---------- Multi Embeddings ----------
 
+    # Each movie/user have multiple values.
+    #
+    # Example:
+    # Genres:
+    # [Action, Comedy, Drama]
+    #
+    # After embedding every genre separately,
+    # GlobalAveragePooling1D computes one vector that
+    # represents the whole list.
+
     favorite_director_lookup = layers.IntegerLookup(
         vocabulary=vocabularies["favorite_directors"],
         mask_token=None
@@ -218,6 +262,9 @@ def build_model(normalizer, vocabularies):
 
     # ---------- Merge ----------
 
+    # Merge every feature into a single feature vector.
+    # This vector becomes the input to the dense network.
+
     x = layers.Concatenate()([
         numeric,
         genres,
@@ -235,6 +282,12 @@ def build_model(normalizer, vocabularies):
 
     # ---------- Dense ----------
 
+    # Fully connected network responsible for learning
+    # the interaction between all extracted features.
+    #
+    # Architecture:
+    # 256 -> 128 -> 64 -> Score
+
     x = layers.Dense(256, activation="relu")(x)
     x = layers.Dropout(0.3)(x)
 
@@ -243,6 +296,8 @@ def build_model(normalizer, vocabularies):
 
     x = layers.Dense(64, activation="relu")(x)
 
+    # Predict the final interaction score.
+    # Linear activation is used because this is a regression task.
     output = layers.Dense(
         1,
         activation="linear",

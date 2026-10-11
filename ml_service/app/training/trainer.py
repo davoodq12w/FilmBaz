@@ -16,6 +16,9 @@ import tensorflow as tf
 
 
 def get_df():
+    """
+    function used for giving a datafarme of data
+    """
     df = pd.read_csv(get_latest_processed_dataset())
     list_columns = [
         "favorite_genres",
@@ -24,6 +27,7 @@ def get_df():
         "genres",
     ]
 
+    # "['Action', 'Drama']"  -->  ['Action', 'Drama']
     for col in list_columns:
         df[col] = df[col].apply(
             lambda x: literal_eval(x) if isinstance(x, str) else x
@@ -32,12 +36,39 @@ def get_df():
 
 
 def dataframe_to_inputs(df):
+    """
+    function used for converting dataframe to tensor flow model inputs.
+
+    CSV Dataset
+         |
+         ↓
+    Split Train/Test
+         |
+         ↓
+    Normalize Numeric Data
+         |
+         ↓
+    Create Embedding Vocabularies
+         |
+         ↓
+    Build Neural Network
+         |
+         ↓
+    Train
+         |
+         ↓
+    Evaluate
+         |
+         ↓
+    Compare With Old Model
+         |
+         ↓
+    Save If Better
+
+    """
     inputs = {
         "numeric_features": df[NUMERIC_COLUMNS].astype("float32").values,
-        "country": tf.constant(
-            df["country"].astype(str).values,
-            dtype=tf.string
-        ),
+        "country": tf.constant(df["country"].astype(str).values, dtype=tf.string),
         "director_id": df["director_id"].astype("int32").values,
         "writer_id": df["writer_id"].astype("int32").values,
         "producer_id": df["producer_id"].astype("int32").values,
@@ -53,18 +84,26 @@ def dataframe_to_inputs(df):
 
 
 def train_model():
+    """
+    function used for training the recommender model then testing it.
+    if it's better than previous model, saving new model.
+    """
+    #---------- get dataframe -----------
     df = get_df()
 
+    #--------- spilt dataframe ----------
     fetures = df.drop(["target_score"], axis=1)
     target = df["target_score"]
     x_train, x_test, y_train, y_test = train_test_split(fetures, target, test_size=0.2, random_state=42)
 
+    #-------- create normalizer ---------
     normalizer = layers.Normalization()
 
     normalizer.adapt(
         x_train[NUMERIC_COLUMNS].to_numpy(dtype="float32")
     )
 
+    #-------- create vocabularies -------
     vocabularies = {
         "user_id": x_train["user_id"].unique(),
         "movie_id": x_train["movie_id"].unique(),
@@ -72,13 +111,15 @@ def train_model():
         "writer_id": x_train["writer_id"].unique(),
         "producer_id": x_train["producer_id"].unique(),
         "country": x_train["country"].astype(str).unique().tolist(),
-        "favorite_directors": x_train["favorite_directors"].explode().unique().astype("int32"),
-        "favorite_writers": x_train["favorite_writers"].explode().unique().astype("int32"),
-        "genres": x_train["genres"].explode().unique().astype("int32"),
+        "favorite_directors": x_train["favorite_directors"].explode().query("!= 0").unique().astype("int32"),
+        "favorite_writers": x_train["favorite_writers"].explode().query("!= 0").unique().astype("int32"),
+        "genres": x_train["genres"].explode().query("!= 0").unique().astype("int32"),
     }
 
+    #----------- build model ------------
     model = build_model(normalizer, vocabularies)
 
+    #---------- compile model ------------
     model.compile(
         optimizer=tf.keras.optimizers.Adam(
             learning_rate=1e-3
@@ -90,15 +131,18 @@ def train_model():
         ]
     )
 
+    #---------- create inputs -----------
     train_inputs = dataframe_to_inputs(x_train)
     test_inputs = dataframe_to_inputs(x_test)
 
+    #-------- create early stop ---------
     early_stopping = tf.keras.callbacks.EarlyStopping(
         monitor="val_loss",
         patience=5,
         restore_best_weights=True,
     )
 
+    #---------- train model -------------
     history = model.fit(
         train_inputs,
         y_train.astype("float32").values,
@@ -112,6 +156,7 @@ def train_model():
         callbacks=[early_stopping],
     )
 
+    #---------- compare model -----------
     results = model.evaluate(
         test_inputs,
         y_test.astype("float32").values,
