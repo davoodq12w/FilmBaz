@@ -72,9 +72,9 @@ def train_model():
         "writer_id": x_train["writer_id"].unique(),
         "producer_id": x_train["producer_id"].unique(),
         "country": x_train["country"].astype(str).unique().tolist(),
-        "favorite_directors": x_train["favorite_directors"].explode().unique().astype("int32"),
-        "favorite_writers": x_train["favorite_writers"].explode().unique().astype("int32"),
-        "genres": x_train["genres"].explode().unique().astype("int32"),
+        "favorite_directors": x_train["favorite_directors"].explode().query("!= 0").unique().astype("int32"),
+        "favorite_writers": x_train["favorite_writers"].explode().query("!= 0").unique().astype("int32"),
+        "genres": x_train["genres"].explode().query("!= 0").unique().astype("int32"),
     }
 
     model = build_model(normalizer, vocabularies)
