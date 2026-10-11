@@ -9,11 +9,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 app = FastAPI()
 
-app.include_router(recommendation.router, tags=["recommendation"])
+app.include_router(recommendation.router, tags=["recommendation"])  # load urls
 
 
 @app.on_event("startup")
 def startup():
+    """
+    function runs in startup and make a new recommender model if it's not existing.
+    """
     try:
         app.state.recommender_model = load_model(
             f"{BASE_DIR}/models/recommender.keras"
