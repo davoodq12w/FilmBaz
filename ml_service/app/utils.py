@@ -6,6 +6,7 @@ import glob
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 def get_latest_raw_dataset():
     """
     function used for returning the latest raw dataset file.
@@ -30,6 +31,20 @@ def get_latest_processed_dataset():
         raise FileNotFoundError("No dataset found.")
 
     return files[-1]
+
+
+def delete_older_processed_dataset():
+    """
+    function used for deleting the older processed dataset files.
+    """
+    dataset_dir = BASE_DIR / "datasets" / "processed"
+    files = dataset_dir.glob("dataset_*.csv")
+
+    if not files:
+        pass
+    else:
+        for file in files:
+            os.remove(file)
 
 
 def save_training_log(log_data: dict):

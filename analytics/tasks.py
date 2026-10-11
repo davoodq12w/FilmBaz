@@ -8,6 +8,7 @@ from pathlib import Path
 from analytics.utils import DatasetBuilder
 from datetime import datetime
 from ml_service.datasets.generator import generate_dataset
+import os
 
 BUILD_MODEL_PASSWORD = config("BUILD_MODEL_PASSWORD")
 BUILD_MODEL_URL = "http://ml_service:8002/build_model/"
@@ -62,5 +63,14 @@ def build_row_dataset():
     # use datetime in the name of csv file for date ordering
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_file = output_dir / f"dataset_{timestamp}.csv"
+
+    # delete older datasets
+    old_files = output_dir.glob("dataset_*.csv")
+
+    if not old_files:
+        pass
+    else:
+        for file in old_files:
+            os.remove(file)
 
     df.to_csv(output_file, index=False)
