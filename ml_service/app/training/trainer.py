@@ -16,6 +16,9 @@ import tensorflow as tf
 
 
 def get_df():
+    """
+    function used for giving a datafarme of data
+    """
     df = pd.read_csv(get_latest_processed_dataset())
     list_columns = [
         "favorite_genres",
@@ -24,6 +27,7 @@ def get_df():
         "genres",
     ]
 
+    # "['Action', 'Drama']"  -->  ['Action', 'Drama']
     for col in list_columns:
         df[col] = df[col].apply(
             lambda x: literal_eval(x) if isinstance(x, str) else x
@@ -32,12 +36,12 @@ def get_df():
 
 
 def dataframe_to_inputs(df):
+    """
+    function used for converting dataframe to tensor flow model inputs
+    """
     inputs = {
         "numeric_features": df[NUMERIC_COLUMNS].astype("float32").values,
-        "country": tf.constant(
-            df["country"].astype(str).values,
-            dtype=tf.string
-        ),
+        "country": tf.constant(df["country"].astype(str).values, dtype=tf.string),
         "director_id": df["director_id"].astype("int32").values,
         "writer_id": df["writer_id"].astype("int32").values,
         "producer_id": df["producer_id"].astype("int32").values,
@@ -53,6 +57,10 @@ def dataframe_to_inputs(df):
 
 
 def train_model():
+    """
+    function used for training the recommender model then testing it.
+    if it's better than previous model, saving new model.
+    """
     df = get_df()
 
     fetures = df.drop(["target_score"], axis=1)
