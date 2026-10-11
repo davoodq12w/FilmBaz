@@ -37,7 +37,34 @@ def get_df():
 
 def dataframe_to_inputs(df):
     """
-    function used for converting dataframe to tensor flow model inputs
+    function used for converting dataframe to tensor flow model inputs.
+
+    CSV Dataset
+         |
+         ↓
+    Split Train/Test
+         |
+         ↓
+    Normalize Numeric Data
+         |
+         ↓
+    Create Embedding Vocabularies
+         |
+         ↓
+    Build Neural Network
+         |
+         ↓
+    Train
+         |
+         ↓
+    Evaluate
+         |
+         ↓
+    Compare With Old Model
+         |
+         ↓
+    Save If Better
+
     """
     inputs = {
         "numeric_features": df[NUMERIC_COLUMNS].astype("float32").values,
@@ -61,18 +88,22 @@ def train_model():
     function used for training the recommender model then testing it.
     if it's better than previous model, saving new model.
     """
+    #---------- get dataframe -----------
     df = get_df()
 
+    #--------- spilt dataframe ----------
     fetures = df.drop(["target_score"], axis=1)
     target = df["target_score"]
     x_train, x_test, y_train, y_test = train_test_split(fetures, target, test_size=0.2, random_state=42)
 
+    #-------- create normalizer ---------
     normalizer = layers.Normalization()
 
     normalizer.adapt(
         x_train[NUMERIC_COLUMNS].to_numpy(dtype="float32")
     )
 
+    #-------- create vocabularies -------
     vocabularies = {
         "user_id": x_train["user_id"].unique(),
         "movie_id": x_train["movie_id"].unique(),
@@ -85,8 +116,10 @@ def train_model():
         "genres": x_train["genres"].explode().query("!= 0").unique().astype("int32"),
     }
 
+    #----------- build model ------------
     model = build_model(normalizer, vocabularies)
 
+    #---------- compile model ------------
     model.compile(
         optimizer=tf.keras.optimizers.Adam(
             learning_rate=1e-3
@@ -98,15 +131,18 @@ def train_model():
         ]
     )
 
+    #---------- create inputs -----------
     train_inputs = dataframe_to_inputs(x_train)
     test_inputs = dataframe_to_inputs(x_test)
 
+    #-------- create early stop ---------
     early_stopping = tf.keras.callbacks.EarlyStopping(
         monitor="val_loss",
         patience=5,
         restore_best_weights=True,
     )
 
+    #---------- train model -------------
     history = model.fit(
         train_inputs,
         y_train.astype("float32").values,
@@ -120,6 +156,7 @@ def train_model():
         callbacks=[early_stopping],
     )
 
+    #---------- compare model -----------
     results = model.evaluate(
         test_inputs,
         y_test.astype("float32").values,
