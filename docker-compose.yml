@@ -82,7 +82,7 @@ services:
     networks:
       - main
 
-  # the cache DataBase ( Redis )
+  # the cache DataBase and Channel Layers ( Redis )
   redis:
     image: redis:6.2
     container_name: redis
