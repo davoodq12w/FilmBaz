@@ -452,12 +452,22 @@ The project is organized into multiple independent services.
 ```text
 FilmBaz
 │
-├── filmbaz/              # Django Backend
-├── filmbaz_ws/           # WebSocket Service
-├── ml_service/           # Machine Learning Service
-├── nginx/                # Reverse Proxy
-├── postgres/             # Database
+├── account/         
+├── analytics/        
+├── errors_templates/        
+├── postgres/    
+├── film/
+├── FilmBaz/
+├── logs/
+├── media/
+├── ml_service/
+├── nginx/
+├── people/
+├── support/
 ├── docker-compose.yml
+├── Dockerfile
+├── entrypoint.sh
+├── requirements.txt
 └── README.md
 ```
 
