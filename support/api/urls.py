@@ -8,5 +8,5 @@ urlpatterns = [
     path("support_sessions/admin/<int:pk>/", views.AdminSupportSessionDetailsApi.as_view(),
          name="support_session_details_admin"),
     path("support_sessions/user/", views.SupportSessionDetailsApi.as_view(), name="support_session_details_user"),
-    path("support_sessions/websocker_docs/", views.SupportSocketDocs.as_view(), name="support_sessions_websocker_docs"),
+    path("support_sessions/websocket_docs/", views.SupportSocketDocs.as_view(), name="support_sessions_websocker_docs"),
 ]
