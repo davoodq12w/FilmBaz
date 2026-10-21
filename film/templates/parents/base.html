@@ -6,12 +6,14 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/base_style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/parents/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/partials/header.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% block style %}{% endblock %}">
     <link rel="shortcut icon" href="{% static 'image/icon.png' %}" type="image/x-icon">
-    <title>Film Baz | {% block title%}{% endblock %}</title>
+    <title>Film Baz | {% block title %}{% endblock %}</title>
 </head>
 <body>
-    {% include "partials/header.html"%}
-    <div class="container">{% block body %}{% endblock %}</div>
+{% include "partials/header.html" %}
+<div class="container">{% block body %}{% endblock %}</div>
 </body>
 </html>
