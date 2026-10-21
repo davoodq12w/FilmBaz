@@ -1,4 +1,6 @@
 {% extends "parents/base.html" %}
+{% load static %}
+{% block style %}{% static "css/film/home_page.css" %}{% endblock %}
 {% block title %}Movies List{% endblock %}
 {% block body %}
     <a class="list-titles" href="{% url 'film:movies_list' %}?ordering=-release_date&page_size=21">
