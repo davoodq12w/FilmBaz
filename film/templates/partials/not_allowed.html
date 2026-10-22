@@ -1,6 +1,7 @@
 {% extends "parents/base.html" %}
 {% block title %}Page Not Allowed{% endblock %}
 {% load static %}
+{% block style %}{% static "css/partials/not_allowed.css" %}{% endblock %}
 {% block body %}
     <div class="not-allowed">
         <p class="not-allowed-text">این صفحه در دسترس نمی باشد.</p>
