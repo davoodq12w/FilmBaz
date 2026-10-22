@@ -76,20 +76,20 @@ application.
 
 # 🛠 Technology Stack
 
-| Category         | Technologies                    |
-|------------------|---------------------------------|
-| Backend          | Django 5, Django REST Framework |
-| Machine Learning | FastAPI                         |
-| Database         | PostgreSQL                      |
-| Cache            | Redis                           |
-| Message Broker   | RabbitMQ                        |
-| Background Tasks | Celery, Celery Beat             |
-| WebSocket        | Django Channels, Daphne         |
-| Reverse Proxy    | Nginx                           |
-| Deployment       | Docker, Docker Compose          |
-| Authentication   | JWT                             |
-| Search           | PostgreSQL Trigram Search       |
-| Image Processing | django-resized                  |
+| Category         | Technologies                      |
+|------------------|-----------------------------------|
+| Backend          | Django 5, Django REST Framework   |
+| Machine Learning | FastAPI, Sickit Learn, TensorFlow |
+| Database         | PostgreSQL                        |
+| Cache            | Redis                             |
+| Message Broker   | RabbitMQ                          |
+| Background Tasks | Celery, Celery Beat               |
+| WebSocket        | Django Channels, Daphne           |
+| Reverse Proxy    | Nginx                             |
+| Deployment       | Docker, Docker Compose            |
+| Authentication   | JWT                               |
+| Search           | PostgreSQL Trigram Search         |
+| Image Processing | django-resized                    |
 
 ---
 
