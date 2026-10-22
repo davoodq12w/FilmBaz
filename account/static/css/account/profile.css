@@ -1,0 +1,266 @@
+.bg-image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    z-index: -1000;
+}
+
+.bg-cover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    z-index: -900;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 200px black inset;
+}
+
+.profile-body {
+    margin: 100px auto;
+    width: 50%;
+    height: 40vh;
+    border: 1px solid #ff9f29;
+    border-radius: 8px;
+    display: flex;
+    background-color: #111111;
+}
+
+.profile-image-name {
+    text-align: center;
+    padding: 20px 0;
+    border-radius: 7px;
+    width: 30%;
+    height: 100%;
+    background-image: linear-gradient(#f4b514, #ff9f29);
+
+    & .profile-image {
+        width: 150px;
+        border-radius: 100%;
+    }
+
+    & .profile-name {
+        color: black;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        align-items: center;
+        margin: 10px auto;
+
+        & svg {
+            color: black;
+            margin-top: 5px;
+            width: 20px;
+            height: 100%;
+            transition: all 200ms ease;
+
+            &:hover {
+                color: #254136;
+            }
+        }
+    }
+
+    & .profile-change-password {
+        display: block;
+        color: #ff9f29;
+        background-color: #111111;
+        width: 40%;
+        text-align: center;
+        height: 30px;
+        border-radius: 6px;
+        line-height: 25px;
+        margin: 0 auto;
+        font-size: 14px;
+        transition: all 200ms ease;
+
+        &:hover {
+            font-size: 15px;
+        }
+    }
+}
+
+.profile-detail {
+    width: 70%;
+    color: #f4b514;
+
+    & hr {
+        border: #f4b514 1px solid;
+        width: 90%;
+    }
+
+    & .profile-information {
+        width: 100%;
+        margin: 20px 0 0 0;
+        padding: 30px 20px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        & div {
+            width: 50%;
+            text-align: center;
+
+            & span {
+                display: block;
+                font-size: 13px;
+            }
+        }
+
+        & a {
+            color: #ff9f29;
+            text-align: center;
+            width: 100%;
+            display: block;
+            transition: all 200ms ease;
+
+            &:hover {
+                color: #98620f;
+            }
+        }
+    }
+
+    & .profile-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 20px;
+        padding: 10px 30px;
+
+        & a {
+            color: #ff9f29;
+            text-align: center;
+            width: 100%;
+            display: block;
+            transition: all 200ms ease;
+
+            &:hover {
+                color: #98620f;
+            }
+        }
+    }
+}
+
+.profile-ticket-form-hidden {
+    visibility: hidden;
+    position: absolute;
+    width: 300px;
+    height: 40vh;
+    top: 286px;
+    left: 130px;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 200ms ease;
+}
+
+.profile-ticket-form {
+    visibility: visible;
+    position: absolute;
+    width: 300px;
+    height: 40vh;
+    background-color: #111111;
+    top: 286px;
+    left: 100px;
+    border: 1px solid #ff9f29;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 200ms ease;
+}
+
+.ticket-form {
+    transition: all 200ms ease;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+
+    & #id_subject {
+        display: block;
+        width: 90%;
+        margin: 10px auto;
+        height: 30px;
+        background-color: rgba(40, 31, 12, 0.32);
+        border: 1px solid #ff9f29;
+        border-radius: 5px;
+        color: #F5F7F8;
+        text-align: center;
+        transition: all 200ms ease;
+
+        & option {
+            background-color: rgb(63, 63, 63);
+            border-radius: 5px;
+            border: 2px solid #ff9f29;
+        }
+
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 5px #ff9f29;
+        }
+    }
+
+    & #id_text {
+        display: block;
+        width: 90%;
+        margin: 10px auto;
+        height: 140px;
+        resize: none;
+        background-color: rgba(40, 31, 12, 0.32);
+        border: 1px solid #ff9f29;
+        border-radius: 5px;
+        color: #F5F7F8;
+        transition: all 200ms ease;
+        font-size: 11px;
+        padding: 10px;
+
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 5px #ff9f29;
+        }
+    }
+}
+
+.ticket-form-buttons {
+    display: flex;
+    gap: 5px;
+    width: 90%;
+    margin: 5px auto;
+    align-items: center;
+    height: 30px;
+
+    & .ticket-form-submit {
+        height: 100%;
+        width: 50%;
+        color: black;
+        background-color: #ff9f29;
+        border-radius: 5px;
+        text-align: center;
+        border: none;
+        transition: all 200ms ease;
+
+        &:hover {
+            background-color: #915f1d;
+            font-size: 15px;
+        }
+    }
+
+    & .ticket-form-cancel {
+        width: 50%;
+        height: 100%;
+        color: #ff9f29;
+        background-color: #111111;
+        border-radius: 5px;
+        text-align: center;
+        border: 1px solid #ff9f29;
+        transition: all 200ms ease;
+
+        &:hover {
+            background-color: #3d2f1b;
+            font-size: 15px;
+        }
+    }
+}

@@ -1,4 +1,6 @@
 {% extends "parents/base.html" %}
+{% load static %}
+{% block style %}{% static "css/film/search_results.css" %}{% endblock %}
 {% block title %}Search Results{% endblock %}
 {% block body %}
     <h2 class="search-result-page-title"> نتایج جستجو بر اساس " {{ query }} " </h2>

@@ -1,0 +1,33 @@
+
+@font-face {
+    font-family: "vazir-medium";
+    src: url('../../fonts/vazir-font-v16.1.0/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff') format("woff");
+}
+
+@font-face {
+    font-family: "poppins";
+    src: url("../../fonts/Poppins/Poppins-Medium.woff2") format("woff2");
+}
+
+* {
+    font-family: poppins, vazir-medium, serif;
+    box-sizing: border-box;
+}
+
+html {
+    background-color: #000000;
+}
+
+svg {
+    width: 16px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+    height: fit-content;
+}

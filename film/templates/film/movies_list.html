@@ -1,4 +1,6 @@
 {% extends "parents/base.html" %}
+{% load static %}
+{% block style %}{% static "css/film/movies_list.css" %}{% endblock %}
 {% block title %}Movie List{% endblock %}
 {% block body %}
     <div class="movies-list-navbar">

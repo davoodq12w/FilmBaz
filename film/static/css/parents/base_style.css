@@ -2,12 +2,12 @@
 
 @font-face {
     font-family: "vazir-medium";
-    src: url('../fonts/vazir-font-v16.1.0/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff') format("woff");
+    src: url('../../fonts/vazir-font-v16.1.0/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff') format("woff");
 }
 
 @font-face {
     font-family: "poppins";
-    src: url("../fonts/Poppins/Poppins-Medium.woff2") format("woff2");
+    src: url("../../fonts/Poppins/Poppins-Medium.woff2") format("woff2");
 }
 
 * {

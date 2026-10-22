@@ -7,7 +7,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/base_style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/authentication/login.css' %}">
     <link rel="shortcut icon" href="{% static 'image/icon.png' %}" type="image/x-icon">
     <title>Film Baz | Login User</title>
 </head>
@@ -26,6 +26,7 @@
         <input type="submit" value="ورود" class="login-submit">
         <p class="login-create-account">حساب کاربری نداری؟ <a href="{% url 'account:create_user' %}"
                                                               class="login-create-account">ساخت یوزر</a></p>
+
         <p class="login-create-account">رمز خود را فراموش کرده اید؟<a href="{% url 'account:password_reset' %}"
                                                                       class="login-create-account">بازیابی رمز</a></p>
     </form>
