@@ -1,185 +1,324 @@
-
 .header {
-    width: 100%;
-    border: 1px solid #FF9F29A5;
-    background-color: #3A6351;
-    box-shadow: 0 0 7px rgba(255, 159, 41, 0.42);
-    border-radius: 4px;
-    height: 70px;
-    color: #F5F7F8;
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
-    padding: 10px;
-    gap: 20px;
+    justify-content: space-between;
+    gap: 24px;
+    height: 72px;
+    padding: 0 32px;
+    background: linear-gradient(180deg, rgba(10, 10, 12, 0.96), rgba(10, 10, 12, 0.85));
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+/* لوگو */
+.film-bazan-logo {
+    height: 40px;
+    display: block;
+    text-shadow: var(--color-primary-dark) 0 0 20px;
+    color: var(--color-primary);
+    line-height: 30px;
+}
+
+/* منوی وسط */
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-size: 15px;
+
+    & > a,
+    & .nav-dropdown-toggle {
+        position: relative;
+        padding: 8px 0;
+        color: var(--color-text-muted);
+        background: none;
+        border: 0;
+        font: inherit;
+        cursor: pointer;
+        transition: var(--transition);
+
+        &:hover {
+            color: var(--color-text);
+        }
+
+        &.active,
+        &.active:hover {
+            color: var(--color-primary);
+        }
+
+        &.active::after,
+        &.active::after {
+            content: "";
+            position: absolute;
+            inset-inline: 0;
+            bottom: -14px;
+            height: 3px;
+            background: var(--color-primary);
+        }
+    }
+}
+
+.nav-dropdown {
     position: relative;
+}
 
-    & .header-buttons {
-        display: flex;
-        width: 20%;
-        justify-content: space-between;
-        align-items: center;
+.nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: -35px;
+    min-width: 160px;
+    padding: 8px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+
+    & a {
+        display: block;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        color: var(--color-text-muted);
+
+        &:hover {
+            background: var(--color-primary-soft);
+            color: var(--color-text);
+        }
+    }
+}
+
+.nav-dropdown.open .nav-dropdown-menu {
+    display: block;
+}
+
+/* اکشن‌ها: جستجو و کاربر */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
+/* جستجو */
+.search {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+
+    & .search-toggle {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        background: none;
+        border: 0;
+        color: var(--color-text);
+        cursor: pointer;
     }
 
-    & .film-baz {
-        height: 95%;
+    & input[type="text"] {
+        width: 0;
+        padding: 0;
+        opacity: 0;
+        color: var(--color-text);
+        background: var(--color-surface);
+        border: 1px solid transparent;
+        border-radius: var(--radius-sm);
+        transition: var(--transition);
 
-        & img {
-            height: 100%;
+        &::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        &:focus-visible {
+            outline: none;
         }
     }
 
-    & .search {
-        height: 80%;
-        width: 30%;
-        margin-right: 40px;
-
-        & input {
-            color: #F5F7F8;
-            width: 100%;
-            height: 100%;
-            background-color: #254136;
-            border: none;
-            padding: 10px;
-            border-radius: 3px;
-
-            &::placeholder {
-                color: rgba(245, 247, 248, 0.77);
-            }
-
-            &:focus-visible {
-                outline: none;
-            }
-
-        }
+    &.open input[type="text"] {
+        width: 400px;
+        padding: 0 12px;
+        opacity: 1;
+        height: 40px;
+        border-color: var(--color-border);
     }
 }
 
 .inline-search-results {
     display: none;
     position: absolute;
+    top: calc(100% + 12px);
+    left: 85px;
+    width: 400px;
+    max-height: 400px;
+    overflow-y: auto;
     z-index: 1000;
-    background-color: rgba(58, 99, 81, 0.36);
-    backdrop-filter: blur(6px);
-    width: 448px;
-    height: fit-content;
-    color: #F5F7F8;
-    top: 60px;
-    right: 530px;
-    border: 1px solid #F5F7F8;
-    border-radius: 5px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 
     & ul {
-        filter: none;
         list-style: none;
-        text-align: right;
         margin: 0;
-        padding: 10px 20px;
-        width: 100%;
-
-        & li {
-            padding: 5px 0;
-            margin: 5px 0;
-            height: 30px;
-            width: 100%;
-        }
+        padding: 8px;
     }
-}
 
-.user-buttons-logout {
-    display: flex;
-    min-width: 15%;
-    width: fit-content;
-    height: 40px;
-    gap: 5px;
-    align-items: center;
-    background-color: #254136;
-    border-radius: 10px;
-
-    & a {
-        display: block;
-        color: #F5F7F8;
-        width: 70%;
-        height: 100%;
-        text-align: center;
-        line-height: 40px;
-        transition: all 200ms ease;
-        border-radius: 10px;
+    & li {
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
 
         &:hover {
-            background-color: #1c3128;
+            background: var(--color-primary-soft);
         }
-    }
-
-    & button {
-        width: 30%;
-        color: #000000;
-        background-color: #ff9f29;
-        border-radius: 10px;
-        height: 100%;
-        text-align: center;
-        border: none;
-        font-size: 17px;
-
     }
 }
 
-.logout-confirm {
-    transition: all 200ms ease;
+/* منوی کاربر */
+.user-menu {
+    position: relative;
+}
+
+.user-menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 6px 2px 2px;
+    background: none;
+    border: 0;
+    color: var(--color-text);
+    cursor: pointer;
+
+    & img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--color-primary);
+    }
+}
+
+.user-menu-dropdown {
     display: none;
     position: absolute;
-    background-color: rgba(37, 65, 54, 0.48);
-    backdrop-filter: blur(5px);
-    left: 20px;
-    top: 60px;
-    height: 50px;
-    padding: 0 10px;
-    align-items: center;
-    border: 1px solid #F5F7F8;
-    border-radius: 5px;
-    width: 350px;
+    top: calc(100% + 12px);
+    left: 0;
+    min-width: 180px;
+    padding: 8px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 
+    & a,
     & button {
+        display: block;
+        width: 100%;
+        padding: 10px 12px;
+        text-align: right;
+        color: var(--color-text);
         background: none;
-        border: none;
-        color: red;
-        font-size: 17px;
-        width: 15%;
-        transition: all 200ms ease;
+        border: 0;
+        border-radius: var(--radius-sm);
+        font: inherit;
+        cursor: pointer;
 
         &:hover {
-            font-size: 19px;
+            background: var(--color-primary-soft);
         }
     }
 
-    & p {
-        width: 85%;
+    & #logout-button {
+        color: var(--color-primary);
     }
 }
 
-.user-buttons-login {
-    color: #F5F7F8;
-    width: 10%;
-    height: 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #254136;
-    border-radius: 10px;
+.user-menu.open .user-menu-dropdown {
+    display: block;
+}
 
-    & .login {
-        color: #F5F7F8;
-        text-align: center;
-        width: 40%;
+/* تایید خروج */
+.logout-confirm {
+    display: none;
+    position: absolute;
+    left: 190px;
+    top:102px;
+    align-items: center;
+    gap: 12px;
+    width: 340px;
+    padding: 12px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+
+    & p {
+        margin: 0;
+        flex: 1;
+        font-size: 14px;
     }
 
-    & .header-create-user {
-        color: #000000;
-        width: 60%;
-        height: 100%;
-        background-color: #ff9f29;
-        border-radius: 10px;
-        text-align: center;
-        line-height: 40px;
+    & button {
+        padding: 6px 14px;
+        border: 0;
+        border-radius: var(--radius-sm);
+        background: var(--color-primary);
+        color: var(--color-text);
+        cursor: pointer;
+    }
+}
+
+/* دکمه‌های ورود و ثبت‌نام */
+.auth-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.auth-buttons a {
+    padding: 8px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.auth-buttons .btn-ghost {
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.auth-buttons .btn-ghost:hover {
+    border-color: var(--color-primary);
+}
+
+.auth-buttons .btn-primary {
+    color: var(--color-text);
+    background: var(--gradient-primary);
+}
+
+.auth-buttons .btn-primary:hover {
+    filter: brightness(1.15);
+}
+
+/* ریسپانسیو ساده */
+@media (max-width: 900px) {
+    .header {
+        padding: 0 16px;
+    }
+
+    .header-nav {
+        display: none;
     }
 }

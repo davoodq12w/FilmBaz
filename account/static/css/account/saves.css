@@ -1,8 +1,8 @@
 .saves-page-title {
     min-width: 400px;
     text-align: center;
-    color: black;
-    background-color: #ff9f29;
+    color: var(--color-text);
+    background-color: var(--color-primary);
     position: absolute;
     top: 70px;
     left: 30%;
@@ -11,31 +11,36 @@
     line-height: 60px;
     padding: 0 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px #ff9f29;
+    box-shadow: 0 0 10px var(--color-primary);
 }
 
 .saves-body {
     width: 90%;
-    border: 1px solid #ff9f29;
+    border: 1px solid var(--color-primary);
     border-radius: 8px;
     margin: 40px auto;
     display: flex;
-    box-shadow: 0 0 10px #ff9f29;
+    box-shadow: 0 0 10px var(--color-primary);
     padding: 50px 30px 0;
     flex-wrap: wrap;
     gap: 1.2%;
 }
 .saves-movie {
-    color: #F5F7F8;
+    color: var(--color-text);
     width: 19%;
     position: relative;
     margin-bottom: 10px;
+    transition: var(--transition);
 
     & .saves-thumbnail {
         width: 100%;
-        box-shadow: 0 0 5px #ff9f29;
+        height: 98%;
+        box-shadow: 0 0 5px var(--color-primary);
         border-radius: 5px;
     }
+}
+.saves-movie:hover {
+    transform: translateY(-4px) scale(1.03);
 }
 
 .saves-title-remove {
@@ -45,15 +50,15 @@
     width: 100%;
     border-radius: 5px;
     bottom: 6px;
-    color: #F5F7F8;
+    color: var(--color-text);
     padding: 40% 20px 0;
     justify-content: space-between;
     align-items: center;
     background-image: linear-gradient(#F5F7F800, rgba(0, 0, 0, 0.76), #000000);
 
     & .saves-title {
-        transition: all 200ms ease;
-        color: #F5F7F8;
+        transition: var(--transition);
+        color: var(--color-text);
         font-size: 13px;
         max-width: 80%;
 
@@ -64,9 +69,12 @@
 
     & .saves-remove {
         padding-top: 5px;
-
+        transition: var(--transition);
         & svg {
             width: 20px;
+        }
+        &:hover {
+            color: #918f8f;
         }
     }
 }

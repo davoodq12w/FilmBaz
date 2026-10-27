@@ -1,8 +1,7 @@
 
 .list-titles {
-    color: #ff9f29;
+    color: var(--color-text);
     height: 50px;
-    border-bottom: #3A6351 3px solid;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
@@ -25,11 +24,11 @@
         align-items: center;
 
         & span {
-            color: #ff9f29;
+            color: var(--color-primary);
         }
 
         & path {
-            color: #ff9f29;
+            color: var(--color-primary);
         }
     }
 }
@@ -47,6 +46,7 @@
         color: #F5F7F8;
         width: 176px;
         overflow: hidden;
+        border-radius: 5px;
 
         & .movie-poster {
             width: 176px;
@@ -56,11 +56,12 @@
 
         & .movie-title {
             margin: 10px 10px 0 0;
-
         }
 
         &:hover .movie-detail-hidden {
             opacity: 1;
+            border: 1px solid var(--color-primary-dark);
+            box-shadow: inset var(--color-primary) 0 0 6px;
             transition-delay: .5s;
         }
 
@@ -71,13 +72,14 @@
             height: 235px;
             top: 0;
             right: 0;
-            background-color: rgba(0, 0, 0, 0.78);
+            background-color: rgb(0 0 0 / 0.8);
             margin: 0;
             padding: 20px 10px;
             opacity: 0;
             transition: opacity .2s ease;
             transition-delay: 0s;
             pointer-events: none;
+            border-radius: 5px;
 
             & .movie-rate {
                 margin: 20px 0;
