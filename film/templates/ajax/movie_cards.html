@@ -1,30 +1,40 @@
 {# template for one movie in list #}
 {% for movie in movies %}
     <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="movie">
-        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster"
-             data-movie-id="{{ movie.id }}">
-        <p class="movie-title">{{ movie.fa_title }}</p>
-        <div class="movie-detail-hidden" id="detail-{{ movie.id }}">
-            <div class="movie-director">
-                <span>کارگردان : </span>
-                <span>{{ movie.get_director }}</span>
+        <div class="movie-poster-box">
+            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster" data-movie-id="{{ movie.id }}" loading="lazy">
+
+            {% if movie.rate %}
+            <div class="badge-rating">
+                <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                <span>{{ movie.rate }}</span>
             </div>
-            <div class="movie-year">
-                <span>سال ساخت : </span>
-                <span>{{ movie.release_date }}</span>
-            </div>
-            <div class="movie-rate">
-                <span>امتیاز در IMDB : </span>
-                <div>
-                    <span>{{ movie.rate }}</span>
+            {% endif %}
+
+            <!-- Hover Info Overlay -->
+            <div class="movie-detail-hidden" id="detail-{{ movie.id }}">
+                <div class="detail-item">
+                    <span>کارگردان:</span>
+                    <span>{{ movie.get_director }}</span>
                 </div>
-            </div>
-            <div class="movie-genres">
-                <div class="genres">
+                <div class="detail-item">
+                    <span>سال ساخت:</span>
+                    <span>{{ movie.release_date }}</span>
+                </div>
+                <div class="movie-genres-chip">
                     {% for genre in movie.genres.all %}
-                        <span>{{ genre.fa_name }}{% if not forloop.last %} , {% endif %}</span>
+                        {{ genre.fa_name }}{% if not forloop.last %} • {% endif %}
                     {% endfor %}
                 </div>
+            </div>
+        </div>
+
+        <!-- Visible Info below poster -->
+        <div class="movie-bottom-info">
+            <p class="movie-title">{{ movie.fa_title }}</p>
+            <div class="movie-meta-tags">
+                <span>{{ movie.release_date|default:"" }}</span>
+                <span>{{ movie.genres.first.fa_name|default:"" }}</span>
             </div>
         </div>
     </a>
