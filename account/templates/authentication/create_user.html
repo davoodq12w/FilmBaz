@@ -1,5 +1,5 @@
 {% load static %}
-{# dont useing BaseTemplate becouse header #}
+{# dont use BaseTemplate because header #}
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -7,25 +7,50 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/parents/base.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/authentication/create_user.css' %}">
     <link rel="shortcut icon" href="{% static 'image/icon.png' %}" type="image/x-icon">
-    <title>Film Baz | Create User</title>
+    <title>Film Baz | ساخت حساب کاربری</title>
 </head>
 <body>
-<div class="create-user-container">
+
+<div class="auth-wrapper">
     <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
     <div class="bg-cover"></div>
-    <h1 style="color: #F5F7F8; text-align: center;">ساخت کاربر</h1>
-    <form method="post" class="create-user-form">
 
-        {# a tag for access to home page again #}
-        <a href="{% url 'film:home_page' %}" class="form-logo-FilmBaz"><img src="{% static 'image/FilmBaz.png' %}"
-                                                                            alt="FilmBaz"></a>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="ساخت" class="create-user-submit">
-        <p class="login-create-account">حساب کاربری داری؟ <a href="{% url 'account:login' %}">ورود به حساب</a></p>
-    </form>
+    <div class="auth-card">
+        <div class="auth-header">
+            <a href="{% url 'film:home_page' %}" class="brand-logo">فیلم باز</a>
+            <h1 class="auth-title">ایجاد حساب کاربری</h1>
+            <p class="auth-subtitle">به جمع فیلم‌بازها بپیوندید و دنیای فیلم و سریال را تجربه کنید</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="django-form-fields">
+                {{ form.as_p }}
+            </div>
+
+            <button type="submit" class="auth-submit">ساخت حساب کاربری</button>
+        </form>
+
+        <div class="auth-footer">
+            <p class="footer-item">
+                قبلاً حساب کاربری ساخته‌اید؟
+                <a href="{% url 'account:login' %}" class="footer-link highlight">ورود به حساب</a>
+            </p>
+        </div>
+    </div>
 </div>
+
 </body>
 </html>

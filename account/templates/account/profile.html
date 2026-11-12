@@ -7,8 +7,7 @@
         <section class="profile-top">
             <div class="profile-avatar">
                 <div class="avatar-wrap">
-                    <img src="
-                            {% if user.image %}{{ user.image.url }}{% else %}{% static 'image/user-icon.png' %}{% endif %}"
+                    <img src="{% if user.image %}{{ user.image.url }}{% else %}{% static 'image/user-icon.png' %}{% endif %}"
                          alt="{{ user.username }}" class="profile-image">
                     <div class="avatar-edit-bg"></div>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -25,20 +24,72 @@
             <form class="profile-form" method="post" action="{% url 'account:edit_user' %}"
                   enctype="multipart/form-data">
                 {% csrf_token %}
-                <label>نام کاربری<input type="text" name="username" value="{{ user.username }}"></label>
-                <label>ایمیل<input type="email" name="email" value="{{ user.email }}"></label>
-                <label>شماره تلفن<input type="tel" name="phone" value="{{ user.phone }}"></label>
-                <label>رمز عبور<input type="password" name="password" value="********" disabled></label>
+
+                {# نمایش ارورهای کلی فرم در صورت وجود #}
+                {% if form.non_field_errors %}
+                    <div class="form-non-field-errors">
+                        {% for error in form.non_field_errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <label>
+                    نام کاربری
+                    <input type="text" name="username"
+                           class="{% if form.username.errors %}input-error{% endif %}"
+                           value="{{ form.username.value|default_if_none:user.username }}">
+                    {% for error in form.username.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+
+                <label>
+                    ایمیل
+                    <input type="email" name="email"
+                           class="{% if form.email.errors %}input-error{% endif %}"
+                           value="{{ form.email.value|default_if_none:user.email }}">
+                    {% for error in form.email.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+
+                <label>
+                    شماره تلفن
+                    <input type="tel" name="phone"
+                           class="{% if form.phone.errors %}input-error{% endif %}"
+                           value="{{ form.phone.value|default_if_none:user.phone }}">
+                    {% for error in form.phone.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+
+                <label>
+                    رمز عبور
+                    <input type="password" name="password" value="********" disabled>
+                </label>
+
                 <input class="avatar-edit" type="file" accept="image/*" name="image">
+
+                {# نمایش ارور مربوط به آپلود عکس پروفایل (مثلا فرمت یا حجم نامعتبر) #}
+                {% if form.image.errors %}
+                    <div class="form-non-field-errors">
+                        {% for error in form.image.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <button type="submit" class="btn-primary">ذخیره تغییرات</button>
+
                 <a href="{% url 'account:password_change' %}" class="change-password">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                          stroke="currentColor" class="change-password-icon">
                         <path stroke-linecap="round" stroke-linejoin="round"
                               d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
                     </svg>
-
                 </a>
+
                 <button type="button" class="ticket-toggle" id="ticket" aria-expanded="false"
                         aria-controls="ticket-form">
                     ارسال تیکت
@@ -47,7 +98,6 @@
                         <path d="M6 9l6 6 6-6"/>
                     </svg>
                 </button>
-
             </form>
         </section>
 

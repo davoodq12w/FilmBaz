@@ -158,24 +158,24 @@ services:
     networks:
       - main
 
-  # the machine learning ( Python )
-  ml_service:
-    build:
-      context: ./ml_service
-      dockerfile: Dockerfile
-    container_name: ml_service
-    restart: always
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8002
-    volumes:
-      - ./ml_service:/ML
-      - ./ml_service/datasets:/ML/datasets
-      - ./ml_service/logs:/ML/logs
-    expose:
-      - "8002"
-    depends_on:
-      - db
-    networks:
-      - main
+#  # the machine learning ( Python )
+#  ml_service:
+#    build:
+#      context: ./ml_service
+#      dockerfile: Dockerfile
+#    container_name: ml_service
+#    restart: always
+#    command: uvicorn app.main:app --host 0.0.0.0 --port 8002
+#    volumes:
+#      - ./ml_service:/ML
+#      - ./ml_service/datasets:/ML/datasets
+#      - ./ml_service/logs:/ML/logs
+#    expose:
+#      - "8002"
+#    depends_on:
+#      - db
+#    networks:
+#      - main
 
 volumes:
   postgres_data:

@@ -1,98 +1,252 @@
-.create-user-container {
-    width: 90%;
-    margin: 0 auto;
+:root {
+    --color-bg: rgb(10 10 12 / 0);
+    --color-surface: #141418;
+    --color-surface-2: #1a1a1f;
+    --color-border: rgba(255, 255, 255, 0.06);
+
+    --color-primary: #e11d2e;
+    --color-primary-dark: #a30d26;
+    --color-primary-soft: rgba(225, 29, 46, 0.12);
+    --gradient-primary: linear-gradient(90deg, #a30d26, #c0102c);
+    --gradient-subscription: linear-gradient(135deg, #3a0a12, #1a0a0d);
+
+    --color-text: #f5f7f8;
+    --color-text-muted: #8b8b94;
+    --color-gold: #f4b514;
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --transition: all 200ms ease;
 }
-.bg-image {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100vw;
-    height: 100vh;
+
+* {
+    box-sizing: border-box;
     margin: 0;
-    z-index: -1000;
+    padding: 0;
+    font-family: poppins, vazir-medium, serif;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.auth-wrapper {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+}
+
+.bg-image {
+    position: fixed;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -2;
 }
 
 .bg-cover {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    z-index: -900;
-    background-color: rgba(0, 0, 0, 0.75);
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at center, rgba(10, 10, 12, 0.72) 0%, rgba(10, 10, 12, 0.95) 100%);
     backdrop-filter: blur(8px);
-    box-shadow: 0 0 200px black inset;
+    -webkit-backdrop-filter: blur(8px);
 }
 
-.create-user-form {
-    margin: 0 auto;
-    background-color: #000000;
-    width: 25%;
-    text-align: center;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ff9f29;
-    box-shadow: 0 0 10px #ff9f29;
-
-    & label {
-        display: block;
-        text-align: center;
-        color: #F5F7F8;
-    }
-
-    & input {
-        width: 100%;
-        height: 30px;
-        border: 1px solid #ff9f29;
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.13);
-
-        &:focus-visible {
-            outline: none;
-            box-shadow: 0 0 5px #ff9f29;
-        }
-
-        color: #F5F7F8;
-        text-align: center;
-        padding: 0 10px;
-    }
-
-    & .create-user-submit {
-        background-color: #ff9f29;
-        color: black;
-        text-align: center;
-        transition: all 200ms ease;
-
-        &:hover {
-            box-shadow: 0 0 5px #000000 inset;
-        }
-    }
-}
-
-.form-logo-FilmBaz {
-    & img {
-        width: 200px;
-    }
-}
-
-.login-create-account {
-    color: #F5F7F8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* عرض کمی بیشتر نسبت به لاگین برای چیدمان دو ستونه فیلدها */
+.auth-card {
     width: 100%;
-    height: 40px;
+    max-width: 520px;
+    background-color: rgba(20, 20, 24, 0.92);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(12px);
+}
 
-    & a {
-        transition: all 200ms ease;
-        color: #ff9f29;
-        height: 40px;
-        width: 35%;
-        line-height: 40px;
+.auth-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
 
-        &:hover {
-            font-size: 18px;
-        }
+.brand-logo {
+    display: inline-block;
+    font-size: 40px;
+    font-weight: bold;
+    color: var(--color-primary);
+    text-decoration: none;
+    text-shadow: 0 0 18px rgba(225, 29, 46, 0.55);
+    margin-bottom: 10px;
+    transition: var(--transition);
+}
+
+.brand-logo:hover {
+    text-shadow: 0 0 24px rgba(225, 29, 46, 0.85);
+    transform: scale(1.02);
+}
+
+.auth-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 6px;
+}
+
+.auth-subtitle {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+/* گرید دو ستونه برای جلوگیری از بلند شدن بیش از حد فرم ثبت‌نام */
+.django-form-fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+/* فیلد اول (نام کاربری) تمام عرض باشد */
+.django-form-fields p:first-of-type {
+    grid-column: 1 / -1;
+}
+
+.django-form-fields p {
+    margin: 0;
+    text-align: right;
+}
+
+.django-form-fields label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: 6px;
+}
+
+.django-form-fields input {
+    width: 100%;
+    height: 44px;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: 14px;
+    padding: 0 14px;
+    transition: var(--transition);
+    direction: ltr;
+    text-align: right;
+}
+
+.django-form-fields input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+/* جلوگیری از سفید شدن پس‌زمینه اینپوت هنگام Autofill */
+.django-form-fields input:-webkit-autofill,
+.django-form-fields input:-webkit-autofill:hover,
+.django-form-fields input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-text);
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-surface-2) inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* مخفی کردن متن‌های راهنمای پیش‌فرض جنگو در صورت وجود */
+.django-form-fields .helptext {
+    display: block;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+}
+
+/* استایل ارورهای جنگو */
+.form-errors,
+.django-form-fields .errorlist {
+    grid-column: 1 / -1;
+    list-style: none;
+    background-color: var(--color-primary-soft);
+    border: 1px solid rgba(225, 29, 46, 0.35);
+    color: #ff6b78;
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    text-align: right;
+}
+
+.auth-submit {
+    width: 100%;
+    height: 46px;
+    margin-top: 14px;
+    background: var(--gradient-primary);
+    color: var(--color-text);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.auth-submit:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 6px 20px rgba(225, 29, 46, 0.35);
+    transform: translateY(-1px);
+}
+
+.auth-submit:active {
+    transform: translateY(0);
+}
+
+.auth-footer {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.footer-item {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.footer-link {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 500;
+    margin-right: 4px;
+    transition: var(--transition);
+}
+
+.footer-link.highlight {
+    color: var(--color-primary);
+}
+
+.footer-link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* تک ستونه شدن فیلدها در موبایل */
+@media (max-width: 540px) {
+    .auth-card {
+        padding: 24px 20px;
+    }
+
+    .django-form-fields {
+        grid-template-columns: 1fr;
+        gap: 14px;
     }
 }

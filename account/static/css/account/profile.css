@@ -357,3 +357,29 @@
     transform: translateY(-4px) scale(1.03);
     box-shadow: 0 0 5px var(--color-primary-dark);
 }
+/* استایل خطاهای فیلد فرم */
+.profile-form input.input-error {
+    border-color: var(--color-primary);
+    background-color: rgba(225, 29, 46, 0.08);
+    color: var(--color-text);
+}
+
+.field-error {
+    color: #ff4d5e;
+    font-size: 12px;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.form-non-field-errors {
+    grid-column: 1 / -1;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background-color: rgba(225, 29, 46, 0.12);
+    border: 1px solid var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
