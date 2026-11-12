@@ -383,3 +383,32 @@
     flex-direction: column;
     gap: 4px;
 }
+
+.profile-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn-genres {
+    margin-top: 16px;
+    width: 100%;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: 13px;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.btn-genres:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+}
