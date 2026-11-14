@@ -1,70 +1,97 @@
 {% extends "parents/base.html" %}
 {% load static %}
 {% block style %}{% static "css/account/saves.css" %}{% endblock %}
-{% block title %}Saves{% endblock %}
+{% block title %}ذخیره‌شده‌ها | فیلم باز{% endblock %}
+
 {% block body %}
-    <h1 class="saves-page-title">ذخیره ها</h1>
-    <div class="saves-body">
+<div class="saves-page-wrapper">
+    <!-- هدر بخش مشابه استایل صفحه اصلی -->
+    <div class="saves-header">
+        <div class="saves-title-group">
+            <h1 class="saves-page-title">لیست ذخیره‌شده‌ها</h1>
+            {% if movies %}
+                <span class="saves-count">{{ movies|length }} عنوان</span>
+            {% endif %}
+        </div>
+        <p class="saves-subtitle">فیلم‌ها و سریال‌هایی که برای تماشای بعدی نشان کرده‌اید</p>
+    </div>
+
+    <!-- بدنه اصلی گرید فیلم‌ها -->
+    <div class="saves-body {% if not movies %}is-empty{% endif %}">
         {% for movie in movies %}
-            <div style="color:#F5F7F8;" class="saves-movie">
+            <div class="saves-movie" id="card-{{ movie.id }}">
+                <!-- دکمه شناور ذخیره/حذف در گوشه بالا چپ -->
+                <button type="button"
+                        class="saves-remove is-saved"
+                        id="remove-{{ movie.id }}"
+                        data-movie-pk="{{ movie.id }}"
+                        data-movie-slug="{{ movie.slug }}"
+                        title="حذف از ذخیره‌ها">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clip-rule="evenodd" />
+                    </svg>
+                </button>
 
-                {# a tag for access to de detial page of movie #}
-                <a href="{% url 'film:movies_detail' movie.id movie.slug %}">
-                    <img src="{{ movie.poster_url }}" alt="{{ movie.orj_title }}" class="saves-thumbnail">
+                <!-- لینک و پوستر فیلم -->
+                <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="saves-poster-link">
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.orj_title }}" class="saves-thumbnail" loading="lazy">
+                    <div class="saves-overlay">
+                        <h3 class="saves-title">{{ movie.fa_title }}</h3>
+                        {% if movie.orj_title %}
+                            <span class="saves-orj-title">{{ movie.orj_title }}</span>
+                        {% endif %}
+                    </div>
                 </a>
-
-                <div class="saves-title-remove">
-                    {# a tag for access to de detial page of movie #}
-                    <a class="saves-title"
-                       href="{% url 'film:movies_detail' movie.id movie.slug %}">{{ movie.fa_title }}
-                    </a>
-
-                    {# saving data of movie in tag for actions #}
-                    <p class="saves-remove" id="remove-{{ movie.id }}" data-movie-pk="{{ movie.id }}"
-                       data-movie-slug="{{ movie.slug }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                            <path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l18 18a.75.75 0 1 0 1.06-1.06l-18-18ZM20.25 5.507v11.561L5.853 2.671c.15-.043.306-.075.467-.094a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93ZM3.75 21V6.932l14.063 14.063L12 18.088l-7.165 3.583A.75.75 0 0 1 3.75 21Z"/>
-                        </svg>
-                    </p>
-                </div>
             </div>
         {% empty %}
-            <h3 style="color: #98620f; text-align: center; width: 100%;">هنوز هیچی ذخیره نکردید!</h3>
+            <div class="saves-empty-state">
+                <div class="empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                    </svg>
+                </div>
+                <h3>هنوز فیلم یا سریالی ذخیره نکرده‌اید!</h3>
+                <p>با زدن آیکون نشانک در صفحه هر فیلم، می‌توانید آن را به این لیست اضافه کنید.</p>
+                <a href="{% url 'film:home_page' %}" class="empty-cta-btn">مشاهده فیلم‌ها و سریال‌ها</a>
+            </div>
         {% endfor %}
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        $(document).ready(function () {
-            {# getting data from P tag and call function #}
+</div>
 
-            $(".saves-remove").click(function () {
-                let slug = $(this).data("movie-slug");
-                let pk = $(this).data("movie-pk");
-                remove(slug, pk);
-            });
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function () {
+        $(".saves-remove").click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            let slug = $(this).data("movie-slug");
+            let pk = $(this).data("movie-pk");
+            remove(slug, pk);
         });
+    });
 
-        function remove(slug, pk) {
-            {# function for toggeling the add or remove from saves list #}
+    function remove(slug, pk) {
+        let btn = $("#remove-" + pk);
+        let card = $("#card-" + pk);
 
-            let box = $("#remove-" + pk);
-            $.ajax({
-                url: "{% url 'film:save_movie' %}",
-                type: "POST",
-                data: {"csrfmiddlewaretoken": "{{ csrf_token }}", 'slug': slug, 'pk': pk},
-                success: function (data) {
-                    if (data.is_save) {
-                        {# if response is true its added to saves list. #}
-                        box.html('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6"><path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l18 18a.75.75 0 1 0 1.06-1.06l-18-18ZM20.25 5.507v11.561L5.853 2.671c.15-.043.306-.075.467-.094a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93ZM3.75 21V6.932l14.063 14.063L12 18.088l-7.165 3.583A.75.75 0 0 1 3.75 21Z"/></svg>');
-                    } else {
-                        {# if response is false its removed from saves list. #}
-                        box.html('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round"d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/></svg>');
-                    }
+        $.ajax({
+            url: "{% url 'film:save_movie' %}",
+            type: "POST",
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", 'slug': slug, 'pk': pk},
+            success: function (data) {
+                if (data.is_save) {
+                    btn.addClass("is-saved").attr("title", "حذف از ذخیره‌ها");
+                    card.removeClass("is-unsaved");
+                    btn.html('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clip-rule="evenodd" /></svg>');
+                } else {
+                    btn.removeClass("is-saved").attr("title", "افزودن مجدد به ذخیره‌ها");
+                    card.addClass("is-unsaved");
+                    btn.html('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg>');
                 }
-            });
-        }
-    </script>
-
+            }
+        });
+    }
+</script>
 {% endblock %}
