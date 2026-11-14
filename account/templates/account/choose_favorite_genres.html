@@ -1,42 +1,55 @@
 {% extends "parents/base.html" %}
 {% load static %}
 {% block style %}{% static "css/account/choose_favorite_genres.css" %}{% endblock %}
-{% block title %}Chosse Favorites{% endblock %}
+{% block title %}انتخاب ژانرهای مورد علاقه | فیلم باز{% endblock %}
+
 {% block body %}
-    <h2 style="color: #ff9f29; text-align: center; margin: 20px auto">لطفا ژانر های مورد علاقه خود را انتخاب کنید</h2>
+<div class="genres-page-wrapper">
+    <div class="genres-header">
+        <span class="genres-badge">شخصی‌سازی پیشنهادها</span>
+        <h1 class="genres-main-title">ژانرهای مورد علاقه خود را انتخاب کنید</h1>
+        <p class="genres-subtitle">با انتخاب ژانرهای محبوبتان، فیلم‌ها و سریال‌های متناسب با سلیقه شما را پیشنهاد می‌دهیم</p>
+    </div>
+
     <form method="post" class="choose-genres-form">
         {% csrf_token %}
-        {# return error when user is not choosen any genres. #}
-        {{ form.non_field_errors }}
 
-        {% for err in form.genres.errors %}
-            <p class="choose-genres-error">{{ err }}</p>
-        {% endfor %}
+        {% if form.non_field_errors or form.genres.errors %}
+            <div class="choose-genres-errors-box">
+                {% for err in form.non_field_errors %}
+                    <p class="choose-genres-error">{{ err }}</p>
+                {% endfor %}
+                {% for err in form.genres.errors %}
+                    <p class="choose-genres-error">{{ err }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <div class="choose-genres-container">
-
-            {# genres_with_cb is a zip object of genres and checkbox for them. #}
             {% for genre, checkbox in genres_with_cb %}
                 <label class="choose-genres-genre-card">
-
-                    {# checkbox.tag return somthing like that bllow #}
-                    {# <input type="checkbox" name="genres" value="1" id="id_genres_0"> #}
                     {{ checkbox.tag }}
 
                     <div class="choose-genres-genre-content">
+                        <!-- آیکون تیک که فقط در حالت انتخاب نمایش داده می‌شود -->
+                        <span class="selected-check-icon" aria-hidden="true">✓</span>
+
                         <div class="choose-genres-genre-title">
-                            <span class="choose-genres-genre-en-name">{{ genre.en_name }}</span> /
                             <span class="choose-genres-genre-fa-name">{{ genre.fa_name }}</span>
+                            <span class="choose-genres-genre-en-name">{{ genre.en_name }}</span>
                         </div>
+
                         <div class="choose-genres-genre-movies">
                             {% for movie in genre.top_3_movies %}
                                 <div class="movie-card">
-                                    <img src="{{ movie.backdrop_url }}" alt="{{ movie.fa_title }}"
-                                         class="choose-genres-movie-backdrop">
+                                    <div class="movie-thumb-wrapper">
+                                        <img src="{{ movie.backdrop_url }}" alt="{{ movie.fa_title }}"
+                                             class="choose-genres-movie-backdrop" loading="lazy">
+                                    </div>
                                     <p class="choose-genres-movie-title">{{ movie.fa_title }}</p>
                                 </div>
                             {% empty %}
-                                <p>نمونه ناموجود</p>
+                                <div class="empty-movies-placeholder">نمونه‌ای ثبت نشده است</div>
                             {% endfor %}
                         </div>
                     </div>
@@ -44,6 +57,9 @@
             {% endfor %}
         </div>
 
-        <button type="submit" class="choose-genres-save-button">ذخیره انتخاب‌ها</button>
+        <div class="sticky-action-bar">
+            <button type="submit" class="choose-genres-save-button">ذخیره انتخاب‌ها</button>
+        </div>
     </form>
+</div>
 {% endblock %}
