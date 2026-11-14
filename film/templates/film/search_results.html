@@ -1,53 +1,104 @@
 {% extends "parents/base.html" %}
 {% load static %}
 {% block style %}{% static "css/film/search_results.css" %}{% endblock %}
-{% block title %}Search Results{% endblock %}
+{% block title %}نتایج جستجو برای «{{ query }}» | فیلم باز{% endblock %}
+
 {% block body %}
-    <h2 class="search-result-page-title"> نتایج جستجو بر اساس " {{ query }} " </h2>
+<div class="search-page-wrapper">
+    <!-- هدر صفحه مشابه صفحات جدید -->
+    <div class="search-header">
+        <div class="search-title-group">
+            <h1 class="search-result-page-title">
+                نتایج جستجو برای <span class="search-query-highlight">«{{ query }}»</span>
+            </h1>
+            {% if movie_result %}
+                <span class="search-results-count">{{ movie_result|length }} مورد یافت شد</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- لیست کارت‌های نتایج -->
     <div class="search-result-body">
         {% for movie in movie_result %}
-            <div class="search-movie">
-                <a href="{% url 'film:movies_detail' movie.id movie.slug %}"><img src="{{ movie.poster_url }}" alt="{{ movie.fa_title }}" class="search-result-poster"></a>
-                <div class="search-result-movie-detail">
-                    <h3>{{ movie.fa_title }}</h3>
-                    <h3>{{ movie.orj_title }}</h3>
-                    <div class="search-result-rate">
-                        <span>10 / </span>
-                        <span class="search-result-rate-number"> {{ movie.rate }} </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="search-result-star">
-                            <path fill-rule="evenodd"
-                                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                  clip-rule="evenodd"/>
-                        </svg>
+            <article class="search-movie">
+                <!-- ستون اول: پوستر فیلم -->
+                <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="search-poster-link">
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.fa_title }}" class="search-result-poster" loading="lazy">
+                </a>
+
+                <!-- ستون دوم: مشخصات اصلی + خلاصه داستان -->
+                <div class="search-result-main">
+                    <div class="search-movie-top">
+                        <div class="search-titles">
+                            <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="search-fa-title">
+                                {{ movie.fa_title }}
+                            </a>
+                            {% if movie.orj_title %}
+                                <span class="search-orj-title">{{ movie.orj_title }}</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- بج امتیاز طلایی مشابه صفحه فیلم -->
+                        <div class="search-result-rate">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="search-result-star">
+                                <path fill-rule="evenodd"
+                                      d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span class="search-result-rate-number">{{ movie.rate }}</span>
+                            <span class="search-result-rate-max">/ 10</span>
+                        </div>
                     </div>
-                    <p><span>سال ساخت :  </span><span> {{ movie.release_date }} </span></p>
-                    <div class="search-result-genres">
-                        <div class="genres">
+
+                    <!-- متادیتا: سال ساخت و ژانرها -->
+                    <div class="search-meta-row">
+                        <span class="search-release-date">
+                            <span class="meta-label">سال ساخت:</span>
+                            <span class="meta-value">{{ movie.release_date }}</span>
+                        </span>
+
+                        <div class="search-result-genres">
                             {% for genre in movie.genres.all %}
-                                <p class="search-result-genre">{{ genre.fa_name }}</p>
+                                <span class="search-result-genre">{{ genre.fa_name }}</span>
                             {% endfor %}
                         </div>
                     </div>
+
+                    <!-- خلاصه داستان -->
+                    {% if movie.description %}
+                        <p class="search-result-description">
+                            {{ movie.description|truncatewords:38 }}
+                        </p>
+                    {% endif %}
                 </div>
 
-                <div class="search-result-description">
-                    {{ movie.description | truncatewords:40}}
-                </div>
-
-                <div class="search-result-casts">
-                    {% for cast in movie.casts.all %}
-                        <div class="search-result-cast">
-                            <img src="{{ cast.image.url }}" alt="{{ cast.slug }}" class="search-result-cast-image">
-                            <p class="search-result-cast-name">{{ cast.fa_name }}</p>
+                <!-- ستون سوم: عوامل و بازیگران -->
+                {% if movie.casts.all %}
+                    <div class="search-result-casts">
+                        <span class="casts-heading">بازیگران و عوامل</span>
+                        <div class="casts-list">
+                            {% for cast in movie.casts.all|slice:":4" %}
+                                <div class="search-result-cast">
+                                    <img src="{{ cast.image.url }}" alt="{{ cast.fa_name }}" class="search-result-cast-image" loading="lazy">
+                                    <span class="search-result-cast-name">{{ cast.fa_name }}</span>
+                                </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% if not forloop.last %}
-                <hr>
-            {% endif %}
+                    </div>
+                {% endif %}
+            </article>
         {% empty %}
-            <p style="color: #F5F7F8">نتیجه ای یافت نشد!</p>
+            <div class="search-empty-state">
+                <div class="empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                </div>
+                <h3>نتیجه‌ای برای «{{ query }}» یافت نشد!</h3>
+                <p>لطفاً املای کلمه را بررسی کنید یا با عنوان فارسی و انگلیسی دیگری جستجو کنید.</p>
+                <a href="{% url 'film:home_page' %}" class="empty-cta-btn">بازگشت به صفحه اصلی</a>
+            </div>
         {% endfor %}
     </div>
+</div>
 {% endblock %}

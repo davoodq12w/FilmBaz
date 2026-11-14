@@ -1,95 +1,137 @@
 {% load static %}
-<div class="header">
+<header class="header">
 
-    <a href="{% url 'film:home_page' %}" class="film-baz"><img src="{% static 'image/FilmBaz.png' %}"
-                                                                 alt="FilmBaz"></a>
+    <a href="{% url 'film:home_page' %}" class="header-logo">
+        <h1 class="film-baz-logo"> فیلم باز </h1>
+    </a>
 
-
-    <div class="header-buttons">
-        <span>ایرانی</span>
-        <span>خارجی</span>
-        <span>سریال</span>
-        <span>سینمایی</span>
-    </div>
-
-
-    <form class="search" method="get" action="{% url 'film:search' %}">
-        <input type="text" placeholder="جستجو در فیلمباز ..." name="query" autocomplete="one-time-code"
-               id="search-input">
-        <input type="submit" hidden>
-    </form>
-    <div class="inline-search-results" id="search-results"></div>
-
-    <div style="width: 17%">
-
-    </div>
-
-
-    {% if request.user.is_authenticated %}
-        <div class="user-buttons-logout">
-            {% with request.user as user %}
-                <a href="{% url 'account:profile' %}">{{ user.username }}</a>
-            {% endwith %}
-            <button type="button" id="logout-button">خروج</button>
+    <nav class="header-nav">
+        <a href="{% url 'film:home_page' %}"
+           class="{% if request.resolver_match.url_name == 'home_page' %}active{% endif %}">خانه</a>
+        <a href="#">فیلم‌ها</a>
+        <a href="#">سریال‌ها</a>
+        <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-toggle">
+                دسته‌بندی‌ها
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
+            <div class="nav-dropdown-menu">
+                <a href="#">ایرانی</a>
+                <a href="#">خارجی</a>
+                <a href="#">سینمایی</a>
+            </div>
         </div>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'account:profile' %}"
+               class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">پروفایل</a>
+        {% endif %}
+    </nav>
 
-
-        <form action="{% url 'account:logout' %}" method="post" class="logout-confirm">
-            {% csrf_token %}
-            <p>ایا میخواهید از حساب کاربری خارج شوید؟</p>
-            <button type="submit">بله!</button>
+    <div class="header-actions">
+        <form class="search" method="get" action="{% url 'film:search' %}">
+            <button type="button" class="search-toggle" aria-label="جستجو">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="M21 21l-4.3-4.3"/>
+                </svg>
+            </button>
+            <input type="text" placeholder="جستجو در فیلم‌باز ..." name="query" autocomplete="one-time-code"
+                   id="search-input">
+            <input type="submit" hidden>
         </form>
-    {% else %}
-        <div class="user-buttons-login">
-            <a href="{% url 'account:login' %}" class="login">ورود</a>
-            <a href="{% url 'account:create_user' %}" class="header-create-user">ثبت نام</a>
-        </div>
-    {% endif %}
+        <div class="inline-search-results" id="search-results"></div>
 
+        {% if request.user.is_authenticated %}
+            <div class="user-menu">
+                <button type="button" class="user-menu-toggle" id="user-menu-toggle">
+                    <img src="
+                            {% if request.user.image %}{{ request.user.image.url }}{% else %}{% static 'image/user-icon.png' %}{% endif %}"
+                         alt="">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="user-menu-dropdown">
+                    <a href="{% url 'account:profile' %}">{{ request.user.username }}</a>
+                    <button type="button" id="logout-button">خروج</button>
+                </div>
+            </div>
 
-</div>
+            <form action="{% url 'account:logout' %}" method="post" class="logout-confirm">
+                {% csrf_token %}
+                <p>آیا می‌خواهید از حساب کاربری خارج شوید؟</p>
+                <button type="submit">بله</button>
+            </form>
+        {% else %}
+            <div class="auth-buttons">
+                <a href="{% url 'account:login' %}" class="btn-ghost">ورود</a>
+                <a href="{% url 'account:create_user' %}" class="btn-primary">ثبت نام</a>
+            </div>
+        {% endif %}
+    </div>
+
+</header>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    $(document).ready(function () {
+    $(function () {
         let debounceTimer = null;
 
-        $("#search-input").keyup(function () {
-            {# every 1 sec we request not in all keydowns #}
-            let search_value = $(this).val();
-            let search_results = $("#search-results");
-
+        // جستجوی زنده
+        $("#search-input").on("keyup", function () {
+            const value = $(this).val();
+            const results = $("#search-results");
             clearTimeout(debounceTimer);
 
-            if (!search_value) {
-                search_results.css("display", "none");
+            if (!value) {
+                results.hide();
                 return;
             }
 
             debounceTimer = setTimeout(function () {
-                search_results.css("display", "block");
+                results.show();
                 $.ajax({
                     url: "{% url 'film:search' %}",
                     type: "POST",
-                    data: {"csrfmiddlewaretoken": "{{ csrf_token }}", query: search_value},
+                    data: {"csrfmiddlewaretoken": "{{ csrf_token }}", query: value},
                     success: function (data) {
-                        search_results.text("");
-                        search_results.append(data);
+                        results.empty().append(data);
                     }
                 });
             }, 1000);
         });
 
-        $("#logout-button").click(function () {
+        // باز و بسته کردن جستجو
+        $(".search-toggle").on("click", function () {
+            $(".search").toggleClass("open");
+            if ($(".search").hasClass("open")) $("#search-input").trigger("focus");
+        });
 
-            let box = $(".logout-confirm")
-            box.css("display", "flex");
+        // منوی کاربر
+        $("#user-menu-toggle").on("click", function (e) {
+            e.stopPropagation();
+            $(".user-menu").toggleClass("open");
+        });
 
-            box.mouseleave(function () {
-                $(this).css("display", "none");
-            });
+        // منوی دسته‌بندی
+        $(".nav-dropdown-toggle").on("click", function (e) {
+            e.stopPropagation();
+            $(".nav-dropdown").toggleClass("open");
+        });
+
+        $(document).on("click", function () {
+            $(".user-menu, .nav-dropdown").removeClass("open");
+            $(".logout-confirm").hide();
+        });
+
+        // تایید خروج
+        $("#logout-button").on("click", function (e) {
+            e.stopPropagation();
+            $(".logout-confirm").css("display", "flex");
         });
     });
 </script>

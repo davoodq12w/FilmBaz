@@ -1,75 +1,97 @@
 {% extends "parents/base.html" %}
 {% load static %}
-{% block style %}{% static "css/account/saves.css" %}{% endblock %}
-{% block title %}Likes{% endblock %}
+{% block style %}{% static "css/account/likes.css" %}{% endblock %}
+{% block title %}لایک‌شده‌ها | فیلم باز{% endblock %}
+
 {% block body %}
+<div class="likes-page-wrapper">
+    <!-- هدر بخش مشابه استایل صفحه اصلی و ذخیره‌ها -->
+    <div class="likes-header">
+        <div class="likes-title-group">
+            <h1 class="likes-page-title">لیست لایک‌شده‌ها</h1>
+            {% if movies %}
+                <span class="likes-count">{{ movies|length }} عنوان</span>
+            {% endif %}
+        </div>
+        <p class="likes-subtitle">فیلم‌ها و سریال‌هایی که آن‌ها را پسندیده‌اید</p>
+    </div>
 
-    {# using saves movies classes becouse its the same style. #}
-    <h1 class="saves-page-title">لایک شده ها</h1>
-    <div class="saves-body">
+    <!-- بدنه اصلی گرید فیلم‌ها -->
+    <div class="likes-body {% if not movies %}is-empty{% endif %}">
         {% for movie in movies %}
-            <div style="color:#F5F7F8;" class="saves-movie">
+            <div class="likes-movie" id="card-{{ movie.id }}">
+                <!-- دکمه شناور لایک/آن‌لایک در گوشه بالا چپ -->
+                <button type="button"
+                        class="likes-remove is-liked"
+                        id="remove-{{ movie.id }}"
+                        data-movie-pk="{{ movie.id }}"
+                        data-movie-slug="{{ movie.slug }}"
+                        title="حذف از لایک‌ها">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                    </svg>
+                </button>
 
-                {# a tag for access to de detial page of movie #}
-                <a href="{% url 'film:movies_detail' movie.id movie.slug %}">
-                    <img src="{{ movie.poster_url }}" alt="{{ movie.orj_title }}" class="saves-thumbnail">
+                <!-- لینک و پوستر فیلم -->
+                <a href="{% url 'film:movies_detail' movie.id movie.slug %}" class="likes-poster-link">
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.orj_title }}" class="likes-thumbnail" loading="lazy">
+                    <div class="likes-overlay">
+                        <h3 class="likes-title">{{ movie.fa_title }}</h3>
+                        {% if movie.orj_title %}
+                            <span class="likes-orj-title">{{ movie.orj_title }}</span>
+                        {% endif %}
+                    </div>
                 </a>
-
-                <div class="saves-title-remove">
-                    {# a tag for access to de detial page of movie #}
-                    <a class="saves-title"
-                       href="{% url 'film:movies_detail' movie.id movie.slug %}">{{ movie.fa_title }}
-                    </a>
-
-                    {# saving data of movie in tag for actions #}
-                    <p class="saves-remove" id="remove-{{ movie.id }}" data-movie-pk="{{ movie.id }}"
-                       data-movie-slug="{{ movie.slug }}">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 21s-6.716-4.35-9.192-8.103C1.213 10.48 1 9.364 1 8.25C1 5.35 3.239 3 6 3c1.74 0 3.41.81 4.5 2.09C11.59 3.81 13.26 3 15 3c2.761 0 5 2.35 5 5.25c0 1.114-.213 2.23-1.808 4.647C18.716 16.65 12 21 12 21Z"
-                                  stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M4 4L20 20" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </p>
-                </div>
             </div>
         {% empty %}
-            <h3 style="color: #98620f; text-align: center; width: 100%;">هیچ فیلمی لایک نشده است.</h3>
+            <div class="likes-empty-state">
+                <div class="empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                    </svg>
+                </div>
+                <h3>هنوز فیلم یا سریالی را لایک نکرده‌اید!</h3>
+                <p>با زدن دکمه قلب در صفحه جزئیات هر فیلم، می‌توانید آن را به علاقه‌مندی‌های خود اضافه کنید.</p>
+                <a href="{% url 'film:home_page' %}" class="empty-cta-btn">مشاهده فیلم‌ها و سریال‌ها</a>
+            </div>
         {% endfor %}
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
+</div>
 
-        $(document).ready(function () {
-            {# getting data from P tag and call function #}
-
-            $(".saves-remove").click(function () {
-                let slug = $(this).data("movie-slug");
-                let pk = $(this).data("movie-pk");
-                remove(slug, pk);
-            });
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function () {
+        $(".likes-remove").click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            let slug = $(this).data("movie-slug");
+            let pk = $(this).data("movie-pk");
+            toggleLike(slug, pk);
         });
+    });
 
+    function toggleLike(slug, pk) {
+        let btn = $("#remove-" + pk);
+        let card = $("#card-" + pk);
 
-        function remove(slug, pk) {
-            {# function for toggeling the add or remove from likes list #}
-
-            let box = $("#remove-" + pk);
-            $.ajax({
-                url: "{% url 'film:like_movie' %}",
-                type: "POST",
-                data: {"csrfmiddlewaretoken": "{{ csrf_token }}", 'slug': slug, 'pk': pk},
-                success: function (data) {
-                    if (data.is_like) {
-                        {# if response is true its added to likes list. #}
-                        box.html('<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M12 21s-6.716-4.35-9.192-8.103C1.213 10.48 1 9.364 1 8.25C1 5.35 3.239 3 6 3c1.74 0 3.41.81 4.5 2.09C11.59 3.81 13.26 3 15 3c2.761 0 5 2.35 5 5.25c0 1.114-.213 2.23-1.808 4.647C18.716 16.65 12 21 12 21Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4L20 20" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
-                    } else {
-                        {# if response is false its removed from likes list. #}
-                        box.html('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
-                    }
+        $.ajax({
+            url: "{% url 'film:like_movie' %}",
+            type: "POST",
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", 'slug': slug, 'pk': pk},
+            success: function (data) {
+                if (data.is_like) {
+                    btn.addClass("is-liked").attr("title", "حذف از لایک‌ها");
+                    card.removeClass("is-unliked");
+                    btn.html('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" /></svg>');
+                } else {
+                    btn.removeClass("is-liked").attr("title", "لایک مجدد");
+                    card.addClass("is-unliked");
+                    btn.html('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
                 }
-            });
-        }
-    </script>
+            }
+        });
+    }
+</script>
 {% endblock %}

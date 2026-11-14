@@ -3,86 +3,227 @@
 {% block style %}{% static "css/account/profile.css" %}{% endblock %}
 {% block title %}Profile{% endblock %}
 {% block body %}
-    <h1 style="color:#F5F7F8; margin: 60px auto 0;text-align: center">Profile</h1>
-    <div class="bg-image" style="background-image: url('{% static "image/100-covers.png" %}');"></div>
-    <div class="bg-cover"></div>
-    <div class="profile-body">
-        <div class="profile-image-name">
-            {% if user.image %}
-                <img src="{{ user.image.url }}" alt="{{ user.username }} image" class="profile-image">
-            {% else %}
-                <img src="{% static 'image/user-icon.png' %}" alt="default-user-icon" class="profile-image">
-            {% endif %}
-            <h3 class="profile-name">
-                <a href="{% url 'account:edit_user' %}">
+    <main class="profile-page">
+        <section class="profile-top">
+            <div class="profile-avatar">
+                <div class="avatar-wrap">
+                    <img src="{% if user.image %}{{ user.image.url }}{% else %}{% static 'image/user-icon.png' %}{% endif %}"
+                         alt="{{ user.username }}" class="profile-image">
+                    <div class="avatar-edit-bg"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                         class="avatar-edit-svg">
+                        <path d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z"/>
+                        <path fill-rule="evenodd"
+                              d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Zm12-1.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <h2 class="profile-name">{{ user.username }}</h2>
+
+                <a href="{% url 'account:choose_favorite_genres' %}" class="btn-genres">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18"
+                         height="18">
+                        <path d="M18.75 12.75h1.5a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5ZM12 6a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 12 6ZM12 18a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 12 18ZM3.75 6.75h1.5a.75.75 0 1 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5ZM5.25 18.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 0 1.5ZM3 12a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 3 12ZM9 3.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM12.75 12a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0ZM9 15.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z"/>
+                    </svg>
+                    <span>ژانرهای مورد علاقه</span>
+                </a>
+            </div>
+
+            <form class="profile-form" method="post" action="{% url 'account:edit_user' %}"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {# نمایش ارورهای کلی فرم در صورت وجود #}
+                {% if form.non_field_errors %}
+                    <div class="form-non-field-errors">
+                        {% for error in form.non_field_errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <label>
+                    نام کاربری
+                    <input type="text" name="username"
+                           class="{% if form.username.errors %}input-error{% endif %}"
+                           value="{{ form.username.value|default_if_none:user.username }}">
+                    {% for error in form.username.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+
+                <label>
+                    ایمیل
+                    <input type="email" name="email"
+                           class="{% if form.email.errors %}input-error{% endif %}"
+                           value="{{ form.email.value|default_if_none:user.email }}">
+                    {% for error in form.email.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+
+                <label>
+                    شماره تلفن
+                    <input type="tel" name="phone"
+                           class="{% if form.phone.errors %}input-error{% endif %}"
+                           value="{{ form.phone.value|default_if_none:user.phone }}">
+                    {% for error in form.phone.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+
+                <label>
+                    رمز عبور
+                    <input type="password" name="password" value="********" disabled>
+                </label>
+
+                <input class="avatar-edit" type="file" accept="image/*" name="image">
+
+                {# نمایش ارور مربوط به آپلود عکس پروفایل (مثلا فرمت یا حجم نامعتبر) #}
+                {% if form.image.errors %}
+                    <div class="form-non-field-errors">
+                        {% for error in form.image.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn-primary">ذخیره تغییرات</button>
+
+                <a href="{% url 'account:password_change' %}" class="change-password">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                         stroke="currentColor" class="size-6">
+                         stroke="currentColor" class="change-password-icon">
                         <path stroke-linecap="round" stroke-linejoin="round"
                               d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
                     </svg>
                 </a>
-                <span>{{ user.username }}</span>
-            </h3>
-            <a class="profile-change-password" href="{% url 'account:password_change' %}">تغییر رمز</a>
-        </div>
-        <div class="profile-detail">
-            <div class="profile-information">
-                <div>
-                    <span>شماره تلفن: </span>
-                    <p>{{ user.phone }}</p>
-                </div>
-                <div>
-                    <span>ایمیل: </span>
-                    {% if user.email %}
-                        <p>{{ user.email }}</p>
-                    {% else %}
-                        <p><a href="{% url 'account:edit_user' %}">ایمیل خود را وارد کنید!</a></p>
-                    {% endif %}
-                </div>
-            </div>
-            <hr>
-            <div class="profile-actions">
-                <a href="{% url 'account:saves' %}">ذخیره ها</a>
-                <a id="ticket">ارسال تیکت</a>
-                <a href="{% url 'account:likes' %}">لایک شده ها</a>
-                <a href="{% url 'account:choose_favorite_genres' %}">ژانر های موردعلاقه</a>
-            </div>
-        </div>
-    </div>
 
-    {# hidden form for create a new ticket #}
-    <div class="profile-ticket-form-hidden" id="ticket-form">
-        <form method="post" class="ticket-form" action="{% url 'account:ticket' %}">
-            {% csrf_token %}
-            <select name="subject" id="id_subject" required>
-                <option value="Proposal">پیشنهاد</option>
-                <option value="Criticism">انتقاد</option>
-                <option value="Report">گزارش</option>
-            </select>
-            <textarea name="text" id="id_text" required placeholder="متن تیکت رو اینجا بنویس ..."></textarea>
-            <div class="ticket-form-buttons">
-                <button type="submit" class="ticket-form-submit">ارسال</button>
-                <button class="ticket-form-cancel" id="ticket-cancel" type="button">انصراف</button>
+                <button type="button" class="ticket-toggle" id="ticket" aria-expanded="false"
+                        aria-controls="ticket-form">
+                    ارسال تیکت
+                    <svg class="ticket-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+            </form>
+        </section>
+
+        <div class="ticket-panel" id="ticket-form">
+            <div class="ticket-panel-inner">
+                <form method="post" class="ticket-form" action="{% url 'account:ticket' %}">
+                    {% csrf_token %}
+                    <select name="subject" id="id_subject" required>
+                        <option value="Proposal">پیشنهاد</option>
+                        <option value="Criticism">انتقاد</option>
+                        <option value="Report">گزارش</option>
+                    </select>
+                    <textarea name="text" id="id_text" required placeholder="متن تیکت رو اینجا بنویس ..."></textarea>
+                    <div class="ticket-form-buttons">
+                        <button type="submit" class="ticket-form-submit">ارسال</button>
+                        <button class="ticket-form-cancel" id="ticket-cancel" type="button">انصراف</button>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
+        </div>
+
+
+        <section class="subscription-card">
+            <h3 class="subscription-title">
+                <span> اشتراک من</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                     class="subscription-icon">
+                    <path fill-rule="evenodd"
+                          d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                          clip-rule="evenodd"/>
+                </svg>
+            </h3>
+
+            <div class="subscription-inner">
+                <div class="sub-info">
+                    <strong> اشتراک ویژه: </strong>
+                    <small> به زودی طرح اشتراک برای کاربران ایجاد میشود. با کلی امکانات باحال ...</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="profile-movies">
+            {% if saved_movies %}
+                <h3>ذخیره<span style="color: #a30d26"> شده</span> ها</h3>
+                <div class="poster-row">
+                    {% for movie in saved_movies|slice:":7" %}
+                        <a href="{% url 'film:movies_detail' movie.id movie.slug %}"><img src="{{ movie.poster_url }}"
+                                                                                          alt="{{ movie.orj_title }}"></a>
+                    {% endfor %}
+
+                    <a href="{% url 'account:saves' %}" class="view-all-card">
+                        <span>بیشتر</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M4.72 9.47a.75.75 0 0 0 0 1.06l4.25 4.25a.75.75 0 1 0 1.06-1.06L6.31 10l3.72-3.72a.75.75 0 1 0-1.06-1.06L4.72 9.47Zm9.25-4.25L9.72 9.47a.75.75 0 0 0 0 1.06l4.25 4.25a.75.75 0 1 0 1.06-1.06L11.31 10l3.72-3.72a.75.75 0 0 0-1.06-1.06Z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+
+                </div>
+            {% endif %}
+            {% if liked_movies %}
+                <h3>لایک <span style="color: #a30d26"> شده</span> ها</h3>
+                <div class="poster-row">
+                    {% for movie in liked_movies|slice:":7" %}
+                        <a href="{% url 'film:movies_detail' movie.id movie.slug %}"><img src="{{ movie.poster_url }}"
+                                                                                          alt="{{ movie.orj_title }}"></a>
+                    {% endfor %}
+
+                    <a href="{% url 'account:likes' %}" class="view-all-card">
+                        <span>بیشتر</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M4.72 9.47a.75.75 0 0 0 0 1.06l4.25 4.25a.75.75 0 1 0 1.06-1.06L6.31 10l3.72-3.72a.75.75 0 1 0-1.06-1.06L4.72 9.47Zm9.25-4.25L9.72 9.47a.75.75 0 0 0 0 1.06l4.25 4.25a.75.75 0 1 0 1.06-1.06L11.31 10l3.72-3.72a.75.75 0 0 0-1.06-1.06Z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
             integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function () {
-            {# function for toggeling the display of ticket form #}
-            let form = $("#ticket-form");
-            $("#ticket").click(function () {
-                form.addClass("profile-ticket-form");
-                $(".ticket-form").css("display", "block");
-            });
-            $("#ticket-cancel").click(function () {
-                form.removeClass("profile-ticket-form");
-                $(".ticket-form").css("display", "none");
+            const $toggle = $("#ticket");
+            const $panel = $("#ticket-form");
 
+            function setTicket(open) {
+                $toggle.toggleClass("open", open).attr("aria-expanded", open);
+                $panel.toggleClass("open", open);
+            }
+
+            $toggle.on("click", function () {
+                setTicket(!$panel.hasClass("open"));
             });
+
+            $("#ticket-cancel").on("click", function () {
+                setTicket(false);
+            });
+        });
+        {# this tag created by form #}
+        let imageInput = $('.avatar-edit');
+
+        imageInput.change(function (event) {
+            {# function for showing the selected image befor submit #}
+            let files = event.target.files
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                $('.profile-image').attr("src", e.target.result)
+            }
+            reader.readAsDataURL(files[0]);
         });
     </script>
 

@@ -1,154 +1,297 @@
+/* ========================================================
+   FILMBAZ - HOME PAGE STYLES
+   ======================================================== */
+
+.home-page-container {
+    max-width: 1440px;
+    margin: 20px auto 80px;
+    padding: 0 24px;
+    box-sizing: border-box;
+    direction: rtl;
+}
+
+/* --- ردیف تیترها (Row Headers) --- */
+.row-header {
+    margin: 40px 0 16px 0;
+}
 
 .list-titles {
-    color: #ff9f29;
-    height: 50px;
-    border-bottom: #3A6351 3px solid;
-    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
-
-    & .list-title {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-
-        & .title-svg {
-            width: 30px;
-        }
-    }
-
-    & .list-more {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-
-        & span {
-            color: #ff9f29;
-        }
-
-        & path {
-            color: #ff9f29;
-        }
-    }
+    text-decoration: none;
+    color: var(--color-text);
+    padding: 0 4px;
 }
 
-.movies, .movies-list {
+.list-title {
     display: flex;
     align-items: center;
-    gap: 1.5%;
-    height: 330px;
-    flex-wrap: wrap;
-
-    & .movie {
-        height: 100%;
-        position: relative;
-        color: #F5F7F8;
-        width: 176px;
-        overflow: hidden;
-
-        & .movie-poster {
-            width: 176px;
-            height: 235px;
-            border-radius: 5px;
-        }
-
-        & .movie-title {
-            margin: 10px 10px 0 0;
-
-        }
-
-        &:hover .movie-detail-hidden {
-            opacity: 1;
-            transition-delay: .5s;
-        }
-
-        & .movie-detail-hidden {
-            font-size: 10px;
-            position: absolute;
-            width: 176px;
-            height: 235px;
-            top: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.78);
-            margin: 0;
-            padding: 20px 10px;
-            opacity: 0;
-            transition: opacity .2s ease;
-            transition-delay: 0s;
-            pointer-events: none;
-
-            & .movie-rate {
-                margin: 20px 0;
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                & div {
-                    display: flex;
-                    align-items: center;
-                }
-            }
-
-            & .movie-year, .movie-director {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin: 20px 0;
-            }
-        }
-    }
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0;
 }
+
+.title-accent-bar {
+    width: 4px;
+    height: 22px;
+    background: var(--gradient-primary);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.list-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    transition: var(--transition);
+}
+
+.list-more svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 200ms ease;
+}
+
+.list-titles:hover .list-more {
+    color: var(--color-primary);
+}
+
+.list-titles:hover .list-more svg {
+    transform: translateX(-4px);
+}
+
+/* --- ردیف اسلایدر افقی فیلم‌ها (Netflix/Filimo Row) --- */
+.movies-row {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 12px 6px 20px 6px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* اسکرول‌بار ظریف برای ردیف فیلم‌ها */
+.movies-row::-webkit-scrollbar {
+    height: 6px;
+}
+.movies-row::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+}
+.movies-row::-webkit-scrollbar-thumb {
+    background: var(--color-surface-2);
+    border-radius: 10px;
+}
+.movies-row::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-dark);
+}
+
+/* انطباق کارت‌های مشترک movie_cards با ردیف افقی */
+.movies-row .movie {
+    flex: 0 0 185px;
+    width: 185px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
+}
+
+.movies-row .movie:hover {
+    transform: translateY(-8px);
+    border-color: rgba(225, 29, 46, 0.45);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.5), 0 0 16px rgba(225, 29, 46, 0.2);
+}
+
+.movies-row .movie-poster-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    background: var(--color-surface-2);
+}
+
+.movies-row .movie-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 400ms ease;
+}
+
+.movies-row .movie:hover .movie-poster {
+    transform: scale(1.06);
+}
+
+.movies-row .badge-rating {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-gold);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+}
+
+.movies-row .badge-rating svg {
+    width: 11px;
+    height: 11px;
+    fill: var(--color-gold);
+}
+
+.movies-row .movie-bottom-info {
+    padding: 10px 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-grow: 1;
+    background: var(--color-surface);
+}
+
+.movies-row .movie-title {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+
+.movies-row .movie-meta-tags {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+}
+
+.movies-row .movie-detail-hidden {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 10, 12, 0.95) 15%, rgba(10, 10, 12, 0.7) 100%);
+    backdrop-filter: blur(3px);
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 7px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 250ms ease;
+    z-index: 3;
+}
+
+.movies-row .movie:hover .movie-detail-hidden {
+    opacity: 1;
+}
+
+.movies-row .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 4px;
+}
+
+.movies-row .detail-item span:last-child {
+    color: var(--color-text);
+    font-weight: 600;
+    max-width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.movies-row .movie-genres-chip {
+    font-size: 0.7rem;
+    color: var(--color-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+/* ========================================================
+   پشتیبانی آنلاین (SUPPORT WIDGET - THEME HARMONIZED)
+   ======================================================== */
 
 .support-button {
-    background-color: #ff9f29;
-    width: 60px;
-    height: 60px;
-    align-items: center;
-    border-radius: 100%;
-    color: #000000;
-    transition: all 200ms ease;
+    background: var(--gradient-primary);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(225, 29, 46, 0.4);
+    transition: var(--transition);
     position: fixed;
-    right: 20px;
-    bottom: 20px;
-    border: #2a4f3d solid 4px;
+    right: 24px;
+    bottom: 24px;
+    border: none;
     display: flex;
-    justify-content: space-around;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 999;
+}
 
-    & svg {
-        height: 40px;
-        width: 40px;
-    }
+.support-button svg {
+    width: 24px;
+    height: 24px;
+}
 
-    &:hover {
-        background-color: #98620f;
-    }
+.support-button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 30px rgba(225, 29, 46, 0.6);
 }
 
 .support-button.active {
-    background-color: #2a4f3d;
-    border: 2px solid black;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
 }
 
 .support-chat-box {
-    width: 400px;
-    height: 550px;
-    background-color: #111;
-    border-radius: 12px;
-    border: 2px solid #2a4f3d;
+    width: 380px;
+    height: 520px;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
     position: fixed;
-    top: 100px;
-    left: 30px;
-    z-index: 10;
-    transition: all 200ms ease;
+    bottom: 90px;
+    right: 24px;
+    z-index: 1000;
+    transition: var(--transition);
     overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
 }
 
 .support-chat-box-hidden {
-    left: -410px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px) scale(0.95);
 }
 
 .support-chat-form {
@@ -156,49 +299,45 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #0f0f0f;
+    background: var(--color-surface);
 }
 
 .support-chat-header {
-    height: 55px;
-    min-height: 55px;
-    background-color: #17212b;
-    color: #F5F7F8;
+    height: 54px;
+    background: var(--color-surface-2);
+    color: var(--color-text);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid #2a4f3d;
-    font-size: 16px;
-    font-weight: bold;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.95rem;
+    font-weight: 700;
+    position: relative;
 }
 
 #support-back-button {
-    background-color: #17212b;
+    background: transparent;
     border: none;
-    font-size: 25px;
-    font-weight: bold;
-    color: #F5F7F8;
+    font-size: 1.2rem;
+    color: var(--color-text-muted);
     position: absolute;
-    left: 10px;
-    transition: all 200ms ease;
-    border-radius: 5px;
-    height: 30px;
-    width: 50px;
-    line-height: 25px;
+    left: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+}
 
-    &:hover {
-        left: 12px;
-    }
+#support-back-button:hover {
+    color: var(--color-text);
 }
 
 .support-messages {
     flex: 1;
-    padding: 12px;
+    padding: 16px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    background-color: #0e1621;
+    gap: 12px;
+    background: var(--color-bg);
 }
 
 .message-row {
@@ -220,121 +359,192 @@
 
 .message-bubble {
     display: inline-block;
-    max-width: 75%;
-    width: fit-content;
-    padding: 10px 12px;
-    border-radius: 16px;
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
     line-height: 1.6;
-    font-size: 14px;
-    direction: rtl;
-    text-align: right;
     word-break: break-word;
-    overflow-wrap: break-word;
-    box-sizing: border-box;
-    height: fit-content;
-    min-height: 40px;
 }
 
 .message-row.outgoing .message-bubble {
-    background-color: #ff9f29;
-    color: #000;
-    border-bottom-right-radius: 3px;
+    background: var(--color-primary);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
 }
 
 .message-row.incoming .message-bubble {
-    background-color: #2a4259;
-    color: #F5F7F8;
-    border-bottom-left-radius: 3px;
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-bottom-left-radius: 4px;
 }
 
 .message-row.system .message-bubble {
-    background-color: #222;
-    color: #aaa;
-    border: 1px solid #333;
-    font-size: 12px;
-    text-align: center;
-    max-width: 85%;
-}
-
-.message-time {
-    font-size: 10px;
-    opacity: 0.7;
-    margin-top: 3px;
-    text-align: left;
-}
-
-.support-input-box {
-    height: 60px;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px;
-    background-color: #17212b;
-    border-top: 1px solid #2a4f3d;
-}
-
-.support-send-message {
-    width: 70px;
-    height: 40px;
-    background-color: #ff9f29;
-    color: #000000;
-    transition: all 200ms ease;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-}
-
-.support-send-message:hover {
-    background-color: #98620f;
-}
-
-.support-message-input {
-    flex: 1;
-    height: 40px;
-    color: #F5F7F8;
-    background-color: #090808;
-    border-radius: 8px;
-    border: 1px #333333 solid;
-    padding: 0 10px;
-    direction: rtl;
-}
-
-.support-message-input:focus-visible {
-    outline: none;
-    border-color: #ff9f29;
-}
-
-.support-session-item {
-    width: 100%;
-    height: 60px;
-    border-bottom: 1px #2a4f3d solid;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 10px;
-    color: #F5F7F8;
-    transition: all 200ms ease;
-
-    &:hover {
-        background-color: #090808;
-        color: #a3a3a3;
-    }
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
 }
 
 .message-footer-bubble {
     display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.message-time {
+    font-size: 0.65rem;
+    opacity: 0.65;
+}
+
+.seen-status svg {
+    display: block;
+    opacity: 0.8;
+}
+
+.support-input-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--color-surface-2);
+    border-top: 1px solid var(--color-border);
+}
+
+.support-message-input {
+    flex: 1;
+    height: 38px;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    padding: 0 12px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    transition: var(--transition);
+}
+
+.support-message-input:focus {
+    border-color: var(--color-primary);
+}
+
+.support-send-message {
+    height: 38px;
+    padding: 0 16px;
+    background: var(--gradient-primary);
+    color: #ffffff;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.support-send-message:hover {
+    box-shadow: 0 4px 12px rgba(225, 29, 46, 0.4);
+}
+
+.support-session-item {
+    width: 100%;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 20px;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: var(--transition);
+    box-sizing: border-box;
+}
+
+.support-session-item:hover {
+    background: var(--color-surface-2);
+}
+/* --- کانتینر اسلایدر و ناوبری --- */
+.slider-wrapper {
+    position: relative;
     width: 100%;
+    margin-bottom: 30px;
 }
 
-.seen-status {
-    margin-top: 8px;
+/* پنهان‌سازی کامل اسکرول‌بار در تمامی مرورگرها */
+.movies-row {
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 12px 4px 18px 4px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    /* حذف نوار اسکرول */
+    scrollbar-width: none; /* فایرفاکس */
+    -ms-overflow-style: none; /* اینترنت اکسپلورر و اج */
 }
 
+.movies-row::-webkit-scrollbar {
+    display: none; /* کروم، سافاری و اپرا */
+}
 
-.errorlist {
-    color: #F5F7F8;
+/* دکمه‌های ناوبری چپ و راست */
+.slider-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(20, 20, 24, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    opacity: 0;
+    transition: opacity 250ms ease, background 200ms ease, transform 200ms ease, border-color 200ms ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
+.slider-nav-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* نمایش دکمه‌ها هنگام هاور روی اسلایدر */
+.slider-wrapper:hover .slider-nav-btn {
+    opacity: 0.9;
+}
+
+.slider-nav-btn:hover {
+    opacity: 1 !important;
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* موقعیت قرارگیری دکمه‌ها (سازگار با RTL) */
+.slider-nav-btn.prev-btn {
+    right: -12px;
+}
+
+.slider-nav-btn.next-btn {
+    left: -12px;
+}
+
+@media (max-width: 768px) {
+    .slider-nav-btn {
+        display: none; /* در موبایل اسکرول با تاچ انگشت طبیعی‌تر است */
+    }
 }

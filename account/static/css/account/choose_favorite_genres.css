@@ -1,16 +1,58 @@
-
-.choose-genres-form {
-    background-color: #000;
-    color: white;
-    padding: 20px;
+.genres-page-wrapper {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 36px 20px 100px; /* فضای پایین برای دکمه شناور */
+    color: var(--color-text);
 }
 
-.choose-genres-error {
-    color: #f44;
-    margin: 8px 0;
+/* هدر صفحه */
+.genres-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.genres-badge {
+    display: inline-block;
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+    border: 1px solid rgba(225, 29, 46, 0.25);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
+
+.genres-main-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-text);
+    margin-bottom: 8px;
+}
+
+.genres-subtitle {
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+/* باکس نمایش خطا */
+.choose-genres-errors-box {
+    max-width: 600px;
+    margin: 0 auto 24px;
+    background-color: var(--color-primary-soft);
+    border: 1px solid rgba(225, 29, 46, 0.35);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
     text-align: center;
 }
 
+.choose-genres-error {
+    color: #ff6b78;
+    font-size: 13px;
+    margin: 4px 0;
+}
+
+/* گرید کارت‌های ژانر */
 .choose-genres-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -19,92 +61,215 @@
 
 .choose-genres-genre-card {
     display: block;
-    border: 1px solid #444;
-    border-radius: 6px;
-    background-color: #111;
     cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    overflow: hidden;
+    user-select: none;
 }
-
 
 .choose-genres-genre-card input[type="checkbox"] {
     display: none;
 }
 
-
-.choose-genres-genre-card input[type="checkbox"]:checked + .choose-genres-genre-content {
-    border: 1px solid #ff9f29;
-    box-shadow: 0 0 8px #ff9f29;
-}
-
+/* بدنه داخلی کارت ژانر */
 .choose-genres-genre-content {
+    position: relative;
     display: flex;
-    flex-direction: row;
-    border-radius: 6px;
+    align-items: center;
+
     height: 100%;
-}
-.choose-genres-genre-title {
-    flex: 0 0 160px;
-    padding: 12px;
-}
-
-.choose-genres-genre-title .choose-genres-genre-en-name,
-.choose-genres-genre-title .choose-genres-genre-fa-name {
-    display: block;
-    color: white;
+    padding: 16px 16px 16px 50px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
 }
 
-.choose-genres-genre-title .choose-genres-genre-en-name {
-    font-size: 1rem;
+/* حالت هاور روی کارت */
+.choose-genres-genre-card:hover .choose-genres-genre-content {
+    background-color: var(--color-surface-2);
+    border-color: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+}
+
+/* حالت انتخاب‌شده (Checked) */
+.choose-genres-genre-card input[type="checkbox"]:checked + .choose-genres-genre-content {
+    background: linear-gradient(135deg, rgba(225, 29, 46, 0.14) 0%, var(--color-surface) 65%);
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 24px rgba(225, 29, 46, 0.18);
+}
+
+/* بج تیک در گوشه کارت انتخاب‌شده */
+.selected-check-icon {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: transparent;
+    font-size: 13px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
 }
 
-.choose-genres-genre-title .choose-genres-genre-fa-name {
-    font-size: 0.9rem;
-    margin-top: 4px;
+.choose-genres-genre-card input[type="checkbox"]:checked + .choose-genres-genre-content .selected-check-icon {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text);
+    box-shadow: 0 0 12px rgba(225, 29, 46, 0.6);
 }
+
+/* بخش عنوان ژانر (فارسی و انگلیسی) */
+.choose-genres-genre-title {
+    flex: 0 0 135px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 4px;
+    border-left: 1px solid var(--color-border);
+    padding-left: 12px;
+}
+
+.choose-genres-genre-fa-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text);
+    transition: var(--transition);
+}
+
+.choose-genres-genre-en-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+    transition: var(--transition);
+}
+
+.choose-genres-genre-card input[type="checkbox"]:checked + .choose-genres-genre-content .choose-genres-genre-en-name {
+    color: var(--color-primary);
+}
+
+/* بخش ۳ فیلم برتر هر ژانر */
 .choose-genres-genre-movies {
+    flex: 1;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    padding: 10px;
-    flex: 1;
+    gap: 10px;
 }
 
 .movie-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    min-width: 0; /* جلوگیری از بیرون زدن متن طولانی */
+}
+
+.movie-thumb-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border);
 }
 
 .choose-genres-movie-backdrop {
     width: 100%;
-    height: auto;
-    border-radius: 4px;
+    height: 100%;
     object-fit: cover;
+    transition: transform 300ms ease;
 }
+
+.choose-genres-genre-card:hover .choose-genres-movie-backdrop {
+    transform: scale(1.05);
+}
+
 .choose-genres-movie-title {
     margin-top: 6px;
-    font-size: 0.8rem;
-    color: white;
+    font-size: 11.5px;
+    color: var(--color-text-muted);
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: var(--transition);
+}
+
+.choose-genres-genre-card:hover .choose-genres-movie-title,
+.choose-genres-genre-card input[type="checkbox"]:checked + .choose-genres-genre-content .choose-genres-movie-title {
+    color: var(--color-text);
+}
+
+.empty-movies-placeholder {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    padding: 20px 0;
+}
+
+/* نوار شناور پایین صفحه برای دکمه ذخیره */
+.sticky-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 20px;
+    background: linear-gradient(to top, rgba(10, 10, 12, 0.98) 60%, rgba(10, 10, 12, 0));
+    display: flex;
+    justify-content: center;
+    z-index: 50;
+    pointer-events: none; /* کلیک روی فضای خالی اطراف دکمه آزاد باشد */
 }
 
 .choose-genres-save-button {
-    margin-top: 20px;
+    pointer-events: auto;
     width: 100%;
-    padding: 14px;
-    background-color: #3A6351;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
+    max-width: 380px;
+    height: 48px;
+    background: var(--gradient-primary);
+    color: var(--color-text);
+    font-size: 15px;
+    font-weight: 700;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    box-shadow: 0 8px 24px rgba(225, 29, 46, 0.35);
+    transition: var(--transition);
 }
 
 .choose-genres-save-button:hover {
-    background-color: #1b2c25;
+    filter: brightness(1.12);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(225, 29, 46, 0.45);
+}
+
+.choose-genres-save-button:active {
+    transform: translateY(0);
+}
+
+/* ریسپانسیو تبلت و موبایل */
+@media (max-width: 960px) {
+    .choose-genres-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 540px) {
+    .choose-genres-genre-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .choose-genres-genre-title {
+        flex: none;
+        border-left: none;
+        border-bottom: 1px solid var(--color-border);
+        padding-left: 0;
+        padding-bottom: 10px;
+    }
 }

@@ -1,0 +1,269 @@
+.likes-page-wrapper {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 36px 24px 60px;
+    color: var(--color-text);
+}
+
+/* هدر صفحه (هماهنگ با تیتر بخش‌های صفحه اصلی) */
+.likes-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.likes-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.likes-page-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-text);
+    position: relative;
+    padding-right: 14px;
+}
+
+/* خط عمودی قرمز کنار تیتر مشابه صفحه اصلی */
+.likes-page-title::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    border-radius: 4px;
+    background-color: var(--color-primary);
+}
+
+.likes-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+    border: 1px solid rgba(225, 29, 46, 0.25);
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+.likes-subtitle {
+    font-size: 13.5px;
+    color: var(--color-text-muted);
+    padding-right: 14px;
+}
+
+/* گرید کارت‌های فیلم */
+.likes-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+    gap: 22px;
+}
+
+.likes-body.is-empty {
+    display: flex;
+    justify-content: center;
+}
+
+/* کارت تک‌فیلم */
+.likes-movie {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    aspect-ratio: 2 / 3;
+    transition: var(--transition);
+}
+
+.likes-movie:hover {
+    transform: translateY(-6px);
+    border-color: rgba(225, 29, 46, 0.45);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.65);
+}
+
+/* حالتی که کاربر با کلیک روی دکمه، فیلم را آن‌لایک کرده */
+.likes-movie.is-unliked {
+    opacity: 0.45;
+    filter: grayscale(0.6);
+}
+
+.likes-movie.is-unliked:hover {
+    opacity: 0.85;
+    filter: grayscale(0.2);
+}
+
+/* لینک و پوستر */
+.likes-poster-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    position: relative;
+}
+
+.likes-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 350ms ease;
+}
+
+.likes-movie:hover .likes-thumbnail {
+    transform: scale(1.05);
+}
+
+/* گرادینت تیره پایین پوستر برای خوانایی عنوان */
+.likes-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(10, 10, 12, 0.96) 0%,
+        rgba(10, 10, 12, 0.6) 35%,
+        rgba(10, 10, 12, 0) 65%
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px 14px;
+}
+
+.likes-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.likes-movie:hover .likes-title {
+    color: var(--color-primary);
+}
+
+.likes-orj-title {
+    font-size: 11.5px;
+    color: var(--color-text-muted);
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: ltr;
+    text-align: right;
+}
+
+/* دکمه شیشه‌ای قلب در گوشه بالا چپ */
+.likes-remove {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 5;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: rgba(20, 20, 24, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.likes-remove svg {
+    width: 17px;
+    height: 17px;
+}
+
+.likes-remove.is-liked {
+    background-color: rgba(225, 29, 46, 0.88);
+    border-color: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(225, 29, 46, 0.4);
+}
+
+.likes-remove:hover {
+    transform: scale(1.1);
+}
+
+/* حالت خالی بودن لیست لایک‌ها */
+.likes-empty-state {
+    width: 100%;
+    max-width: 440px;
+    margin: 40px auto;
+    padding: 40px 24px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.empty-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.likes-empty-state h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 8px;
+}
+
+.likes-empty-state p {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.empty-cta-btn {
+    display: inline-block;
+    padding: 10px 22px;
+    background: var(--gradient-primary);
+    color: var(--color-text);
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.empty-cta-btn:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 6px 18px rgba(225, 29, 46, 0.35);
+}
+
+/* ریسپانسیو موبایل */
+@media (max-width: 540px) {
+    .likes-page-wrapper {
+        padding: 24px 16px 48px;
+    }
+
+    .likes-body {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+}

@@ -1,513 +1,675 @@
+/* ========================================================
+   FILMBAZ - MOVIE & SERIE DETAIL PAGE
+   ======================================================== */
 
 .detail-body {
     position: relative;
-    margin: 0 auto;
-    width: 90%;
-    border: #ff9f29 1px solid;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #ff9f29;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 80px auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+    direction: rtl;
+    color: var(--color-text);
+}
 
+/* --- پس‌زمینه سینمایی و تریلر --- */
+.detail-backdrop-wrapper {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    right: 0;
+    height: 620px;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 10px;
+}
+
+.detail-backdrop {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    position: absolute;
+    inset: 0;
+    transition: opacity 1s ease;
 }
 
 #backdropImage {
-    opacity: 1;
+    opacity: 0.55;
+    filter: brightness(0.9);
 }
 
 #backdropVideo {
     opacity: 0;
+    filter: brightness(0.85);
 }
-
-.detail-backdrop {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top;
-    z-index: -2;
-    transition: opacity .8s ease;
-}
-
-.detail-backdrop-wrapper {
-    position: absolute;
-    width: 100%;
-    height: 500px;
-    margin: 1px;
-    overflow: hidden;
-    z-index: -2;
-}
-
-.detail-backdrop-wrapper img,
-.detail-backdrop-wrapper video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-
-    position: absolute;
-    inset: 0;
-
-    transition: opacity .8s ease;
-}
-
 
 .detail-backdrop-cover {
-    width: 100%;
-    height: 500px;
     position: absolute;
-    top: 0;
-    z-index: -1;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 3px;
+    top: -30px;
+    left: 0;
+    right: 0;
+    height: 620px;
+    background: linear-gradient(to bottom,
+        rgba(10, 10, 12, 0.4) 0%,
+        rgba(10, 10, 12, 0.85) 65%,
+        var(--color-bg) 100%);
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 10px;
 }
 
-.detail-text-cover {
-    width: 100%;
-    height: 500px;
-    position: absolute;
-    top: 480px;
-    z-index: -1;
-    background-color: #000000;
-    border-radius: 3px;
-}
-
+/* --- هیرو سکشن و پوستر --- */
 .detail-detail {
-    padding: 20px;
+    position: relative;
+    z-index: 10;
+    padding-top: 180px;
+    display: flex;
+    gap: 36px;
+    align-items: flex-end;
+}
+
+.detail-content-section {
+    position: relative;
+    z-index: 2;
+    margin-top: 50px;
+    display: flex;
+    gap: 40px;
+}
+
+.detail-poster-box {
+    position: relative;
+    width: 250px;
+    min-width: 250px;
+    aspect-ratio: 2 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+    background: var(--color-surface);
+}
+
+.detail-poster {
     width: 100%;
-    height: 460px;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.detail-texts {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detail-titles h2 {
+    font-size: 2.1rem;
+    font-weight: 900;
+    margin: 0 0 6px 0;
+    color: var(--color-text);
+}
+
+.detail-titles h4 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    margin: 0;
+    letter-spacing: 0.5px;
+    direction: ltr;
+    text-align: right;
+}
+
+/* متادیتا: رتبه، سال، زمان، رده سنی */
+.detail-meta-row {
     display: flex;
     align-items: center;
-
-    & .detail-poster {
-        border-radius: 5px;
-        width: 300px;
-        height: 400px;
-    }
-
-    & .detail-texts {
-        padding: 0 20px;
-        color: #F5F7F8;
-        width: 30%;
-        height: 100%;
-
-        & .detail-rate {
-            display: flex;
-            align-items: center;
-            width: 200px;
-            margin-top: 20px;
-
-            & .detail-rate-number {
-                color: #ff9f29;
-                display: inline;
-                width: 40px;
-                font-size: 25px;
-            }
-
-            & .detail-star {
-                width: 25px;
-                color: #ff9f29;
-            }
-        }
-
-        & .detail-construction, .detial-more-info {
-            width: 100%;
-
-            & p {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
-
-        & .detail-genres {
-            width: 100%;
-            display: flex;
-
-            & .genres {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
-
-                & p {
-                    color: #F5F7F8;
-                    border-radius: 12px;
-                    padding: 5px;
-                    background-color: #3A6351;
-                    margin: 0;
-                    height: 40px;
-                }
-            }
-        }
-    }
-
-    & .detail-actions {
-        position: absolute;
-        color: #ff9f29;
-        top: 40px;
-        left: 30px;
-        display: flex;
-        width: 130px;
-        align-items: center;
-        justify-content: space-between;
-        height: 40px;
-
-        & svg {
-            width: 25px;
-            transition: all 200ms ease;
-            color: #ff9f29;
-
-            &:hover {
-                width: 27px;
-            }
-        }
-    }
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
 }
 
-.detail-casts-description {
-    border-radius: 20px;
-    width: 100%;
-    height: fit-content;
-    font-size: 13px;
-    background-color: black;
-}
-
-.detail-description {
-    display: flex;
-    justify-content: space-between;
-    color: #F5F7F8;
-    background-color: black;
-    padding: 10px 30px;
-    border-radius: 20px;
-    width: 100%;
-    min-height: 200px;
-    border-top: 2px solid #3A6351;
-    font-size: 13px;
-
-    & p {
-        width: 60%;
-        height: 100%;
-    }
-}
-
-.detail-staff {
-    width: 20%;
-    color: #F5F7F8;
-
-    & li {
-        width: 100%;
-        height: fit-content;
-        margin: 10px 0;
-
-        & p {
-            color: #F5F7F8;
-            display: inline;
-        }
-
-        & .detail-cast {
-            border: 1px solid #3A6351;
-            padding: 5px 2px 5px 5px;
-            border-radius: 5px;
-            background-color: #1c1c1c;
-            display: flex;
-            width: 100%;
-            height: 40px;
-            align-items: center;
-            gap: 10px;
-            margin: 5px 0;
-
-            & img {
-                width: 35px;
-                border-radius: 3px;
-            }
-        }
-    }
-}
-
-
-.detail-casts {
-    color: #F5F7F8;
-    padding: 30px;
-    display: flex;
-    gap: 20px;
+.detail-rate-badge {
+    background: rgba(244, 181, 20, 0.12);
+    border: 1px solid rgba(244, 181, 20, 0.3);
+    color: var(--color-gold);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    display: inline-flex;
     align-items: center;
-    justify-content: right;
-
-    & .detail-cast {
-        border: 1px solid #3A6351;
-        padding: 5px 2px 5px 5px;
-        border-radius: 5px;
-        background-color: #1c1c1c;
-        display: flex;
-        width: fit-content;
-        height: 40px;
-        align-items: center;
-        gap: 10px;
-
-        & img {
-            width: 35px;
-            border-radius: 3px;
-        }
-    }
+    gap: 6px;
 }
 
-
-.detail-comments {
-    background-color: #000000;
-    width: 100%;
-    padding: 0 20px 20px 20px;
-    border-top: 2px solid #3A6351;
-    border-radius: 20px;
-
-    & .detail-comments-header {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        justify-content: right;
-        margin-top: 20px;
-        gap: 20px;
-
-        & .detail-comments-title {
-            background-color: #3A6351;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 10px;
-            width: 90px;
-            color: #F5F7F8;
-            border-radius: 5px;
-            margin: 0 10px 0 0;
-
-            & svg {
-                width: 20px;
-            }
-        }
-
-        & .detail-comments-warning {
-            color: #800505;
-            height: 100%;
-        }
-    }
-
-    & .detail-no-comment {
-        margin-right: 30px;
-        color: #F5F7F8;
-    }
+.detail-rate-badge svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--color-gold);
 }
 
-.detail-comment {
-    background-color: rgba(28, 28, 28, 0.32);
-    width: 95%;
-    height: fit-content;
-    border-radius: 5px;
-    padding: 20px;
-    margin: 20px auto;
-    border: 1px solid rgba(255, 159, 41, 0.5);
-    box-shadow: 0 0 3px #ff9f29;
-
-    & hr {
-        border-radius: 12px;
-        border: 1px solid #3A6351;
-        width: 97%;
-    }
-
-    & .detail-comment-head {
-        display: flex;
-        padding: 0 20px;
-        align-items: center;
-        justify-content: space-between;
-        color: #F5F7F8;
-        font-size: 13px;
-
-        & .detail-comment-user {
-            display: flex;
-            align-items: center;
-            min-width: 70px;
-            justify-content: space-between;
-            font-size: 16px;
-
-            & svg {
-                width: 30px;
-            }
-
-        }
-    }
-
-    & .detail-comment-text {
-        font-size: 13px;
-        margin: 0 auto;
-        width: 95%;
-        color: #F5F7F8;
-    }
-}
-
-.detail-add-comment {
-    width: 95%;
-    margin: 20px auto 0;
+.meta-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    height: 70px;
+    gap: 6px;
+}
 
-    & #add-comment-text {
-        color: #F5F7F8;
-        width: 89%;
-        height: 50px;
-        background-color: #1c1c1c;
-        border: 1px solid #3A6351;
-        padding: 0 20px;
-        border-radius: 5px;
+.meta-item::after {
+    content: "•";
+    margin-right: 12px;
+    opacity: 0.4;
+}
 
-        &::placeholder {
-            color: rgb(133, 133, 133);
-        }
+.meta-item:last-child::after {
+    display: none;
+}
 
-        &:focus-visible {
-            outline: 1px solid #3A6351;
-        }
-    }
+/* ژانرها */
+.detail-genres {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
 
-    & #add-comment-button {
-        width: 10%;
-        height: 50px;
-        background-color: #3A6351;
-        color: #F5F7F8;
-        border-radius: 5px;
-        border: none;
-        font-size: 16px;
-        transition: all 200ms ease;
+.genre-chip {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
 
-        &:hover {
-            background-color: #2a4f3d;
-            font-size: 18px;
-        }
-    }
+.genre-chip:hover {
+    border-color: var(--color-primary);
+    color: #fff;
+    background: var(--color-primary-soft);
+}
+
+/* کلیدهای تعاملی (اکشن‌ها) */
+.detail-actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-play-hero {
+    background: var(--gradient-primary);
+    color: #fff;
+    text-decoration: none;
+    height: 46px;
+    padding: 0 24px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(225, 29, 46, 0.4);
+    transition: var(--transition);
+}
+
+.btn-play-hero svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.btn-play-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(225, 29, 46, 0.6);
+}
+
+.btn-action-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.btn-action-circle svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-action-circle:hover,
+.btn-action-circle.active {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: scale(1.08);
+}
+
+/* پاپ‌آپ اشتراک گذاری */
+.share-container {
+    position: relative;
+    display: inline-flex;
+    z-index: 50;
 }
 
 .detail-share-box-hidden {
-    visibility: hidden;
-    position: absolute;
-    top: 0;
-    left: 150px;
-    width: 180px;
-    border-radius: 8px;
-    transition: all 200ms ease;
+    display: none !important;
 }
 
 .detail-share-box {
-    transition: all 200ms ease;
-    visibility: visible;
+    display: flex !important;
+    flex-direction: column;
+    gap: 8px;
     position: absolute;
-    top: 0;
-    left: 170px;
-    width: 180px;
-    height: 250px;
+    /* باز شدن به سمت بالا برای جلوگیری از تداخل با کادر پایین */
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 190px;
+    background: rgba(26, 26, 31, 0.95);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+    z-index: 9999 !important; /* تضمین قرارگیری روی تمام بخش‌ها */
     backdrop-filter: blur(20px);
-    background-color: rgba(0, 0, 0, 0.38);
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: 1px solid #ff9f29;
-    box-shadow: 0 0 5px #ff9f29;
+    -webkit-backdrop-filter: blur(20px);
+    box-sizing: border-box;
+    animation: popupFade 180ms ease forwards;
+}
 
-    & div {
-        height: 40px;
-        justify-content: space-between;
-        display: flex;
-        width: 100%;
-        margin: 5px auto;
-
-        & a {
-            display: block;
-            width: 100%;
-            text-align: right;
-            color: #ff9f29;
-
-            &:hover {
-                color: #50320d;
-            }
-        }
+@keyframes popupFade {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 8px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
     }
 }
 
-.detail-play-movie {
-    width: 100%;
-    text-align: center;
-    background-color: #0f0f0f;
-    border-bottom: #2a4f3d 2px solid;
-    border-top: #2a4f3d 2px solid;
-    margin-bottom: 5px;
-    border-radius: 20px;
-    height: 70px;
-    display: block;
+.detial-share-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    cursor: pointer;
+}
 
-    & a {
-        color: #F5F7F8;
-        display: flex;
-        gap: 10px;
-        width: 100%;
-        height: 70px;
-        line-height: 70px;
+.detial-share-buttons:hover {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+}
+
+.detial-share-buttons a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.detial-share-buttons img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* --- خلاصه داستان و عوامل --- */
+.detail-content-section {
+    position: relative;
+    z-index: 2;
+    margin-top: 50px;
+    display: flex;
+    gap: 40px;
+}
+
+.main-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.side-column {
+    width: 320px;
+    min-width: 320px;
+}
+
+.content-block {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+}
+
+.block-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text);
+}
+
+.block-title::before {
+    content: "";
+    width: 4px;
+    height: 18px;
+    background: var(--gradient-primary);
+    border-radius: 4px;
+}
+
+.detail-description-text {
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: #cbd5e1;
+    margin: 0;
+}
+
+/* بازیگران */
+.casts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.cast-card {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition);
+}
+
+.cast-card:hover {
+    border-color: rgba(225, 29, 46, 0.4);
+    transform: translateY(-3px);
+}
+
+.cast-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #222;
+}
+
+.cast-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* سایدبار اطلاعات سازندگان */
+.staff-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.staff-item-role {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+}
+
+.staff-member {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+}
+
+.staff-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.staff-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ========================================================
+   بخش اختصاصی قسمت‌ها و فصول سریال (SERIES EPISODES)
+   ======================================================== */
+.episodes-wrapper {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+}
+
+.episodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.episode-card {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: var(--transition);
+}
+
+.episode-card:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    transform: translateY(-2px);
+}
+
+.episode-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.episode-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.episode-subtitle {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.btn-play-episode {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+}
+
+.btn-play-episode svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.episode-card:hover .btn-play-episode {
+    background: var(--gradient-primary);
+    border-color: transparent;
+    color: #fff;
+}
+
+/* ========================================================
+   بخش نظرات و کامنت‌ها (COMMENTS)
+   ======================================================== */
+.comments-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+}
+
+.detail-comments-warning {
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+    margin-bottom: 16px;
+}
+
+.detail-add-comment {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+#add-comment-text {
+    flex: 1;
+    height: 44px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    padding: 0 16px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    outline: none;
+    transition: var(--transition);
+}
+
+#add-comment-text:focus {
+    border-color: var(--color-primary);
+}
+
+#add-comment-button {
+    height: 44px;
+    padding: 0 24px;
+    background: var(--gradient-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+#add-comment-button:hover {
+    box-shadow: 0 4px 14px rgba(225, 29, 46, 0.4);
+}
+
+/* کارت‌های کامنت */
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.detail-comment {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.detail-comment-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-comment-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.detail-comment-user svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--color-primary);
+}
+
+.detail-comment-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.detail-comment-text {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: #e2e8f0;
+    margin: 0;
+}
+
+.detail-no-comment {
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    margin: 10px 0;
+}
+
+/* ریسپانسیو */
+@media (max-width: 950px) {
+    .detail-detail {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-top: 100px;
+    }
+    .detail-titles h4 {
+        text-align: center;
+    }
+    .detail-meta-row, .detail-actions-bar, .detail-genres {
         justify-content: center;
-        transition: all 200ms ease;
-
-        &:hover {
-            color: #918f8f;
-            font-size: 18px;
-        }
-
-        & svg {
-            width: 18px;
-        }
     }
-}
-
-.detail-episodes-list {
-    width: 100%;
-    text-align: center;
-    display: block;
-
-
-    & .detial-episode {
-        border-bottom: #2a4f3d 2px solid;
-        border-top: #2a4f3d 2px solid;
+    .detail-content-section {
+        flex-direction: column;
+    }
+    .side-column {
         width: 100%;
-        height: 60px;
-        display: flex;
-        color: #F5F7F8;
-        align-content: center;
-        border-radius: 20px;
-        margin: 10px auto;
-
-        & .detail-episode-play {
-            background-color: #1e1d1d;
-            color: #ff9f29;
-            display: flex;
-            justify-content: space-around;
-            width: 100px;
-            height: 80%;
-            align-content: center;
-            transition: all 200ms ease;
-            border-radius: 10px;
-            margin: auto 10px auto 0;
-            align-items: center;
-
-            & .svg {
-                width: 16px;
-                color: #ff9f29;
-            }
-
-            &:hover {
-                box-shadow: #ff9f29 0 0 5px;
-                background-color: #3b321e;
-            }
-        }
-
-        & .detail-episode-numbers {
-            color: #F5F7F8;
-            height: 90%;
-            text-align: center;
-            margin-right: 500px;
-        }
-
+        min-width: 100%;
     }
 }

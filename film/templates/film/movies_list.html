@@ -1,39 +1,43 @@
 {% extends "parents/base.html" %}
 {% load static %}
 {% block style %}{% static "css/film/movies_list.css" %}{% endblock %}
-{% block title %}Movie List{% endblock %}
+{% block title %}آرشیو فیلم‌ها | فیلم‌باز{% endblock %}
+
 {% block body %}
+<div class="movies-catalog-container">
+<!-- Toolbar نوار فیلتر و مرتب‌سازی مدرن -->
     <div class="movies-list-navbar">
         <div class="movies-list-fillters">
-            <h4 style="width: 40%;">فیلتر بر اساس :</h4>
+            <div class="filter-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                <span>فیلترها:</span>
+            </div>
 
-            <!-- Genre Dropdown -->
+            <!-- فیلتر ژانر -->
             <div class="filter-dropdown" id="genre-dropdown">
                 <button type="button" class="filter-btn">
-                    {{ genre_label }}
+                    <span>{{ genre_label }}</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
-
                 <div class="dropdown-menu dropdown-grid">
                     <a class="{% if not selected_genre %}active-item{% endif %}"
                        href="{% url 'film:movies_list' %}?page_size={{ page_size }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                         همه ژانرها
                     </a>
-
-
                     {% for genre in genres %}
                         <a class="{% if selected_genre == genre.id|stringformat:'s' %}active-item{% endif %}"
                            href="{% url 'film:movies_list' %}?page_size={{ page_size }}&genre_id={{ genre.id }}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                             {{ genre.fa_name }}
                         </a>
                     {% endfor %}
-
                 </div>
             </div>
 
-            <!-- Adult Dropdown -->
+            <!-- فیلتر رده سنی -->
             <div class="filter-dropdown">
                 <button type="button" class="filter-btn">
-                    {{ adult_label }}
+                    <span>{{ adult_label }}</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
                 <div class="dropdown-menu">
                     <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
@@ -48,12 +52,12 @@
                 </div>
             </div>
 
-            <!-- Release Year Dropdown -->
+            <!-- فیلتر سال ساخت -->
             <div class="filter-dropdown" id="year-dropdown">
                 <button type="button" class="filter-btn">
-                    {{ release_date_label }}
+                    <span>{{ release_date_label }}</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
-
                 <div class="dropdown-menu dropdown-grid">
                     <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_ordering %}&ordering={{ selected_ordering }}{% endif %}">
                         همه سال‌ها
@@ -66,14 +70,26 @@
                 </div>
             </div>
 
+            <!-- دکمه پاک‌کردن همه فیلترها (نمایش در صورت اعمال فیلتر) -->
+            {% if selected_genre or selected_adult or selected_release_date or selected_ordering %}
+            <a href="{% url 'film:movies_list' %}" class="btn-clear-filters" title="حذف تمام فیلترها">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>حذف فیلترها</span>
+            </a>
+            {% endif %}
         </div>
 
+        <!-- بخش مرتب‌سازی -->
         <div class="movies-list-ordering">
-            <h4>مرتب شده بر اساس :</h4>
+            <div class="filter-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="7" y2="18"></line></svg>
+                <span>مرتب‌سازی:</span>
+            </div>
 
             <div class="filter-dropdown">
-                <button type="button" class="filter-btn">
-                    {{ ordering_label }}
+                <button type="button" class="filter-btn order-btn">
+                    <span>{{ ordering_label }}</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
                 <div class="dropdown-menu">
                     <a href="{% url 'film:movies_list' %}?page_size={{ page_size }}{% if selected_genre %}&genre_id={{ selected_genre }}{% endif %}{% if selected_adult %}&adult={{ selected_adult }}{% endif %}{% if selected_release_date %}&release_date={{ selected_release_date }}{% endif %}">
@@ -94,109 +110,95 @@
                 </div>
             </div>
         </div>
-
-        <a class="movies-list-return-home-page" href="{% url 'film:home_page' %}">
-            بازگشت به صفحه اصلی >>
-        </a>
     </div>
+
+    <!-- Movies Grid Container -->
     <div class="movies-list" id="movies-list">
         {% include "ajax/movie_cards.html" with movies=movies %}
     </div>
+</div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function () {
+        const dropdowns = $(".filter-dropdown");
+        const moviesList = $("#movies-list");
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        $(document).ready(function () {
-            const dropdowns = $(".filter-dropdown");
-            const moviesList = $("#movies-list");
+        let nextPage = {% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}null{% endif %};
+        let hasNext = {{ page_obj.has_next|yesno:"true,false" }};
+        let isLoading = false;
+        let currentPageSize = "{{ page_size }}";
 
-            let nextPage = {% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}null{% endif %};
-            let hasNext = {{ page_obj.has_next|yesno:"true,false" }};
-            let isLoading = false; // Prevent duplicate requests
-            let currentPageSize = "{{ page_size }}";
+        function loadMoreMovies() {
+            if (!hasNext || isLoading || !nextPage) return;
+            isLoading = true;
 
-            function loadMoreMovies() {
-                {# request to get more movie. #}
-                if (!hasNext || isLoading || !nextPage) return;
+            const url = new URL(window.location.href);
+            url.searchParams.set("page", nextPage);
+            url.searchParams.set("page_size", currentPageSize);
 
-                isLoading = true;
+            $.ajax({
+                url: url.toString(),
+                type: "GET",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                success: function (data) {
+                    moviesList.append(data.html);
+                    hasNext = data.has_next;
+                    nextPage = data.next_page;
 
-                const url = new URL(window.location.href);
-                url.searchParams.set("page", nextPage);
-                url.searchParams.set("page_size", currentPageSize);
-
-                $.ajax({
-                    url: url.toString(),
-                    type: "GET",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest"
-                    },
-                    success: function (data) {
-                        moviesList.append(data.html);
-
-                        hasNext = data.has_next;
-                        nextPage = data.next_page;
-
-                        if (!hasNext) {
-                            $(window).off("scroll", onScroll);
-                            $(window).off("resize", onScroll);
-                        }
-                    },
-                    complete: function () {
-                        isLoading = false;
+                    if (!hasNext) {
+                        $(window).off("scroll", onScroll);
+                        $(window).off("resize", onScroll);
                     }
-                });
-            }
-
-            function onScroll() {
-                {# request to get more movie befor reach the bottom of page. #}
-                if (!hasNext || isLoading || !nextPage) return;
-
-                const scrollTop = $(window).scrollTop();
-                const windowHeight = $(window).height();
-                const documentHeight = $(document).height();
-
-                if (scrollTop + windowHeight >= documentHeight - 200) {
-                    loadMoreMovies();
+                },
+                complete: function () {
+                    isLoading = false;
                 }
+            });
+        }
+
+        function onScroll() {
+            if (!hasNext || isLoading || !nextPage) return;
+
+            const scrollTop = $(window).scrollTop();
+            const windowHeight = $(window).height();
+            const documentHeight = $(document).height();
+
+            if (scrollTop + windowHeight >= documentHeight - 200) {
+                loadMoreMovies();
             }
+        }
 
-            $(window).on("scroll", onScroll);
-            $(window).on("resize", onScroll);
-            onScroll(); //request for first time to load some movie.
+        $(window).on("scroll", onScroll);
+        $(window).on("resize", onScroll);
+        onScroll();
 
-            dropdowns.each(function () {
-                {# show dropdowns. #}
-                const dropdown = $(this);
-                const button = dropdown.find(".filter-btn");
-                const menu = dropdown.find(".dropdown-menu");
+        dropdowns.each(function () {
+            const dropdown = $(this);
+            const button = dropdown.find(".filter-btn");
+            const menu = dropdown.find(".dropdown-menu");
 
-                button.on("click", function (e) {
+            button.on("click", function (e) {
+                e.stopPropagation();
+                dropdowns.not(dropdown).removeClass("open");
+                dropdown.toggleClass("open");
+            });
+
+            if (menu.length) {
+                menu.on("mouseleave", function () {
+                    dropdown.removeClass("open");
+                });
+                menu.on("click", function (e) {
                     e.stopPropagation();
-
-                    dropdowns.not(dropdown).removeClass("open");
-                    dropdown.toggleClass("open");
                 });
-
-                if (menu.length) {
-                    {# hide dropdowns #}
-                    menu.on("mouseleave", function () {
-                        dropdown.removeClass("open");
-                    });
-
-                    menu.on("click", function (e) {
-                        e.stopPropagation();
-                    });
-                }
-            });
-
-            $(document).on("click", function () {
-                {# hide dropdowns #}
-                dropdowns.removeClass("open");
-            });
+            }
         });
-    </script>
 
+        $(document).on("click", function () {
+            dropdowns.removeClass("open");
+        });
+    });
+</script>
 {% endblock %}

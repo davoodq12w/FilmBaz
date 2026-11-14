@@ -1,76 +1,269 @@
-.saves-page-title {
-    min-width: 400px;
-    text-align: center;
-    color: black;
-    background-color: #ff9f29;
-    position: absolute;
-    top: 70px;
-    left: 30%;
-    right: 30%;
-    height: 60px;
-    line-height: 60px;
-    padding: 0 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #ff9f29;
+.saves-page-wrapper {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 36px 24px 60px;
+    color: var(--color-text);
 }
 
-.saves-body {
-    width: 90%;
-    border: 1px solid #ff9f29;
-    border-radius: 8px;
-    margin: 40px auto;
+/* هدر صفحه (هماهنگ با تیتر بخش‌های صفحه اصلی) */
+.saves-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.saves-title-group {
     display: flex;
-    box-shadow: 0 0 10px #ff9f29;
-    padding: 50px 30px 0;
-    flex-wrap: wrap;
-    gap: 1.2%;
-}
-.saves-movie {
-    color: #F5F7F8;
-    width: 19%;
-    position: relative;
-    margin-bottom: 10px;
-
-    & .saves-thumbnail {
-        width: 100%;
-        box-shadow: 0 0 5px #ff9f29;
-        border-radius: 5px;
-    }
-}
-
-.saves-title-remove {
-    height: 50%;
-    position: absolute;
-    display: flex;
-    width: 100%;
-    border-radius: 5px;
-    bottom: 6px;
-    color: #F5F7F8;
-    padding: 40% 20px 0;
-    justify-content: space-between;
     align-items: center;
-    background-image: linear-gradient(#F5F7F800, rgba(0, 0, 0, 0.76), #000000);
-
-    & .saves-title {
-        transition: all 200ms ease;
-        color: #F5F7F8;
-        font-size: 13px;
-        max-width: 80%;
-
-        &:hover {
-            color: #918f8f;
-        }
-    }
-
-    & .saves-remove {
-        padding-top: 5px;
-
-        & svg {
-            width: 20px;
-        }
-    }
+    gap: 12px;
+    margin-bottom: 6px;
 }
 
+.saves-page-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-text);
+    position: relative;
+    padding-right: 14px;
+}
 
+/* خط عمودی قرمز کنار تیتر مشابه صفحه اصلی */
+.saves-page-title::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    border-radius: 4px;
+    background-color: var(--color-primary);
+}
 
+.saves-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+    border: 1px solid rgba(225, 29, 46, 0.25);
+    padding: 3px 10px;
+    border-radius: 999px;
+}
 
+.saves-subtitle {
+    font-size: 13.5px;
+    color: var(--color-text-muted);
+    padding-right: 14px;
+}
+
+/* گرید کارت‌های فیلم */
+.saves-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+    gap: 22px;
+}
+
+.saves-body.is-empty {
+    display: flex;
+    justify-content: center;
+}
+
+/* کارت تک‌فیلم */
+.saves-movie {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    aspect-ratio: 2 / 3;
+    transition: var(--transition);
+}
+
+.saves-movie:hover {
+    transform: translateY(-6px);
+    border-color: rgba(225, 29, 46, 0.45);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.65);
+}
+
+/* حالتی که کاربر با کلیک روی دکمه، فیلم را از ذخیره خارج کرده */
+.saves-movie.is-unsaved {
+    opacity: 0.45;
+    filter: grayscale(0.6);
+}
+
+.saves-movie.is-unsaved:hover {
+    opacity: 0.85;
+    filter: grayscale(0.2);
+}
+
+/* لینک و پوستر */
+.saves-poster-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    position: relative;
+}
+
+.saves-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 350ms ease;
+}
+
+.saves-movie:hover .saves-thumbnail {
+    transform: scale(1.05);
+}
+
+/* گرادینت تیره پایین پوستر برای خوانایی عنوان */
+.saves-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(10, 10, 12, 0.96) 0%,
+        rgba(10, 10, 12, 0.6) 35%,
+        rgba(10, 10, 12, 0) 65%
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px 14px;
+}
+
+.saves-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.saves-movie:hover .saves-title {
+    color: var(--color-primary);
+}
+
+.saves-orj-title {
+    font-size: 11.5px;
+    color: var(--color-text-muted);
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: ltr;
+    text-align: right;
+}
+
+/* دکمه شیشه‌ای بوکمارک در گوشه بالا چپ */
+.saves-remove {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 5;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: rgba(20, 20, 24, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.saves-remove svg {
+    width: 17px;
+    height: 17px;
+}
+
+.saves-remove.is-saved {
+    background-color: rgba(225, 29, 46, 0.88);
+    border-color: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(225, 29, 46, 0.4);
+}
+
+.saves-remove:hover {
+    transform: scale(1.1);
+}
+
+/* حالت خالی بودن لیست ذخیره‌ها */
+.saves-empty-state {
+    width: 100%;
+    max-width: 440px;
+    margin: 40px auto;
+    padding: 40px 24px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.empty-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.saves-empty-state h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 8px;
+}
+
+.saves-empty-state p {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.empty-cta-btn {
+    display: inline-block;
+    padding: 10px 22px;
+    background: var(--gradient-primary);
+    color: var(--color-text);
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.empty-cta-btn:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 6px 18px rgba(225, 29, 46, 0.35);
+}
+
+/* ریسپانسیو موبایل */
+@media (max-width: 540px) {
+    .saves-page-wrapper {
+        padding: 24px 16px 48px;
+    }
+
+    .saves-body {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+}

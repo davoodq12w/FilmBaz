@@ -79,7 +79,15 @@ class UserProfile(View):
         getting user object
         """
         user = request.user
-        return render(request, "account/profile.html", {'user': user})
+        liked_moveis = user.likes.all().order_by('-rate')[:7]
+        saved_movies = user.saves.all().order_by('-rate')[:7]
+        context = {
+            'user': user,
+            'form': EditUserForm(instance=user),
+            'liked_movies': liked_moveis,
+            'saved_movies': saved_movies,
+        }
+        return render(request, "account/profile.html", context)
 
     def http_method_not_allowed(self, request, *args, **kwargs):
         """
@@ -95,7 +103,7 @@ class EditUser(UpdateView):
     View used for changing the users detials
     only authenticated users access to the view
     """
-    template_name = "authentication/edit_user.html"
+    template_name = "account/profile.html"
     form_class = EditUserForm
 
     def get_object(self, queryset=None):
@@ -115,7 +123,10 @@ class EditUser(UpdateView):
         add user to the context for access to user object in template.
         """
         context = super().get_context_data(**kwargs)
-        context["user"] = self.request.user
+        user = self.request.user
+        context["user"] = user
+        context["liked_movies"] = user.likes.all().order_by('-rate')[:7]
+        context["saved_movies"] = user.saves.all().order_by('-rate')[:7]
         return context
 
 
